@@ -83,10 +83,10 @@
   - [x] Escrever testes em `tests/models/test_predict_pipeline.py` (Red)
   - [x] Implementar `src/models/predict.py` (Green)
   - [x] Validar integridade e commit
-- [ ] **Tarefa 08: Motor de Explicabilidade SHAP**
-  - [ ] Escrever testes em `tests/models/test_explainability.py` (Red)
-  - [ ] Implementar `src/models/explainability.py` (Green)
-  - [ ] Validar TreeExplainer e commit
+- [x] **Tarefa 08: Motor de Explicabilidade SHAP**
+  - [x] Escrever testes em `tests/models/test_explainability.py` (Red)
+  - [x] Implementar `src/models/explainability.py` (Green)
+  - [x] Validar TreeExplainer e commit
 - [ ] **Tarefa 09: Storytelling Visual e Geração das 8 Figuras**
   - [ ] Escrever testes em `tests/visualization/test_figures.py` (Red)
   - [ ] Implementar `src/visualization/figures.py` (Green)
