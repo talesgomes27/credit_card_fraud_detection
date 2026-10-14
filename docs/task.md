@@ -63,10 +63,10 @@
   - [x] Escrever testes em `tests/data/test_splitter.py` (Red)
   - [x] Implementar `src/data/splitter.py` (Green)
   - [x] Validar ausência de vazamento e commit
-- [ ] **Tarefa 03: Pipeline de Engenharia de Features**
-  - [ ] Escrever testes em `tests/features/test_pipeline.py` (Red)
-  - [ ] Implementar `src/features/pipeline.py` (Green)
-  - [ ] Validar fit exclusivo no treino e commit
+- [x] **Tarefa 03: Pipeline de Engenharia de Features**
+  - [x] Escrever testes em `tests/features/test_pipeline.py` (Red)
+  - [x] Implementar `src/features/pipeline.py` (Green)
+  - [x] Validar fit exclusivo no treino e commit
 - [ ] **Tarefa 04: Estágio 1 — Classificador Binário & Curva de Custo**
   - [ ] Escrever testes em `tests/models/test_stage1_binary.py` (Red)
   - [ ] Implementar `src/models/stage1_binary.py` (Green)
