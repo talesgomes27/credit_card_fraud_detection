@@ -1,4 +1,9 @@
-# Plano de Implementação Técnica e Estratégia de Testes (Gate 5)
+---
+title: "Plano de Implementação e Testes (Gate 5)"
+subtitle: "Sequência TDD atômica em 10 tarefas, matriz de testes e comandos de validação"
+author: "Tales"
+date: "2026-10-14"
+---
 
 > **Regra de Execução:** Este plano atômico define a sequência estrita de implementação orientada por testes (TDD). Nenhuma etapa subsequente pode ser iniciada antes que os testes unitários da etapa anterior passem com 100% de sucesso.
 

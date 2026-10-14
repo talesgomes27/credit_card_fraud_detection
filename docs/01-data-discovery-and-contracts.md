@@ -1,4 +1,9 @@
-# Descoberta de Dados, Auditoria e Contratos de Dados (Gate 1)
+---
+title: "Descoberta de Dados, Auditoria e Contratos (Gate 1)"
+subtitle: "Auditoria estatística das 43 variáveis, sinais empíricos de fraude e contratos de dados"
+author: "Tales"
+date: "2026-10-14"
+---
 
 Documento técnico de auditoria preliminar (*Ask* preliminar & *Prepare*) para o projeto de detecção de fraudes em transações de cartão de crédito.
 Base de dados auditada: `credit_card_fraud_detection_2026.csv`.

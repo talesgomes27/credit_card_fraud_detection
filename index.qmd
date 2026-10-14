@@ -25,14 +25,14 @@ A base utilizada reúne 40 atributos operacionais e comportamentais desprovidos 
 
 | Identificador | Pergunta de Negócio | Métrica / Hipótese | Figura Vinculada |
 | :--- | :--- | :--- | :--- |
-| **P1** | Qual o horário de maior vulnerabilidade transacional? | Taxa horária e Odds Ratio da madrugada (H1). | `Figura 1` |
-| **P2** | Qual a concentração de risco por país do estabelecimento? | Taxa de fraude nacional vs. baseline global (H2). | `Figura 2` |
-| **P3** | O uso de chip e senha física reduz o risco a zero? | Risco relativo por nível de autenticação EMV (H3). | `Figura 3` |
-| **P4** | Disparadas de velocidade e desvios de ticket indicam fraude? | Incidência por janelas de velocidade e razão de valor (H4, H5). | `Figura 4` |
-| **P5** | Qual o ponto de corte ótimo sob a ótica financeira? | Minimização da curva de custo total $C(t)$ (H6). | `Figura 5` |
-| **P6** | Quais variáveis mais pesam nas decisões do classificador? | Valores SHAP médios absolutos globais e locais. | `Figura 6` |
-| **P7** | O modelo consegue distinguir as 4 modalidades de fraude? | Macro F1-Score e matriz normalizada por linha (H7). | `Figura 7` |
-| **P8** | Quão precisa é a estimativa de perda para fraudes confirmadas? | RMSE e distribuição de resíduos pós-recuperação (H8). | `Figura 8` |
+| **P1** | Qual o horário de maior vulnerabilidade transacional? | Taxa horária e Odds Ratio da madrugada (H1). | [Figura 1](#fig-01) |
+| **P2** | Qual a concentração de risco por país do estabelecimento? | Taxa de fraude nacional vs. baseline global (H2). | [Figura 2](#fig-02) |
+| **P3** | O uso de chip e senha física reduz o risco a zero? | Risco relativo por nível de autenticação EMV (H3). | [Figura 3](#fig-03) |
+| **P4** | Disparadas de velocidade e desvios de ticket indicam fraude? | Incidência por janelas de velocidade e razão de valor (H4, H5). | [Figura 4](#fig-04) |
+| **P5** | Qual o ponto de corte ótimo sob a ótica financeira? | Minimização da curva de custo total $C(t)$ (H6). | [Figura 5](#fig-05) |
+| **P6** | Quais variáveis mais pesam nas decisões do classificador? | Valores SHAP médios absolutos globais e locais. | [Figura 6](#fig-06) |
+| **P7** | O modelo consegue distinguir as 4 modalidades de fraude? | Macro F1-Score e matriz normalizada por linha (H7). | [Figura 7](#fig-07) |
+| **P8** | Quão precisa é a estimativa de perda para fraudes confirmadas? | RMSE e distribuição de resíduos pós-recuperação (H8). | [Figura 8](#fig-08) |
 
 ::: {.callout-important}
 ### Assimetria de Custos Operacionais

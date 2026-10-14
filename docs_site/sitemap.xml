@@ -2,6 +2,54 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://tales.github.io/credit_card_fraud_detection/index.html</loc>
-    <lastmod>2026-10-14T14:22:55.448Z</lastmod>
+    <lastmod>2026-10-14T14:47:05.686Z</lastmod>
+  </url>
+  <url>
+    <loc>https://tales.github.io/credit_card_fraud_detection/docs/04-scaffolding-and-conventions.html</loc>
+    <lastmod>2026-10-14T14:46:06.748Z</lastmod>
+  </url>
+  <url>
+    <loc>https://tales.github.io/credit_card_fraud_detection/docs/adr/0005-financial-cost-threshold-optimization.html</loc>
+    <lastmod>2026-10-14T13:10:54.583Z</lastmod>
+  </url>
+  <url>
+    <loc>https://tales.github.io/credit_card_fraud_detection/docs/adr/0003-tabular-gradient-boosting-vs-deep-learning.html</loc>
+    <lastmod>2026-10-14T13:10:35.156Z</lastmod>
+  </url>
+  <url>
+    <loc>https://tales.github.io/credit_card_fraud_detection/docs/adr/0001-hurdle-three-stage-architecture.html</loc>
+    <lastmod>2026-10-14T13:10:13.749Z</lastmod>
+  </url>
+  <url>
+    <loc>https://tales.github.io/credit_card_fraud_detection/docs/01-data-discovery-and-contracts.html</loc>
+    <lastmod>2026-10-14T14:45:11.272Z</lastmod>
+  </url>
+  <url>
+    <loc>https://tales.github.io/credit_card_fraud_detection/task.html</loc>
+    <lastmod>2026-10-14T14:24:00.706Z</lastmod>
+  </url>
+  <url>
+    <loc>https://tales.github.io/credit_card_fraud_detection/docs/task.html</loc>
+    <lastmod>2026-10-14T14:24:07.667Z</lastmod>
+  </url>
+  <url>
+    <loc>https://tales.github.io/credit_card_fraud_detection/docs/02-PRD-and-specs.html</loc>
+    <lastmod>2026-10-14T14:45:27.286Z</lastmod>
+  </url>
+  <url>
+    <loc>https://tales.github.io/credit_card_fraud_detection/docs/adr/0002-time-ordered-validation-split.html</loc>
+    <lastmod>2026-10-14T13:10:24.618Z</lastmod>
+  </url>
+  <url>
+    <loc>https://tales.github.io/credit_card_fraud_detection/docs/adr/0004-browser-na-preservation-and-data-contract.html</loc>
+    <lastmod>2026-10-14T13:10:45.088Z</lastmod>
+  </url>
+  <url>
+    <loc>https://tales.github.io/credit_card_fraud_detection/docs/03-architecture-and-schema.html</loc>
+    <lastmod>2026-10-14T14:45:44.500Z</lastmod>
+  </url>
+  <url>
+    <loc>https://tales.github.io/credit_card_fraud_detection/docs/05-implementation-plan.html</loc>
+    <lastmod>2026-10-14T14:46:30.074Z</lastmod>
   </url>
 </urlset>

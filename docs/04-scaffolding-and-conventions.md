@@ -1,9 +1,13 @@
-# Scaffolding, Estrutura de Diretórios e Convenções (Gate 4)
+---
+title: "Scaffolding e Convenções (Gate 4)"
+subtitle: "Estrutura física de pastas, convenções e guardrails técnicos"
+author: "Tales"
+date: "2026-10-14"
+---
 
 - **Projeto:** Detecção, Tipificação e Quantificação de Fraudes em Cartão de Crédito
 - **Arquétipo:** A — Data Science, Analytics & Machine Learning
 - **Artefato:** `docs/04-scaffolding-and-conventions.md`
-- **Status:** Estrutura Física Instanciada e Validada
 
 ---
 

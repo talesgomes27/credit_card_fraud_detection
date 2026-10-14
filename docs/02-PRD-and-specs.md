@@ -1,9 +1,13 @@
-# Documento de Requisitos de Produto e Especificação Técnica (PRD) — Gate 2
+---
+title: "Documento de Requisitos de Produto (PRD) — Gate 2"
+subtitle: "Especificação de negócio, métricas assimétricas e matriz 1:1 de rastreabilidade"
+author: "Tales"
+date: "2026-10-14"
+---
 
 - **Projeto:** Detecção, Tipificação e Quantificação de Fraudes em Cartão de Crédito
 - **Arquétipo:** A — Data Science, Analytics & Machine Learning
 - **Artefato:** `docs/02-PRD-and-specs.md`
-- **Status:** Proposta Técnica para Validação
 
 ---
 

@@ -16,6 +16,8 @@ website:
         text: "PRD & Especificações"
       - href: "docs/03-architecture-and-schema.md"
         text: "Arquitetura"
+      - href: "docs/05-implementation-plan.md"
+        text: "Plano & Testes"
     right:
       - icon: github
         href: "https://github.com/tales/credit_card_fraud_detection"
@@ -29,7 +31,7 @@ format:
     toc-title: "Neste Relatório"
     smooth-scroll: true
     code-fold: true
-    code-tools: true
+    code-tools: false
     code-copy: true
     number-sections: true
     title-block-banner: true

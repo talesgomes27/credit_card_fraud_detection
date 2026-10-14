@@ -1,9 +1,13 @@
-# Arquitetura do Pipeline Analítico e Especificação Técnica (Gate 3)
+---
+title: "Arquitetura do Pipeline Analítico (Gate 3)"
+subtitle: "Topologia Hurdle Model, desacoplamento em três estágios e ADRs"
+author: "Tales"
+date: "2026-10-14"
+---
 
 - **Projeto:** Detecção, Tipificação e Quantificação de Fraudes em Cartão de Crédito
 - **Arquétipo:** A — Data Science, Analytics & Machine Learning
 - **Artefato:** `docs/03-architecture-and-schema.md`
-- **Status:** Proposta de Arquitetura para Validação
 
 ---
 
