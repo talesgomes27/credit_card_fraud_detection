@@ -71,10 +71,10 @@
   - [x] Escrever testes em `tests/models/test_stage1_binary.py` (Red)
   - [x] Implementar `src/models/stage1_binary.py` (Green)
   - [x] Calibrar threshold ótimo $t^*$ e commit
-- [ ] **Tarefa 05: Estágio 2 — Classificador Multiclasse de Tipos de Fraude**
-  - [ ] Escrever testes em `tests/models/test_stage2_multiclass.py` (Red)
-  - [ ] Implementar `src/models/stage2_multiclass.py` (Green)
-  - [ ] Validar Macro F1 e commit
+- [x] **Tarefa 05: Estágio 2 — Classificador Multiclasse de Tipos de Fraude**
+  - [x] Escrever testes em `tests/models/test_stage2_multiclass.py` (Red)
+  - [x] Implementar `src/models/stage2_multiclass.py` (Green)
+  - [x] Validar Macro F1 e commit
 - [ ] **Tarefa 06: Estágio 3 — Regressor Condicional de Perda Financeira**
   - [ ] Escrever testes em `tests/models/test_stage3_regressor.py` (Red)
   - [ ] Implementar `src/models/stage3_regressor.py` (Green)
