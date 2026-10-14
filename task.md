@@ -79,10 +79,10 @@
   - [x] Escrever testes em `tests/models/test_stage3_regressor.py` (Red)
   - [x] Implementar `src/models/stage3_regressor.py` (Green)
   - [x] Validar RMSE em fraudes e commit
-- [ ] **Tarefa 07: Orquestrador do Hurdle Model (End-to-End)**
-  - [ ] Escrever testes em `tests/models/test_predict_pipeline.py` (Red)
-  - [ ] Implementar `src/models/predict.py` (Green)
-  - [ ] Validar integridade e commit
+- [x] **Tarefa 07: Orquestrador do Hurdle Model (End-to-End)**
+  - [x] Escrever testes em `tests/models/test_predict_pipeline.py` (Red)
+  - [x] Implementar `src/models/predict.py` (Green)
+  - [x] Validar integridade e commit
 - [ ] **Tarefa 08: Motor de Explicabilidade SHAP**
   - [ ] Escrever testes em `tests/models/test_explainability.py` (Red)
   - [ ] Implementar `src/models/explainability.py` (Green)
