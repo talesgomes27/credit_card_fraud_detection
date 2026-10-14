@@ -67,10 +67,10 @@
   - [x] Escrever testes em `tests/features/test_pipeline.py` (Red)
   - [x] Implementar `src/features/pipeline.py` (Green)
   - [x] Validar fit exclusivo no treino e commit
-- [ ] **Tarefa 04: Estágio 1 — Classificador Binário & Curva de Custo**
-  - [ ] Escrever testes em `tests/models/test_stage1_binary.py` (Red)
-  - [ ] Implementar `src/models/stage1_binary.py` (Green)
-  - [ ] Calibrar threshold ótimo $t^*$ e commit
+- [x] **Tarefa 04: Estágio 1 — Classificador Binário & Curva de Custo**
+  - [x] Escrever testes em `tests/models/test_stage1_binary.py` (Red)
+  - [x] Implementar `src/models/stage1_binary.py` (Green)
+  - [x] Calibrar threshold ótimo $t^*$ e commit
 - [ ] **Tarefa 05: Estágio 2 — Classificador Multiclasse de Tipos de Fraude**
   - [ ] Escrever testes em `tests/models/test_stage2_multiclass.py` (Red)
   - [ ] Implementar `src/models/stage2_multiclass.py` (Green)
