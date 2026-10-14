@@ -55,10 +55,10 @@
 
 ## Ciclo de Implementação (TDD & Execução Atômica)
 
-- [ ] **Tarefa 01: Ingestão, Saneamento e Contratos de Dados**
-  - [ ] Escrever testes em `tests/data/test_loader.py` (Red)
-  - [ ] Implementar `src/data/loader.py` (Green)
-  - [ ] Validar conformidade de contratos e commit
+- [x] **Tarefa 01: Ingestão, Saneamento e Contratos de Dados**
+  - [x] Escrever testes em `tests/data/test_loader.py` (Red)
+  - [x] Implementar `src/data/loader.py` (Green)
+  - [x] Validar conformidade de contratos e commit
 - [ ] **Tarefa 02: Particionamento Temporal Out-of-Time**
   - [ ] Escrever testes em `tests/data/test_splitter.py` (Red)
   - [ ] Implementar `src/data/splitter.py` (Green)
