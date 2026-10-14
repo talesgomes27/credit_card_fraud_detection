@@ -75,10 +75,10 @@
   - [x] Escrever testes em `tests/models/test_stage2_multiclass.py` (Red)
   - [x] Implementar `src/models/stage2_multiclass.py` (Green)
   - [x] Validar Macro F1 e commit
-- [ ] **Tarefa 06: Estágio 3 — Regressor Condicional de Perda Financeira**
-  - [ ] Escrever testes em `tests/models/test_stage3_regressor.py` (Red)
-  - [ ] Implementar `src/models/stage3_regressor.py` (Green)
-  - [ ] Validar RMSE em fraudes e commit
+- [x] **Tarefa 06: Estágio 3 — Regressor Condicional de Perda Financeira**
+  - [x] Escrever testes em `tests/models/test_stage3_regressor.py` (Red)
+  - [x] Implementar `src/models/stage3_regressor.py` (Green)
+  - [x] Validar RMSE em fraudes e commit
 - [ ] **Tarefa 07: Orquestrador do Hurdle Model (End-to-End)**
   - [ ] Escrever testes em `tests/models/test_predict_pipeline.py` (Red)
   - [ ] Implementar `src/models/predict.py` (Green)
