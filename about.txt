@@ -1,0 +1,79 @@
+About Dataset
+Credit Card Fraud Detection Dataset 2026
+Overview
+This dataset contains 100,000 real-world-style credit card transactions spanning the full calendar year 2024, with 43 features covering transaction details, customer profiles, velocity signals, risk indicators, device and channel information, and account behaviour. Every distribution, fraud rate, and risk signal relationship is calibrated against published industry research from the Federal Reserve, Nilson Report, FICO, and the European Central Bank.
+
+The existing fraud dataset on Kaggle from 2013 has anonymised V1 to V28 PCA columns that nobody can interpret or engineer on. This dataset fixes that completely. Every column has a real name and a real meaning.
+
+This is the modern replacement for the original Kaggle fraud dataset. 330x more features that are interpretable, full timestamps, real merchant categories, customer profiles, velocity counts, and 3 prediction targets across 3 difficulty levels.
+
+Why This Dataset Is Different
+Most fraud datasets on Kaggle either have anonymised PCA features, tiny row counts, or a single binary target with no context. This dataset was built to be genuinely useful for learning, research, and building real fraud detection systems.
+
+Real named features : merchant category, transaction hour, device type, distance from home, velocity counts, chip and PIN usage. You can actually do feature engineering on these.
+3 prediction targets at 3 difficulty levels : binary classification for beginners, fraud type multiclass for intermediate, fraud amount regression for advanced
+8,000 unique customers making multiple transactions across 3,000 merchants - realistic customer behaviour patterns emerge naturally
+Full year of timestamps : seasonal patterns, weekday vs weekend analysis, and time-series approaches are all possible
+Specific quantified fraud signals built into the data that show up clearly in EDA
+Dataset Highlights
+Night Transaction Effect
+Transactions between 1am and 4am have a fraud rate of 8.5%, which is 4.1x the baseline rate of 2.1%. This pattern is one of the most consistent findings in fraud detection research and shows up clearly in any hourly breakdown chart.
+
+High-Risk Country Multiplier
+Transactions at merchants in high-risk countries (Russia, Nigeria, Romania, China) have a fraud rate of 11.1%, which is 5.4x the baseline. Legitimate merchants in these countries exist, but the elevated risk is significant.
+
+New Account Vulnerability
+Accounts under 90 days old have a fraud rate of 4.9%, which is 2.4x the baseline. New accounts are disproportionately targeted for synthetic identity fraud, consistent with TransUnion and FICO research.
+
+Velocity Burst Signal
+Customers with 3 or more transactions in the past hour have a fraud rate of 5.6%, which is 2.7x the baseline. Velocity counting is one of the most effective real-time fraud signals used by banks.
+
+EMV Chip Protection
+Transactions where the chip was used have a fraud rate of only 0.8%, well below the baseline. The shift to chip technology dramatically reduced card-present fraud, which is why fraud has migrated online.
+
+Online Retail as the Highest-Risk Category
+Online Retail has the highest fraud rate at 3.3%, followed by Travel & Airlines at 2.9%. Card-not-present fraud dominates in these categories because there is no physical card verification.
+
+Feature Groups
+Group	Features	Count
+Transaction Identifiers	transaction_id, customer_id, card_id, merchant_id, transaction_datetime	5
+Transaction Details	transaction_amount, merchant_category, merchant_country, transaction_hour, transaction_day_of_week, card_present	6
+Customer Profile	customer_age, customer_gender, customer_state, account_age_days, credit_limit, credit_score, num_cards_held	7
+Velocity Features	transactions_last_1h, transactions_last_24h, transactions_last_7d, amount_last_1h, amount_last_24h, days_since_last_transaction	6
+Risk Signals	distance_from_home_km, distance_from_last_tx_km, international_transaction, high_risk_country, amount_vs_avg_ratio, used_chip, used_pin	7
+Device and Channel	transaction_channel, device_type, browser, is_weekend	4
+Account Behaviour	avg_transaction_amount_30d, std_transaction_amount_30d, num_declined_last_30d, num_chargebacks_ever, email_domain	5
+Targets (3)	is_fraud, fraud_type, fraud_amount_lost	3
+Target Variables
+1. is_fraud (Binary Classification = Beginner)
+Type: Binary (0 = Legitimate, 1 = Fraud)
+Fraud rate: 2.06% (2,055 fraud out of 100,000 transactions)
+Challenge: Class imbalance. Use SMOTE, class weights, or precision-recall curves instead of accuracy.
+Expected AUC: 0.90 to 0.95
+2. fraud_type (Multiclass Classification = Intermediate)
+Type: 5 classes: Legitimate, Card-Not-Present, Card-Present, Account-Takeover, Synthetic-Identity
+Distribution: Legitimate 97.9%, Card-Not-Present 1.1%, Account-Takeover 0.4%, Synthetic-Identity 0.3%, Card-Present 0.2%
+Challenge: Severe class imbalance across fraud subtypes. Different feature importance per fraud type.
+Expected Macro F1: 0.65 to 0.75
+3. fraud_amount_lost (Regression = Advanced)
+Type: Continuous (0.0 for legitimate transactions, USD lost for fraud)
+Fraud-only mean: $136.18 | Max: $4,482.16
+Challenge: Zero-inflated distribution. Two-stage modelling recommended: first predict fraud, then predict amount.
+Expected RMSE (fraud-only): $45 to $65
+Suggested Use Cases
+Level	Task	Target	Technique
+Beginner	Binary classification	is_fraud	Logistic Regression, Random Forest
+Intermediate	Multiclass fraud typing	fraud_type	XGBoost, LightGBM with class weights
+Advanced	Fraud amount regression	fraud_amount_lost	Two-stage model, zero-inflated regression
+Expert	Real-time detection simulation	is_fraud	Streaming features, time-ordered train/test split
+Research	Explainability	is_fraud	SHAP values, LIME, counterfactual analysis
+Calibration Benchmarks
+Metric	This Dataset	Real-World Source
+Overall fraud rate	2.06%	Nilson Report 2023: 2.0 to 2.5%
+Card-not-present share of fraud	51.3%	Federal Reserve Payments Study 2023
+Night-hour fraud multiplier	4.1x	FICO Falcon benchmark
+High-risk country multiplier	5.4x	ECB Card Fraud Report 2022
+Chip transaction fraud rate	0.8%	EMV Migration Forum 2023
+Mean fraud amount lost	$136.18	TransUnion Global Fraud Report 2023
+Acknowledgements
+Calibrated using data from the Federal Reserve Payments Study 2023, Nilson Report 2023, FICO Falcon Fraud Manager benchmarks, European Central Bank Card Fraud Report 2022, McKinsey Global Payments Report 2023, and TransUnion Global Fraud and Identity Report 2023. All records are fully synthetic. No real customer or transaction data is present.

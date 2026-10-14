@@ -1,0 +1,43 @@
+project:
+  type: website
+  output-dir: docs_site
+
+website:
+  title: "Detecção e Prevenção de Fraudes em Cartões de Crédito"
+  description: "Pipeline analítico de ponta a ponta com Hurdle Model em três estágios, calibragem financeira e explicabilidade SHAP."
+  site-url: "https://tales.github.io/credit_card_fraud_detection"
+  navbar:
+    left:
+      - href: index.qmd
+        text: "Relatório Executivo"
+      - href: "docs/01-data-discovery-and-contracts.md"
+        text: "Contratos de Dados"
+      - href: "docs/02-PRD-and-specs.md"
+        text: "PRD & Especificações"
+      - href: "docs/03-architecture-and-schema.md"
+        text: "Arquitetura"
+    right:
+      - icon: github
+        href: "https://github.com/tales/credit_card_fraud_detection"
+
+format:
+  html:
+    theme: cosmo
+    lang: pt-BR
+    toc: true
+    toc-depth: 3
+    toc-title: "Neste Relatório"
+    smooth-scroll: true
+    code-fold: true
+    code-tools: true
+    code-copy: true
+    number-sections: true
+    title-block-banner: true
+    fig-align: center
+    fig-dpi: 300
+    df-print: kable
+
+execute:
+  freeze: auto
+  warning: false
+  message: false

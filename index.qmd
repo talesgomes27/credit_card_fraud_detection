@@ -1,0 +1,74 @@
+---
+title: "Sistema Integrado de Detecção, Tipificação e Mitigação de Fraudes Bancárias"
+subtitle: "Pipeline em Três Estágios (Hurdle Model), Otimização de Custo Financeiro e Explicabilidade SHAP"
+author: "Tales"
+date: "2026-10-14"
+format:
+  html:
+    toc: true
+    number-sections: true
+---
+
+::: {.callout-note}
+### Resumo Executivo da Operação
+Este estudo desenvolve e valida um motor preditivo para 100.000 transações de cartões de crédito ao longo do ano fiscal de 2026. Empregando uma arquitetura em três estágios (*Hurdle Model*), o sistema supera as limitações de modelos isolados ao articular:
+1. **Detecção Binária de Fraude (`is_fraud`):** Priorização por área sob a curva Precision-Recall (**PR-AUC**) e ponto de corte ótimo orientado a custo monetário.
+2. **Tipificação de Ataque (`fraud_type`):** Discriminação multiclasse em 4 subtipos de ameaça via **Macro F1-Score**.
+3. **Quantificação de Perda Residual (`fraud_amount_lost`):** Estimação de dano condicional pós-recuperação parcial via **RMSE** e **MAE**.
+:::
+
+## Contexto e Perguntas Norteadoras (Ask)
+
+A indústria bancária opera sob um equilíbrio delicado: a perda direta por fraudes não interceptadas contrasta com o desgaste na experiência de clientes legítimos submetidos a falsos bloqueios.
+Datasets tradicionais de pesquisa utilizam componentes principais anônimos, inviabilizando regras explicáveis de negócio.
+Neste projeto, avaliam-se 40 features funcionais sob oito questões prioritárias mapeadas de P1 a P8 no PRD.
+
+::: {.callout-important}
+### Hipótese de Assimetria de Custos (H6)
+O limiar convencional de 0,50 desconsidera a economia real da operação: cada fraude evitada preserva, em média, \$136,18, ao passo que uma falsa contestação custa aproximadamente \$3,50 em atrito e suporte. O modelo busca minimizar o custo total agregado, não a mera acurácia estática.
+:::
+
+## Ingestão, Auditoria e Engenharia de Atributos (Prepare & Process)
+
+Os dados brutos foram submetidos a contratos estritos de qualidade estabelecidos no Gate 1:
+- Leitura com `keep_default_na=False` para preservar a categoria legítima `'N/A'` em canais físicos presenciais (*In-store*) e caixas eletrônicos (*ATM*).
+- Ordenação temporal estável para corrigir a inversão pontual detectada em 28/02/2026.
+- Particionamento temporal *out-of-time* em três janelas sequenciais: Treino (Jan–Ago / 66,9%), Validação (Set–Out / 16,9%) e Teste Cego (Nov–Dez / 16,2%).
+- Engenharia de features restrita ao treino com decomposição periódica horária ($\sin/\cos$), razão de aceleração de velocidade transacional e velocidade aparente de salto geográfico ($V_{aparente}$ em km/h).
+
+## Modelagem e Avaliação em Múltiplos Estágios (Analyze)
+
+A modelagem reflete o desacoplamento arquitetural em três fases com gradient boosting (*LightGBM* e *XGBoost*):
+
+### Estágio 1: Classificação Binária e Curva de Custo
+Modelagem supervisionada com `scale_pos_weight` ajustado pela prevalência de 2,05%.
+O threshold de decisão é calibrado sobre o conjunto de Validação para encontrar o ponto de mínimo custo financeiro total.
+
+### Estágio 2: Tipificação da Modalidade de Fraude
+Classificação multiclasse balanceada entre *Card-Not-Present* (51,3%), *Account-Takeover* (21,8%), *Synthetic-Identity* (15,0%) e *Card-Present* (11,9%).
+
+### Estágio 3: Regressão Condicional do Prejuízo Não Recuperado
+Ajuste de regressores com função de perda Huber sobre os casos confirmados de fraude, mensurando resíduos e distribuição na cauda de valores elevados.
+
+### Explicabilidade Global e Local via SHAP
+Uso do `TreeExplainer` para mensurar a contribuição de cada atributo e justificar intervenções em nível regulatório.
+
+## Resultados e Storytelling Visual (Share)
+
+As figuras a seguir compõem o storyboard de validação quantitativa:
+
+- **Figura 1:** Risco de Fraude por Horário do Dia e Janela Noturna.
+- **Figura 2:** Multiplicador de Risco por País e Jurisdições Críticas.
+- **Figura 3:** Escudo de Autenticação EMV (Chip e Senha PIN).
+- **Figura 4:** Painel Duplo de Anomalias de Velocidade e Razão de Ticket.
+- **Figura 5:** Curva Precision-Recall e Otimização da Curva de Custo Financeiro.
+- **Figura 6:** Beeswarm Plot SHAP das Variáveis Mais Determinantes.
+- **Figura 7:** Matriz de Confusão Normalizada dos Subtipos de Fraude.
+- **Figura 8:** Dispersão e Análise de Resíduos do Dano Residual em Dólares.
+
+## Recomendações Estratégicas e Governança (Act)
+
+Recomendações práticas para integração do modelo ao motor de regras da instituição emissora:
+1. **Regras Hard-Stop Noturnas:** Transações acima de 5x o ticket médio originadas entre 01h e 04h sem validação biométrica ou PIN devem exigir autenticação de dois fatores imediata.
+2. **Priorização de Filas de Backoffice:** Utilizar a predição conjunta do Estágio 2 (tipo de fraude) e Estágio 3 (perda estimada) para ordenar as filas de investigação da equipe de disputas, direcionando casos de alto valor com potencial de chargeback antes do encerramento dos prazos regulatórios da bandeira.
+3. **Monitoramento de Deriva Temporal:** Reavaliar mensalmente a estabilidade da distribuição das variáveis de velocidade e o valor ótimo de $t^*$.
