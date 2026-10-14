@@ -27,3 +27,6 @@ Thumbs.db
 # Artefatos Temporários
 tmp/
 *.log
+
+/.quarto/
+**/*.quarto_ipynb

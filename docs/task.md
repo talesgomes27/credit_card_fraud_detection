@@ -91,7 +91,7 @@
   - [x] Escrever testes em `tests/visualization/test_figures.py` (Red)
   - [x] Implementar `src/visualization/figures.py` (Green)
   - [x] Gerar 8 figuras em 300 DPI e commit
-- [ ] **Tarefa 10: Compilação do Relatório Quarto e Publicação**
-  - [ ] Consolidar métricas e gráficos em `index.qmd`
-  - [ ] Renderizar com Quarto 1.9.38 para `docs_site/`
-  - [ ] Commit final do relatório e site estático
+- [x] **Tarefa 10: Compilação do Relatório Quarto e Publicação**
+  - [x] Consolidar métricas e gráficos em `index.qmd`
+  - [x] Renderizar com Quarto 1.9.38 para `docs_site/`
+  - [x] Commit final do relatório e site estático
