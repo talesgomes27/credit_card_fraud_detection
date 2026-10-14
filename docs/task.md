@@ -87,10 +87,10 @@
   - [x] Escrever testes em `tests/models/test_explainability.py` (Red)
   - [x] Implementar `src/models/explainability.py` (Green)
   - [x] Validar TreeExplainer e commit
-- [ ] **Tarefa 09: Storytelling Visual e Geração das 8 Figuras**
-  - [ ] Escrever testes em `tests/visualization/test_figures.py` (Red)
-  - [ ] Implementar `src/visualization/figures.py` (Green)
-  - [ ] Gerar 8 figuras em 300 DPI e commit
+- [x] **Tarefa 09: Storytelling Visual e Geração das 8 Figuras**
+  - [x] Escrever testes em `tests/visualization/test_figures.py` (Red)
+  - [x] Implementar `src/visualization/figures.py` (Green)
+  - [x] Gerar 8 figuras em 300 DPI e commit
 - [ ] **Tarefa 10: Compilação do Relatório Quarto e Publicação**
   - [ ] Consolidar métricas e gráficos em `index.qmd`
   - [ ] Renderizar com Quarto 1.9.38 para `docs_site/`
