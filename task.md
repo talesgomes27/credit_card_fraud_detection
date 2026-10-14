@@ -59,10 +59,10 @@
   - [x] Escrever testes em `tests/data/test_loader.py` (Red)
   - [x] Implementar `src/data/loader.py` (Green)
   - [x] Validar conformidade de contratos e commit
-- [ ] **Tarefa 02: Particionamento Temporal Out-of-Time**
-  - [ ] Escrever testes em `tests/data/test_splitter.py` (Red)
-  - [ ] Implementar `src/data/splitter.py` (Green)
-  - [ ] Validar ausência de vazamento e commit
+- [x] **Tarefa 02: Particionamento Temporal Out-of-Time**
+  - [x] Escrever testes em `tests/data/test_splitter.py` (Red)
+  - [x] Implementar `src/data/splitter.py` (Green)
+  - [x] Validar ausência de vazamento e commit
 - [ ] **Tarefa 03: Pipeline de Engenharia de Features**
   - [ ] Escrever testes em `tests/features/test_pipeline.py` (Red)
   - [ ] Implementar `src/features/pipeline.py` (Green)
