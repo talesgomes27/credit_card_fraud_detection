@@ -139,19 +139,21 @@
   - [x] Varredura de segredos vazados no código e notebooks (0 segredos detectados)
   - [x] Auditoria de arquivos volumosos > 50 MB (nenhum arquivo detectado)
   - [x] Checkpoint humano e aprovação do saneamento pré-push
-- [/] **Gate 2: Governança Git, Versionamento Semântico & Changelog**
-  - [ ] Determinação de incremento SemVer (`v1.0.0` - Primeiro Release Estável pós-auditoria)
-  - [ ] Elaboração de `CHANGELOG.md` seguindo o padrão Keep a Changelog (Modo 1 da writing-pipeline)
-  - [ ] Preparação da tag anotada `v1.0.0`
-  - [ ] Checkpoint humano e aprovação do changelog e histórico de commits
-- [ ] **Gate 3: Automação de CI/CD — GitHub Actions (Arquétipo A: Quarto + GitHub Pages)**
-  - [ ] Configuração de `.github/workflows/publish.yml` para publicação contínua no GitHub Pages
-  - [ ] Validação do workflow com permissões `pages: write` e `id-token: write`
-  - [ ] Checkpoint humano e aprovação do workflow de CI/CD
-- [ ] **Gate 4: Deploy, Publicação e Empacotamento (Polimórfico - GitHub Pages)**
-  - [ ] Validação de `.nojekyll` em `docs_site/` para compatibilidade com GitHub Pages
-  - [ ] Execução de git push autorizado para o repositório remoto
-  - [ ] Ativação da publicação no GitHub Pages
+- [x] **Gate 2: Governança Git, Versionamento Semântico & Changelog**
+  - [x] Determinação de incremento SemVer (`v1.0.0` - Primeiro Release Estável pós-auditoria)
+  - [x] Elaboração de `CHANGELOG.md` seguindo o padrão Keep a Changelog (Modo 1 da writing-pipeline)
+  - [x] Atualização de `version = "1.0.0"` no `pyproject.toml`
+  - [x] Criação da tag anotada `v1.0.0` no repositório local
+  - [x] Checkpoint humano e aprovação do changelog e histórico de commits
+- [x] **Gate 3: Automação de CI/CD — GitHub Actions (Arquétipo A: Quarto + GitHub Pages)**
+  - [x] Configuração de `.github/workflows/publish.yml` para publicação contínua no GitHub Pages
+  - [x] Validação do workflow com permissões `pages: write` e `id-token: write`
+  - [x] Inclusão de `.nojekyll` em `docs_site/` para prevenção de bloqueios Jekyll
+  - [x] Checkpoint humano e aprovação do workflow de CI/CD
+- [/] **Gate 4: Deploy, Publicação e Empacotamento (Polimórfico - GitHub Pages)**
+  - [ ] Execução de git push autorizado da branch `main` e da tag `v1.0.0` para `origin`
+  - [ ] Acompanhamento do disparo do workflow de publicação no GitHub Actions
+  - [ ] Confirmação de deploy da branch `gh-pages`
 - [ ] **Gate 5: Smoke Tests Pós-Deploy & Homologação Final**
   - [ ] Verificação da URL pública do site (`https://talesgomes27.github.io/credit_card_fraud_detection`)
   - [ ] Auditoria de HTTP status 200, links internos da navbar e integridade de carregamento das figuras
