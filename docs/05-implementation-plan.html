@@ -107,6 +107,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   }
 }</script>
 <style>html{ scroll-behavior: smooth; }</style>
+<script src="../site_libs/quarto-diagram/mermaid.min.js"></script>
+<script src="../site_libs/quarto-diagram/mermaid-init.js"></script>
+<link href="../site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
   <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
@@ -308,7 +311,14 @@ window.Quarto = {
 <hr>
 <section id="grafo-de-precedência-técnica" class="level2" data-number="1">
 <h2 data-number="1" class="anchored" data-anchor-id="grafo-de-precedência-técnica"><span class="header-section-number">1</span> 1. Grafo de Precedência Técnica</h2>
-<pre class="mermaid"><code>flowchart TD
+<p>A sequência de precedência técnica e as dependências operacionais entre as tarefas estão mapeadas na <a href="#fig-tasks-graph" class="quarto-xref">Figura&nbsp;1</a>:</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-tasks-graph" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-tasks-graph-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div>
+<pre class="mermaid mermaid-js" data-label="fig-tasks-graph">flowchart TD
     T01["Tarefa 01: Contratos e Loader&lt;br&gt;(src/data/loader.py)"] --&gt; T02["Tarefa 02: Splitter Temporal&lt;br&gt;(src/data/splitter.py)"]
     T02 --&gt; T03["Tarefa 03: Feature Engineering&lt;br&gt;(src/features/pipeline.py)"]
     
@@ -328,7 +338,17 @@ window.Quarto = {
     T06 --&gt; T09
     T08 --&gt; T09
     
-    T09 --&gt; T10["Tarefa 10: Relatório Quarto &amp; Render&lt;br&gt;(index.qmd ➔ docs_site/)"]</code></pre>
+    T09 --&gt; T10["Tarefa 10: Relatório Quarto &amp; Render&lt;br&gt;(index.qmd ➔ docs_site/)"]
+</pre>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-tasks-graph-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;1: Grafo de Precedência Técnica e Dependências das Tarefas de Implementação
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
 <hr>
 </section>
 <section id="checklist-atômico-de-tarefas-e-ciclos-tdd" class="level2" data-number="2">
@@ -575,7 +595,7 @@ window.Quarto = {
 <li><p>Preencher <code>index.qmd</code> incorporando tabelas de métricas definitivas e links das 8 figuras salvas em <code>reports/figures/</code>.</p></li>
 <li><p>Checar conformidade com o <code>quarto-quality-checklist.md</code> (sem títulos com numeração manual, metadados em português, callout blocks).</p></li>
 <li><p>Executar compilação com o binário validado:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">/usr/lib/rstudio/resources/app/bin/quarto/bin/quarto</span> render <span class="at">--to</span> html</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div></li>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">/usr/lib/rstudio/resources/app/bin/quarto/bin/quarto</span> render <span class="at">--to</span> html</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div></li>
 <li><p>Verificar geração do artefato estático em <code>docs_site/</code>.</p></li>
 </ol></li>
 <li><strong>Validação:</strong>
@@ -589,14 +609,14 @@ window.Quarto = {
 <section id="comandos-padronizados-de-verificação-automatizada" class="level2" data-number="3">
 <h2 data-number="3" class="anchored" data-anchor-id="comandos-padronizados-de-verificação-automatizada"><span class="header-section-number">3</span> 3. Comandos Padronizados de Verificação Automatizada</h2>
 <p>A validação de integridade do pipeline completo é executada através de comandos determinísticos:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Verificação de estilo e sintaxe (Linter)</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="ex">ruff</span> check src tests</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Execução da suíte completa de testes unitários e de integração</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="ex">pytest</span> tests/ <span class="at">-v</span> <span class="at">--durations</span><span class="op">=</span>10</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Compilação estática do relatório executivo Quarto</span></span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="ex">/usr/lib/rstudio/resources/app/bin/quarto/bin/quarto</span> render index.qmd <span class="at">--output-dir</span> docs_site</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Verificação de estilo e sintaxe (Linter)</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="ex">ruff</span> check src tests</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Execução da suíte completa de testes unitários e de integração</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="ex">pytest</span> tests/ <span class="at">-v</span> <span class="at">--durations</span><span class="op">=</span>10</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Compilação estática do relatório executivo Quarto</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="ex">/usr/lib/rstudio/resources/app/bin/quarto/bin/quarto</span> render index.qmd <span class="at">--output-dir</span> docs_site</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
 <hr>
 </section>
 <section id="critério-de-parada-e-liberação-para-código" class="level2" data-number="4">
