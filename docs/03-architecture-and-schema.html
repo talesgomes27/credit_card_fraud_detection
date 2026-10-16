@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="pt-BR" xml:lang="pt-BR"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Tales">
+
+<title>Arquitetura do Pipeline Analítico (Gate 3) – Detecção e Prevenção de Fraudes em Cartões de Crédito</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-515660fabfa64519d5b0c404a8346fd4.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "Nenhum resultado",
+    "search-matching-documents-text": "documentos correspondentes",
+    "search-copy-link-title": "Copiar link para a busca",
+    "search-hide-matches-text": "Esconder correspondências adicionais",
+    "search-more-match-text": "mais correspondência neste documento",
+    "search-more-matches-text": "mais correspondências neste documento",
+    "search-clear-button-title": "Limpar",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancelar",
+    "search-submit-button-title": "Enviar",
+    "search-label": "Procurar"
+  }
+}</script>
+<style>html{ scroll-behavior: smooth; }</style>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Detecção e Prevenção de Fraudes em Cartões de Crédito</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Procurar"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Alternar de navegação" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html"> 
+<span class="menu-text">Relatório Executivo</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../docs/01-data-discovery-and-contracts.html"> 
+<span class="menu-text">Contratos de Dados</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../docs/02-PRD-and-specs.html"> 
+<span class="menu-text">PRD &amp; Especificações</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-arquitetura--engenharia" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Arquitetura &amp; Engenharia</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-arquitetura--engenharia">    
+        <li>
+    <a class="dropdown-item" href="../docs/03-architecture-and-schema.html">
+ <span class="dropdown-text">Topologia &amp; Esquema</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../docs/04-scaffolding-and-conventions.html">
+ <span class="dropdown-text">Convenções &amp; Scaffolding</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../docs/00_archetype.html">
+ <span class="dropdown-text">Metadados do Arquétipo</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-decisões-de-arquitetura-(adrs" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Decisões de Arquitetura (ADRs)</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-decisões-de-arquitetura-(adrs">    
+        <li>
+    <a class="dropdown-item" href="../docs/adr/0001-hurdle-three-stage-architecture.html">
+ <span class="dropdown-text">ADR 0001: Hurdle Model em 3 Estágios</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../docs/adr/0002-time-ordered-validation-split.html">
+ <span class="dropdown-text">ADR 0002: Split Temporal Out-of-Time</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../docs/adr/0003-tabular-gradient-boosting-vs-deep-learning.html">
+ <span class="dropdown-text">ADR 0003: Tabular Gradient Boosting vs Deep Learning</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../docs/adr/0004-browser-na-preservation-and-data-contract.html">
+ <span class="dropdown-text">ADR 0004: Preservação de N/A no Browser</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../docs/adr/0005-financial-cost-threshold-optimization.html">
+ <span class="dropdown-text">ADR 0005: Otimização de Custo Financeiro</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="../docs/05-implementation-plan.html"> 
+<span class="menu-text">Plano &amp; Testes</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/talesgomes27/credit_card_fraud_detection"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Arquitetura do Pipeline Analítico (Gate 3)</h1>
+            <p class="subtitle lead">Topologia Hurdle Model, desacoplamento em três estágios e ADRs</p>
+                      </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Autor</div>
+      <div class="quarto-title-meta-contents">
+               <p>Tales </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Data de Publicação</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">14 de outubro de 2026</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Neste Relatório</h2>
+   
+  <ul>
+  <li><a href="#topologia-geral-do-pipeline-process-analyze-share-act" id="toc-topologia-geral-do-pipeline-process-analyze-share-act" class="nav-link active" data-scroll-target="#topologia-geral-do-pipeline-process-analyze-share-act"><span class="header-section-number">1</span> 1. Topologia Geral do Pipeline (Process ➔ Analyze ➔ Share ➔ Act)</a></li>
+  <li><a href="#desenho-detalhado-da-etapa-process-saneamento-engenharia-de-atributos" id="toc-desenho-detalhado-da-etapa-process-saneamento-engenharia-de-atributos" class="nav-link" data-scroll-target="#desenho-detalhado-da-etapa-process-saneamento-engenharia-de-atributos"><span class="header-section-number">2</span> 2. Desenho Detalhado da Etapa PROCESS (Saneamento &amp; Engenharia de Atributos)</a>
+  <ul class="collapse">
+  <li><a href="#ingestão-e-saneamento" id="toc-ingestão-e-saneamento" class="nav-link" data-scroll-target="#ingestão-e-saneamento"><span class="header-section-number">2.1</span> 2.1 Ingestão e Saneamento</a></li>
+  <li><a href="#particionamento-temporal-out-of-time" id="toc-particionamento-temporal-out-of-time" class="nav-link" data-scroll-target="#particionamento-temporal-out-of-time"><span class="header-section-number">2.2</span> 2.2 Particionamento Temporal Out-of-Time</a></li>
+  <li><a href="#receitas-de-engenharia-de-features-srcfeaturespipeline.py" id="toc-receitas-de-engenharia-de-features-srcfeaturespipeline.py" class="nav-link" data-scroll-target="#receitas-de-engenharia-de-features-srcfeaturespipeline.py"><span class="header-section-number">2.3</span> 2.3 Receitas de Engenharia de Features (<code>src/features/pipeline.py</code>)</a></li>
+  </ul></li>
+  <li><a href="#desenho-detalhado-da-etapa-analyze-modelagem-e-explicabilidade" id="toc-desenho-detalhado-da-etapa-analyze-modelagem-e-explicabilidade" class="nav-link" data-scroll-target="#desenho-detalhado-da-etapa-analyze-modelagem-e-explicabilidade"><span class="header-section-number">3</span> 3. Desenho Detalhado da Etapa ANALYZE (Modelagem e Explicabilidade)</a>
+  <ul class="collapse">
+  <li><a href="#estágio-1-detecção-binária-is_fraud" id="toc-estágio-1-detecção-binária-is_fraud" class="nav-link" data-scroll-target="#estágio-1-detecção-binária-is_fraud"><span class="header-section-number">3.1</span> 3.1 Estágio 1: Detecção Binária (<code>is_fraud</code>)</a></li>
+  <li><a href="#estágio-2-tipificação-da-fraude-fraud_type" id="toc-estágio-2-tipificação-da-fraude-fraud_type" class="nav-link" data-scroll-target="#estágio-2-tipificação-da-fraude-fraud_type"><span class="header-section-number">3.2</span> 3.2 Estágio 2: Tipificação da Fraude (<code>fraud_type</code>)</a></li>
+  <li><a href="#estágio-3-quantificação-da-perda-residual-fraud_amount_lost" id="toc-estágio-3-quantificação-da-perda-residual-fraud_amount_lost" class="nav-link" data-scroll-target="#estágio-3-quantificação-da-perda-residual-fraud_amount_lost"><span class="header-section-number">3.3</span> 3.3 Estágio 3: Quantificação da Perda Residual (<code>fraud_amount_lost</code>)</a></li>
+  <li><a href="#motor-de-explicabilidade-shap" id="toc-motor-de-explicabilidade-shap" class="nav-link" data-scroll-target="#motor-de-explicabilidade-shap"><span class="header-section-number">3.4</span> 3.4 Motor de Explicabilidade SHAP</a></li>
+  </ul></li>
+  <li><a href="#desenho-detalhado-da-etapa-share-storyboard-e-padrões-quarto" id="toc-desenho-detalhado-da-etapa-share-storyboard-e-padrões-quarto" class="nav-link" data-scroll-target="#desenho-detalhado-da-etapa-share-storyboard-e-padrões-quarto"><span class="header-section-number">4</span> 4. Desenho Detalhado da Etapa SHARE (Storyboard e Padrões Quarto)</a>
+  <ul class="collapse">
+  <li><a href="#especificação-do-storyboard-visual-8-figuras" id="toc-especificação-do-storyboard-visual-8-figuras" class="nav-link" data-scroll-target="#especificação-do-storyboard-visual-8-figuras"><span class="header-section-number">4.1</span> 4.1 Especificação do Storyboard Visual (8 Figuras)</a></li>
+  <li><a href="#diretrizes-visuais-estritas" id="toc-diretrizes-visuais-estritas" class="nav-link" data-scroll-target="#diretrizes-visuais-estritas"><span class="header-section-number">4.2</span> 4.2 Diretrizes Visuais Estritas</a></li>
+  </ul></li>
+  <li><a href="#desenho-detalhado-da-etapa-act-deploy-pacotes-e-publicação" id="toc-desenho-detalhado-da-etapa-act-deploy-pacotes-e-publicação" class="nav-link" data-scroll-target="#desenho-detalhado-da-etapa-act-deploy-pacotes-e-publicação"><span class="header-section-number">5</span> 5. Desenho Detalhado da Etapa ACT (Deploy, Pacotes e Publicação)</a>
+  <ul class="collapse">
+  <li><a href="#artefatos-de-modelagem-e-serialização" id="toc-artefatos-de-modelagem-e-serialização" class="nav-link" data-scroll-target="#artefatos-de-modelagem-e-serialização"><span class="header-section-number">5.1</span> 5.1 Artefatos de Modelagem e Serialização</a></li>
+  <li><a href="#interface-de-inferência-em-lote-srcmodelspredict.py" id="toc-interface-de-inferência-em-lote-srcmodelspredict.py" class="nav-link" data-scroll-target="#interface-de-inferência-em-lote-srcmodelspredict.py"><span class="header-section-number">5.2</span> 5.2 Interface de Inferência em Lote (<code>src/models/predict.py</code>)</a></li>
+  <li><a href="#publicação-quarto-via-github-pages" id="toc-publicação-quarto-via-github-pages" class="nav-link" data-scroll-target="#publicação-quarto-via-github-pages"><span class="header-section-number">5.3</span> 5.3 Publicação Quarto via GitHub Pages</a></li>
+  </ul></li>
+  <li><a href="#conclusão-do-gate-3-e-próximos-passos" id="toc-conclusão-do-gate-3-e-próximos-passos" class="nav-link" data-scroll-target="#conclusão-do-gate-3-e-próximos-passos"><span class="header-section-number">6</span> 6. Conclusão do Gate 3 e Próximos Passos</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+
+<ul>
+<li><strong>Projeto:</strong> Detecção, Tipificação e Quantificação de Fraudes em Cartão de Crédito</li>
+<li><strong>Arquétipo:</strong> A — Data Science, Analytics &amp; Machine Learning</li>
+<li><strong>Artefato:</strong> <code>docs/03-architecture-and-schema.md</code></li>
+</ul>
+<hr>
+<section id="topologia-geral-do-pipeline-process-analyze-share-act" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="topologia-geral-do-pipeline-process-analyze-share-act"><span class="header-section-number">1</span> 1. Topologia Geral do Pipeline (Process ➔ Analyze ➔ Share ➔ Act)</h2>
+<p>O sistema foi estruturado em quatro macro-etapas sequenciais. Cada etapa possui limites de responsabilidade claros e interfaces desacopladas.</p>
+<pre class="mermaid"><code>flowchart TD
+    subgraph S1["1. Fonte &amp; Contratos"]
+        D1["credit_card_fraud_detection_2026.csv"] --&gt; L1["Loader com keep_default_na=False"]
+        L1 --&gt; V1["Validador de Contratos de Dados"]
+    end
+
+    subgraph S2["2. Etapa PROCESS"]
+        V1 --&gt; T1["Ordenação Cronológica Estável"]
+        T1 --&gt; T2["Split Temporal Out-of-Time&lt;br&gt;(Treino / Validação / Teste Cego)"]
+        T2 --&gt; FE["Pipeline de Engenharia de Features&lt;br&gt;(Fit no Treino, Transform em Val/Teste)"]
+        FE --&gt; P_Train["X_train, y_train"]
+        FE --&gt; P_Val["X_val, y_val"]
+        FE --&gt; P_Test["X_test, y_test"]
+    end
+
+    subgraph S3["3. Etapa ANALYZE (Hurdle Model)"]
+        P_Train --&gt; M1["Estágio 1: is_fraud&lt;br&gt;(LightGBM / XGBoost / Baselines)"]
+        P_Val --&gt; O1["Otimização de Limiar Financeiro t*&lt;br&gt;(PR-AUC &amp; Matriz de Custo)"]
+        M1 --&gt; O1
+        O1 --&gt; SHAP["Motor de Explicabilidade SHAP&lt;br&gt;(TreeExplainer Global &amp; Local)"]
+        
+        P_Train --&gt; M2["Estágio 2: fraud_type&lt;br&gt;(LightGBM Multiclasse Balanceado)"]
+        P_Train --&gt; M3["Estágio 3: fraud_amount_lost&lt;br&gt;(LightGBM Regressor em Fraudes)"]
+        
+        O1 --&gt; EVAL["Avaliação Congelada no Teste Cego"]
+        M2 --&gt; EVAL
+        M3 --&gt; EVAL
+    end
+
+    subgraph S4["4. Etapa SHARE &amp; ACT"]
+        EVAL --&gt; FIG["Geração de Figuras (DPI=300)&lt;br&gt;reports/figures/ (fig01 a fig08)"]
+        FIG --&gt; QMD["Relatório Quarto Executivo&lt;br&gt;(index.qmd / lang: pt-BR)"]
+        QMD --&gt; RENDER["Quarto Render&lt;br&gt;(execute: freeze: auto)"]
+        RENDER --&gt; PUB["Publicação GitHub Pages"]
+        EVAL --&gt; DUMP["Exportação de Modelos (.joblib)&lt;br&gt;models/"]
+    end</code></pre>
+<hr>
+</section>
+<section id="desenho-detalhado-da-etapa-process-saneamento-engenharia-de-atributos" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="desenho-detalhado-da-etapa-process-saneamento-engenharia-de-atributos"><span class="header-section-number">2</span> 2. Desenho Detalhado da Etapa PROCESS (Saneamento &amp; Engenharia de Atributos)</h2>
+<section id="ingestão-e-saneamento" class="level3" data-number="2.1">
+<h3 data-number="2.1" class="anchored" data-anchor-id="ingestão-e-saneamento"><span class="header-section-number">2.1</span> 2.1 Ingestão e Saneamento</h3>
+<ol type="1">
+<li><strong>Carregamento Seguro:</strong> <code>src/data/loader.py</code> consome o CSV com <code>keep_default_na=False</code>, assegurando que as 41.709 ocorrências de <code>'N/A'</code> em <code>browser</code> sejam lidas como a categoria válida <code>N/A</code> (ADR 0004).</li>
+<li><strong>Correção Cronológica:</strong> Aplicação de <code>df.sort_values(by='transaction_datetime', ascending=True)</code> para corrigir a inversão pontual de 28/02/2026.</li>
+<li><strong>Poda de Identificadores:</strong> Descarte imediato de <code>transaction_id</code> (chave sequencial) e <code>card_id</code> (100% redundante com <code>customer_id</code>).</li>
+<li><strong>Isolamento de Targets:</strong> Separação das matrizes de features <span class="math inline">\(X\)</span> e do vetor/tupla de alvos <span class="math inline">\(Y = (\text{is\_fraud}, \text{fraud\_type}, \text{fraud\_amount\_lost})\)</span> antes de qualquer transformação.</li>
+</ol>
+</section>
+<section id="particionamento-temporal-out-of-time" class="level3" data-number="2.2">
+<h3 data-number="2.2" class="anchored" data-anchor-id="particionamento-temporal-out-of-time"><span class="header-section-number">2.2</span> 2.2 Particionamento Temporal Out-of-Time</h3>
+<p>A divisão dos conjuntos é realizada cronologicamente por máscara temporal estrita (ADR 0002): - <strong>Treino:</strong> <code>transaction_datetime &lt; '2026-09-01'</code> (66.860 linhas, 1.378 fraudes). - <strong>Validação:</strong> <code>'2026-09-01' &lt;= transaction_datetime &lt; '2026-11-01'</code> (16.905 linhas, 362 fraudes). - <strong>Teste Cego:</strong> <code>transaction_datetime &gt;= '2026-11-01'</code> (16.235 linhas, 315 fraudes).</p>
+</section>
+<section id="receitas-de-engenharia-de-features-srcfeaturespipeline.py" class="level3" data-number="2.3">
+<h3 data-number="2.3" class="anchored" data-anchor-id="receitas-de-engenharia-de-features-srcfeaturespipeline.py"><span class="header-section-number">2.3</span> 2.3 Receitas de Engenharia de Features (<code>src/features/pipeline.py</code>)</h3>
+<p>Todas as transformações que dependem de parâmetros estatísticos da amostra são ajustadas (<em>fit</em>) exclusivamente sobre os dados de <strong>Treino</strong>:</p>
+<ol type="1">
+<li><strong>Features Temporais e Cíclicas:</strong>
+<ul>
+<li>Decomposição periódica da hora do dia para manter continuidade entre 23h e 00h: <span class="math display">\[\text{hour\_sin} = \sin\left(\frac{2\pi \cdot \text{hour}}{24}\right), \quad \text{hour\_cos} = \cos\left(\frac{2\pi \cdot \text{hour}}{24}\right)\]</span></li>
+<li>Flag indicadora de janela noturna crítica: <code>is_night_window = transaction_hour in [1, 2, 3, 4]</code>.</li>
+</ul></li>
+<li><strong>Dinâmica Espacial e Velocidade de Deslocamento:</strong>
+<ul>
+<li>Velocidade aparente entre transações consecutivas (<span class="math inline">\(V_{aparente}\)</span>): <span class="math display">\[V_{aparente} = \frac{\text{distance\_from\_last\_tx\_km}}{\text{days\_since\_last\_transaction} \cdot 24 + 0,1} \quad [\text{km/h}]\]</span> Saltos superiores a 500 km/h indicam impossibilidade física de deslocamento, sinal clássico de clonagem física ou comprometimento de credencial.</li>
+<li>Flag de transação em país de alto risco (<code>is_high_risk_country</code>).</li>
+</ul></li>
+<li><strong>Anomalia de Ticket e Comportamento de Gastos:</strong>
+<ul>
+<li>Z-score transacional individual relativo ao histórico de 30 dias: <span class="math display">\[Z_{\text{amount}} = \frac{\text{transaction\_amount} - \text{avg\_transaction\_amount\_30d}}{\text{std\_transaction\_amount\_30d} + 1,0}\]</span></li>
+<li>Flag de salto de valor extremo: <code>is_spike_amount = amount_vs_avg_ratio &gt;= 5.0</code>.</li>
+<li>Utilização do limite de crédito: <span class="math inline">\(\text{limit\_utilization} = \frac{\text{transaction\_amount}}{\text{credit\_limit}}\)</span>.</li>
+</ul></li>
+<li><strong>Agregações de Velocidade Recente:</strong>
+<ul>
+<li>Intensidade média monetária por evento na última hora: <span class="math display">\[\text{amount\_per\_tx\_1h} = \frac{\text{amount\_last\_1h}}{\text{transactions\_last\_1h} + 1}\]</span></li>
+<li>Razão de aceleração de curto prazo vs.&nbsp;semanal: <span class="math inline">\(\frac{\text{transactions\_last\_24h} \cdot 7}{\text{transactions\_last\_7d} + 1}\)</span>.</li>
+</ul></li>
+<li><strong>Codificação de Variáveis Categóricas:</strong>
+<ul>
+<li><strong>One-Hot Encoding:</strong> Para categorias de baixa cardinalidade (<code>customer_gender</code>, <code>transaction_channel</code>, <code>device_type</code>, <code>browser</code>, <code>email_domain</code>).</li>
+<li><strong>Target Encoding Regularizado com Suavização de Bayes:</strong> Para atributos de média/alta cardinalidade (<code>merchant_category</code>, <code>merchant_country</code>, <code>customer_state</code>), calculado com pesos restritos ao treino e suavização <span class="math inline">\(m=10\)</span> para prevenir vazamento e overfitting em categorias raras.</li>
+</ul></li>
+</ol>
+<hr>
+</section>
+</section>
+<section id="desenho-detalhado-da-etapa-analyze-modelagem-e-explicabilidade" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="desenho-detalhado-da-etapa-analyze-modelagem-e-explicabilidade"><span class="header-section-number">3</span> 3. Desenho Detalhado da Etapa ANALYZE (Modelagem e Explicabilidade)</h2>
+<p>A estratégia analítica implementa a arquitetura em três estágios (<em>Hurdle Model</em>, ADR 0001) empregando algoritmos de gradient boosting (ADR 0003).</p>
+<section id="estágio-1-detecção-binária-is_fraud" class="level3" data-number="3.1">
+<h3 data-number="3.1" class="anchored" data-anchor-id="estágio-1-detecção-binária-is_fraud"><span class="header-section-number">3.1</span> 3.1 Estágio 1: Detecção Binária (<code>is_fraud</code>)</h3>
+<ul>
+<li><strong>Objetivo:</strong> Prever a probabilidade <span class="math inline">\(p_i = P(\text{is\_fraud}_i = 1 \mid X_i)\)</span>.</li>
+<li><strong>Baselines de Comparação:</strong>
+<ol type="1">
+<li><em>Dummy Classifier:</em> Estimador estratificado pela frequência histórica (prevalência 2,05%).</li>
+<li><em>Regressão Logística Regularizada:</em> Com pesos inversos à frequência de classe (<code>class_weight='balanced'</code>).</li>
+<li><em>Balanced Random Forest:</em> Floresta com subamostragem balanceada nas folhas.</li>
+</ol></li>
+<li><strong>Modelos Principais Candidatos:</strong>
+<ol type="1">
+<li><em>LightGBM Classifier:</em> Otimizado com <code>scale_pos_weight = (97945 / 2055) \approx 47.6</code> e função de perda binária logloss.</li>
+<li><em>XGBoost Classifier:</em> Configurado com <code>scale_pos_weight</code> e subamostragem de colunas (<code>colsample_bytree</code>).</li>
+</ol></li>
+<li><strong>Protocolo de Calibração e Limiar Ótimo (<span class="math inline">\(t^*\)</span>):</strong>
+<ul>
+<li>No conjunto de <strong>Validação</strong>, varre-se o threshold <span class="math inline">\(t \in [0.01, 0.99]\)</span> calculando o custo total: <span class="math display">\[C(t) = \sum_{i \in FN(t)} \text{PerdaReal}_i + \sum_{i \in FP(t)} \$3,50\]</span></li>
+<li>O corte ótimo <span class="math inline">\(t^*\)</span> é selecionado como o ponto mínimo da curva <span class="math inline">\(C(t)\)</span> e congelado para aplicação no conjunto de Teste Cego (ADR 0005).</li>
+</ul></li>
+<li><strong>Métricas:</strong> PR-AUC (primária), F1 ótimo, ROC-AUC, Precisão, Recall e Economia Líquida ($).</li>
+</ul>
+</section>
+<section id="estágio-2-tipificação-da-fraude-fraud_type" class="level3" data-number="3.2">
+<h3 data-number="3.2" class="anchored" data-anchor-id="estágio-2-tipificação-da-fraude-fraud_type"><span class="header-section-number">3.2</span> 3.2 Estágio 2: Tipificação da Fraude (<code>fraud_type</code>)</h3>
+<ul>
+<li><strong>Objetivo:</strong> Classificar a transação fraudulenta entre as 4 modalidades ativas:
+<ul>
+<li><code>Card-Not-Present</code> (51,3% das fraudes)</li>
+<li><code>Account-Takeover</code> (21,8% das fraudes)</li>
+<li><code>Synthetic-Identity</code> (15,0% das fraudes)</li>
+<li><code>Card-Present</code> (11,9% das fraudes)</li>
+</ul></li>
+<li><strong>Modelagem:</strong>
+<ul>
+<li><em>LightGBM Multiclass:</em> Com objetivo <code>multiclass</code>, 4 classes de saída e pesos balanceados calculados pelo inverso da prevalência de cada subtipo no treino.</li>
+<li>Features de maior relevância esperada: canal digital, browser, uso de chip/PIN, salto geográfico (<code>distance_from_last_tx_km</code>) e idade da conta (<code>account_age_days</code>).</li>
+</ul></li>
+<li><strong>Métricas:</strong> Macro F1-Score (primária), Balanced Accuracy e Matriz de Confusão com percentuais por linha.</li>
+</ul>
+</section>
+<section id="estágio-3-quantificação-da-perda-residual-fraud_amount_lost" class="level3" data-number="3.3">
+<h3 data-number="3.3" class="anchored" data-anchor-id="estágio-3-quantificação-da-perda-residual-fraud_amount_lost"><span class="header-section-number">3.3</span> 3.3 Estágio 3: Quantificação da Perda Residual (<code>fraud_amount_lost</code>)</h3>
+<ul>
+<li><strong>Objetivo:</strong> Para transações confirmadas como fraude, estimar o prejuízo em dólares pós-recuperação parcial.</li>
+<li><strong>Modelagem Condicional:</strong>
+<ul>
+<li>Treinado estritamente sobre as instâncias de Treino onde <span class="math inline">\(\text{is\_fraud} == 1\)</span> (<span class="math inline">\(N \approx 1.378\)</span> transações).</li>
+<li>Algoritmo: <em>LightGBM Regressor</em> com função de perda Huber (resistente a outliers na cauda longa) comparado a <em>Ridge Regression</em> como baseline.</li>
+</ul></li>
+<li><strong>Métricas:</strong> RMSE (primária), MAE e <span class="math inline">\(R^2\)</span> condicional sobre as fraudes do Teste Cego.</li>
+</ul>
+</section>
+<section id="motor-de-explicabilidade-shap" class="level3" data-number="3.4">
+<h3 data-number="3.4" class="anchored" data-anchor-id="motor-de-explicabilidade-shap"><span class="header-section-number">3.4</span> 3.4 Motor de Explicabilidade SHAP</h3>
+<ul>
+<li>Para o modelo campeão do Estágio 1, instancia-se o <code>shap.TreeExplainer</code>.</li>
+<li><strong>Análise Global:</strong> Cálculo dos valores médios absolutos de SHAP (<span class="math inline">\(\frac{1}{N}\sum |\phi_j|\)</span>) para ordenar as 15 variáveis mais determinantes para o risco de fraude.</li>
+<li><strong>Análise Local:</strong> Geração de <em>Waterfall Plots</em> para transações de teste contrastantes:
+<ol type="1">
+<li><em>Verdadeiro Positivo Crítico:</em> Transação noturna em país de risco com disparo de velocidade bloqueada com sucesso.</li>
+<li><em>Falso Positivo Notável:</em> Transação legítima que acionou alerta de atrito (para auditoria de regras de negócio).</li>
+</ol></li>
+</ul>
+<hr>
+</section>
+</section>
+<section id="desenho-detalhado-da-etapa-share-storyboard-e-padrões-quarto" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="desenho-detalhado-da-etapa-share-storyboard-e-padrões-quarto"><span class="header-section-number">4</span> 4. Desenho Detalhado da Etapa SHARE (Storyboard e Padrões Quarto)</h2>
+<p>Conforme as diretrizes do Quarto Quality Checklist, o relatório é estruturado em Quarto (<code>index.qmd</code>) com metadados em português (<code>lang: pt-BR</code>), <code>execute: freeze: auto</code> e figuras padronizadas.</p>
+<section id="especificação-do-storyboard-visual-8-figuras" class="level3" data-number="4.1">
+<h3 data-number="4.1" class="anchored" data-anchor-id="especificação-do-storyboard-visual-8-figuras"><span class="header-section-number">4.1</span> 4.1 Especificação do Storyboard Visual (8 Figuras)</h3>
+<pre><code>Painel de Figuras do Relatório:
+┌───────────────────────────────┐ ┌───────────────────────────────┐
+│ fig01: Horário x Fraude (P1)  │ │ fig02: País x Risco (P2)      │
+│ Barras volume + linha risco   │ │ Barras horizontais + baseline │
+└───────────────────────────────┘ └───────────────────────────────┘
+┌───────────────────────────────┐ ┌───────────────────────────────┐
+│ fig03: Chip/PIN x Canal (P3)  │ │ fig04: Painel Duplo 1x2 (P4)  │
+│ Comparativo de autenticação   │ │ Velocidade (a) | Ticket (b)   │
+└───────────────────────────────┘ └───────────────────────────────┘
+┌───────────────────────────────┐ ┌───────────────────────────────┐
+│ fig05: Painel Duplo 1x2 (P5)  │ │ fig06: SHAP Beeswarm (P6)     │
+│ PR Curve (a) | Custo Total (b)│ │ Top 15 features de risco      │
+└───────────────────────────────┘ └───────────────────────────────┘
+┌───────────────────────────────┐ ┌───────────────────────────────┐
+│ fig07: Matriz Confusão (P7)   │ │ fig08: Resíduos Perda (P8)    │
+│ Acerto por tipo de fraude     │ │ Real vs Previsto ($) log scale│
+└───────────────────────────────┘ └───────────────────────────────┘</code></pre>
+<ol type="1">
+<li><strong><code>fig01_hourly_fraud_risk</code>:</strong> Eixo duplo combinando volume absoluto de transações (barras cinza sutis) e taxa de fraude (%) em linha vermelha com preenchimento sombreado na faixa de 01h–04h e callout de 4,15x.</li>
+<li><strong><code>fig02_country_risk_multiplier</code>:</strong> Barras horizontais ordenadas por taxa de fraude por país com linha vertical de referência tracejada no baseline (2,05%) e destaque cromático no quarteto de risco.</li>
+<li><strong><code>fig03_authentication_shield</code>:</strong> Barras agrupadas comparando taxas de fraude em compras presenciais vs digitais, segmentadas por presença de Chip EMV e senha PIN.</li>
+<li><strong><code>fig04_velocity_amount_anomaly</code>:</strong> Painel <code>1x2</code> nivelado com proporções quadradas idênticas (<code>set_box_aspect(1)</code>):
+<ul>
+<li>Subfigura <code>(a)</code>: Curva de taxa de fraude por quantidade de compras na última hora (<code>transactions_last_1h</code>).</li>
+<li>Subfigura <code>(b)</code>: Curva de taxa de fraude por razão de valor (<code>amount_vs_avg_ratio</code>).</li>
+</ul></li>
+<li><strong><code>fig05_model_performance_cost</code>:</strong> Painel <code>1x2</code> nivelado:
+<ul>
+<li>Subfigura <code>(a)</code>: Curva Precision-Recall comparativa (Baselines vs LightGBM vs XGBoost) com linha do baseline aleatório (2,05%) e marcador no ponto de corte ótimo <span class="math inline">\(t^*\)</span>.</li>
+<li>Subfigura <code>(b)</code>: Curva de Custo Financeiro Total ($) em função do threshold com indicação do ponto de custo mínimo <span class="math inline">\(t^*\)</span>.</li>
+</ul></li>
+<li><strong><code>fig06_shap_explainability</code>:</strong> Gráfico <em>beeswarm</em> SHAP das 15 variáveis mais relevantes pelo ganho marginal, demonstrando direção de impacto e densidade de amostras.</li>
+<li><strong><code>fig07_multiclass_confusion_matrix</code>:</strong> Matriz de confusão normalizada por linha para as 4 classes de fraude, com anotações em cada célula e paleta suave.</li>
+<li><strong><code>fig08_fraud_amount_residuals</code>:</strong> Gráfico de dispersão de Dano Real vs Previsto ($ USD) em escala logarítmica com linha de identidade <span class="math inline">\(y=x\)</span> e histograma marginal de resíduos.</li>
+</ol>
+</section>
+<section id="diretrizes-visuais-estritas" class="level3" data-number="4.2">
+<h3 data-number="4.2" class="anchored" data-anchor-id="diretrizes-visuais-estritas"><span class="header-section-number">4.2</span> 4.2 Diretrizes Visuais Estritas</h3>
+<ul>
+<li>Sem bordas superior e direita: execução obrigatória de <code>sns.despine()</code>.</li>
+<li>Grade de apoio suave: <code>plt.grid(alpha=0.25, linestyle='--')</code>.</li>
+<li>Tipografia limpa com tamanhos proporcionais (título: 12pt negrito, eixos: 10pt, anotações: 9pt).</li>
+<li>Exportação em alta resolução a 300 DPI em <code>reports/figures/</code> antes da renderização do Quarto.</li>
+</ul>
+<hr>
+</section>
+</section>
+<section id="desenho-detalhado-da-etapa-act-deploy-pacotes-e-publicação" class="level2" data-number="5">
+<h2 data-number="5" class="anchored" data-anchor-id="desenho-detalhado-da-etapa-act-deploy-pacotes-e-publicação"><span class="header-section-number">5</span> 5. Desenho Detalhado da Etapa ACT (Deploy, Pacotes e Publicação)</h2>
+<section id="artefatos-de-modelagem-e-serialização" class="level3" data-number="5.1">
+<h3 data-number="5.1" class="anchored" data-anchor-id="artefatos-de-modelagem-e-serialização"><span class="header-section-number">5.1</span> 5.1 Artefatos de Modelagem e Serialização</h3>
+<ul>
+<li>Os modelos finais treinados serão serializados via <code>joblib</code> no diretório <code>models/</code>:
+<ul>
+<li><code>stage1_is_fraud_lightgbm.joblib</code> (incluindo o threshold ótimo <span class="math inline">\(t^*\)</span>).</li>
+<li><code>stage2_fraud_type_lightgbm.joblib</code> (com mapeamento de rótulos).</li>
+<li><code>stage3_amount_regressor_lightgbm.joblib</code>.</li>
+<li><code>preprocessor_pipeline.joblib</code> (objeto Scikit-Learn completo com encodings e scalers ajustados no Treino).</li>
+</ul></li>
+</ul>
+</section>
+<section id="interface-de-inferência-em-lote-srcmodelspredict.py" class="level3" data-number="5.2">
+<h3 data-number="5.2" class="anchored" data-anchor-id="interface-de-inferência-em-lote-srcmodelspredict.py"><span class="header-section-number">5.2</span> 5.2 Interface de Inferência em Lote (<code>src/models/predict.py</code>)</h3>
+<ul>
+<li><p>Fornece a classe unificada <code>FraudDetectionHurdlePipeline</code> com método:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> predict_transactions(<span class="va">self</span>, df_raw: pd.DataFrame) <span class="op">-&gt;</span> pd.DataFrame:</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co">    Aplica validação de contrato, engenharia de features e escoragem nos 3 estágios.</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co">    Retorna DataFrame enriquecido com:</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co">    - fraud_probability (float)</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co">    - is_fraud_predicted (0 ou 1, via threshold ótimo t*)</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co">    - predicted_fraud_type (Legitimate se is_fraud=0, senão predição do Estágio 2)</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="co">    - predicted_amount_lost (0.0 se is_fraud=0, senão predição do Estágio 3)</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div></li>
+</ul>
+</section>
+<section id="publicação-quarto-via-github-pages" class="level3" data-number="5.3">
+<h3 data-number="5.3" class="anchored" data-anchor-id="publicação-quarto-via-github-pages"><span class="header-section-number">5.3</span> 5.3 Publicação Quarto via GitHub Pages</h3>
+<ul>
+<li>O arquivo de configuração <code>_quarto.yml</code> configurará a saída diretamente para a pasta de publicação estática do GitHub Pages (<code>output-dir: docs_site</code> ou workflow no GitHub Actions com renderização congelada).</li>
+<li>Configuração de cache com <code>execute: freeze: auto</code> para garantir que builds não reexecutem modelos desnecessariamente.</li>
+</ul>
+<hr>
+</section>
+</section>
+<section id="conclusão-do-gate-3-e-próximos-passos" class="level2" data-number="6">
+<h2 data-number="6" class="anchored" data-anchor-id="conclusão-do-gate-3-e-próximos-passos"><span class="header-section-number">6</span> 6. Conclusão do Gate 3 e Próximos Passos</h2>
+<p>A topologia do sistema, as decisões arquiteturais fundamentadas em ADRs e o plano visual detalhado asseguram um fluxo previsível e desacoplado. Com a aprovação deste documento, o projeto estará habilitado para o <strong>Gate 4: Scaffolding, Estrutura de Pastas e Convenções</strong>, no qual instanciaremos a estrutura física de diretórios, configurações de ambiente (<code>uv</code>, <code>pyproject.toml</code>, <code>_quarto.yml</code>) e o guia <code>AGENTS.md</code>.</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copiada");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copiada");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/talesgomes27\.github\.io\/credit_card_fraud_detection");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+<script src="../site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>

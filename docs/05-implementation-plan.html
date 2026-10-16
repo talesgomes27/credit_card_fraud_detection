@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="pt-BR" xml:lang="pt-BR"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Tales">
+
+<title>Plano de Implementação e Testes (Gate 5) – Detecção e Prevenção de Fraudes em Cartões de Crédito</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-515660fabfa64519d5b0c404a8346fd4.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "Nenhum resultado",
+    "search-matching-documents-text": "documentos correspondentes",
+    "search-copy-link-title": "Copiar link para a busca",
+    "search-hide-matches-text": "Esconder correspondências adicionais",
+    "search-more-match-text": "mais correspondência neste documento",
+    "search-more-matches-text": "mais correspondências neste documento",
+    "search-clear-button-title": "Limpar",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancelar",
+    "search-submit-button-title": "Enviar",
+    "search-label": "Procurar"
+  }
+}</script>
+<style>html{ scroll-behavior: smooth; }</style>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Detecção e Prevenção de Fraudes em Cartões de Crédito</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Procurar"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Alternar de navegação" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html"> 
+<span class="menu-text">Relatório Executivo</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../docs/01-data-discovery-and-contracts.html"> 
+<span class="menu-text">Contratos de Dados</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../docs/02-PRD-and-specs.html"> 
+<span class="menu-text">PRD &amp; Especificações</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-arquitetura--engenharia" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Arquitetura &amp; Engenharia</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-arquitetura--engenharia">    
+        <li>
+    <a class="dropdown-item" href="../docs/03-architecture-and-schema.html">
+ <span class="dropdown-text">Topologia &amp; Esquema</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../docs/04-scaffolding-and-conventions.html">
+ <span class="dropdown-text">Convenções &amp; Scaffolding</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../docs/00_archetype.html">
+ <span class="dropdown-text">Metadados do Arquétipo</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-decisões-de-arquitetura-(adrs" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Decisões de Arquitetura (ADRs)</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-decisões-de-arquitetura-(adrs">    
+        <li>
+    <a class="dropdown-item" href="../docs/adr/0001-hurdle-three-stage-architecture.html">
+ <span class="dropdown-text">ADR 0001: Hurdle Model em 3 Estágios</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../docs/adr/0002-time-ordered-validation-split.html">
+ <span class="dropdown-text">ADR 0002: Split Temporal Out-of-Time</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../docs/adr/0003-tabular-gradient-boosting-vs-deep-learning.html">
+ <span class="dropdown-text">ADR 0003: Tabular Gradient Boosting vs Deep Learning</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../docs/adr/0004-browser-na-preservation-and-data-contract.html">
+ <span class="dropdown-text">ADR 0004: Preservação de N/A no Browser</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../docs/adr/0005-financial-cost-threshold-optimization.html">
+ <span class="dropdown-text">ADR 0005: Otimização de Custo Financeiro</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link active" href="../docs/05-implementation-plan.html" aria-current="page"> 
+<span class="menu-text">Plano &amp; Testes</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/talesgomes27/credit_card_fraud_detection"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Plano de Implementação e Testes (Gate 5)</h1>
+            <p class="subtitle lead">Sequência TDD atômica em 10 tarefas, matriz de testes e comandos de validação</p>
+                      </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Autor</div>
+      <div class="quarto-title-meta-contents">
+               <p>Tales </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Data de Publicação</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">14 de outubro de 2026</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Neste Relatório</h2>
+   
+  <ul>
+  <li><a href="#grafo-de-precedência-técnica" id="toc-grafo-de-precedência-técnica" class="nav-link active" data-scroll-target="#grafo-de-precedência-técnica"><span class="header-section-number">1</span> 1. Grafo de Precedência Técnica</a></li>
+  <li><a href="#checklist-atômico-de-tarefas-e-ciclos-tdd" id="toc-checklist-atômico-de-tarefas-e-ciclos-tdd" class="nav-link" data-scroll-target="#checklist-atômico-de-tarefas-e-ciclos-tdd"><span class="header-section-number">2</span> 2. Checklist Atômico de Tarefas e Ciclos TDD</a>
+  <ul class="collapse">
+  <li><a href="#tarefa-01-ingestão-segura-saneamento-e-validação-de-contratos" id="toc-tarefa-01-ingestão-segura-saneamento-e-validação-de-contratos" class="nav-link" data-scroll-target="#tarefa-01-ingestão-segura-saneamento-e-validação-de-contratos"><span class="header-section-number">2.1</span> Tarefa 01: Ingestão Segura, Saneamento e Validação de Contratos</a></li>
+  <li><a href="#tarefa-02-particionamento-temporal-out-of-time" id="toc-tarefa-02-particionamento-temporal-out-of-time" class="nav-link" data-scroll-target="#tarefa-02-particionamento-temporal-out-of-time"><span class="header-section-number">2.2</span> Tarefa 02: Particionamento Temporal Out-of-Time</a></li>
+  <li><a href="#tarefa-03-pipeline-de-engenharia-de-features" id="toc-tarefa-03-pipeline-de-engenharia-de-features" class="nav-link" data-scroll-target="#tarefa-03-pipeline-de-engenharia-de-features"><span class="header-section-number">2.3</span> Tarefa 03: Pipeline de Engenharia de Features</a></li>
+  <li><a href="#tarefa-04-estágio-1-classificador-binário-e-otimização-de-custo" id="toc-tarefa-04-estágio-1-classificador-binário-e-otimização-de-custo" class="nav-link" data-scroll-target="#tarefa-04-estágio-1-classificador-binário-e-otimização-de-custo"><span class="header-section-number">2.4</span> Tarefa 04: Estágio 1 — Classificador Binário e Otimização de Custo</a></li>
+  <li><a href="#tarefa-05-estágio-2-classificador-multiclasse-de-tipos-de-fraude" id="toc-tarefa-05-estágio-2-classificador-multiclasse-de-tipos-de-fraude" class="nav-link" data-scroll-target="#tarefa-05-estágio-2-classificador-multiclasse-de-tipos-de-fraude"><span class="header-section-number">2.5</span> Tarefa 05: Estágio 2 — Classificador Multiclasse de Tipos de Fraude</a></li>
+  <li><a href="#tarefa-06-estágio-3-regressor-condicional-de-perda-financeira" id="toc-tarefa-06-estágio-3-regressor-condicional-de-perda-financeira" class="nav-link" data-scroll-target="#tarefa-06-estágio-3-regressor-condicional-de-perda-financeira"><span class="header-section-number">2.6</span> Tarefa 06: Estágio 3 — Regressor Condicional de Perda Financeira</a></li>
+  <li><a href="#tarefa-07-orquestrador-do-hurdle-model-end-to-end-pipeline" id="toc-tarefa-07-orquestrador-do-hurdle-model-end-to-end-pipeline" class="nav-link" data-scroll-target="#tarefa-07-orquestrador-do-hurdle-model-end-to-end-pipeline"><span class="header-section-number">2.7</span> Tarefa 07: Orquestrador do Hurdle Model (End-to-End Pipeline)</a></li>
+  <li><a href="#tarefa-08-motor-de-explicabilidade-shap" id="toc-tarefa-08-motor-de-explicabilidade-shap" class="nav-link" data-scroll-target="#tarefa-08-motor-de-explicabilidade-shap"><span class="header-section-number">2.8</span> Tarefa 08: Motor de Explicabilidade SHAP</a></li>
+  <li><a href="#tarefa-09-storytelling-visual-e-geração-das-8-figuras" id="toc-tarefa-09-storytelling-visual-e-geração-das-8-figuras" class="nav-link" data-scroll-target="#tarefa-09-storytelling-visual-e-geração-das-8-figuras"><span class="header-section-number">2.9</span> Tarefa 09: Storytelling Visual e Geração das 8 Figuras</a></li>
+  <li><a href="#tarefa-10-integração-do-relatório-quarto-e-publicação" id="toc-tarefa-10-integração-do-relatório-quarto-e-publicação" class="nav-link" data-scroll-target="#tarefa-10-integração-do-relatório-quarto-e-publicação"><span class="header-section-number">2.10</span> Tarefa 10: Integração do Relatório Quarto e Publicação</a></li>
+  </ul></li>
+  <li><a href="#comandos-padronizados-de-verificação-automatizada" id="toc-comandos-padronizados-de-verificação-automatizada" class="nav-link" data-scroll-target="#comandos-padronizados-de-verificação-automatizada"><span class="header-section-number">3</span> 3. Comandos Padronizados de Verificação Automatizada</a></li>
+  <li><a href="#critério-de-parada-e-liberação-para-código" id="toc-critério-de-parada-e-liberação-para-código" class="nav-link" data-scroll-target="#critério-de-parada-e-liberação-para-código"><span class="header-section-number">4</span> 4. Critério de Parada e Liberação para Código</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+
+<blockquote class="blockquote">
+<p><strong>Regra de Execução:</strong> Este plano atômico define a sequência estrita de implementação orientada por testes (TDD). Nenhuma etapa subsequente pode ser iniciada antes que os testes unitários da etapa anterior passem com 100% de sucesso.</p>
+</blockquote>
+<ul>
+<li><strong>Objetivo:</strong> Construir, validar e reportar o pipeline analítico de detecção de fraudes em cartão de crédito utilizando a arquitetura Hurdle Model em três estágios, calibragem financeira de corte, explicabilidade SHAP e publicação de relatório executivo em Quarto.</li>
+<li><strong>Arquitetura:</strong> Ingestão contratualizada ➔ Split temporal out-of-time ➔ Feature engineering com fit restrito ao treino ➔ Estágio 1 (Binário LightGBM/XGBoost + Threshold Custo) ➔ Estágio 2 (Multiclasse LightGBM 4 classes) ➔ Estágio 3 (Regressão Huber em Fraudes) ➔ SHAP TreeExplainer ➔ Geração das 8 figuras ➔ Quarto Render (<code>docs_site/</code>).</li>
+<li><strong>Stack:</strong> Python 3.12+, Pandas, NumPy, Scikit-Learn, LightGBM, XGBoost, SHAP, Matplotlib, Seaborn, Pytest, Ruff e Quarto.</li>
+</ul>
+<hr>
+<section id="grafo-de-precedência-técnica" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="grafo-de-precedência-técnica"><span class="header-section-number">1</span> 1. Grafo de Precedência Técnica</h2>
+<pre class="mermaid"><code>flowchart TD
+    T01["Tarefa 01: Contratos e Loader&lt;br&gt;(src/data/loader.py)"] --&gt; T02["Tarefa 02: Splitter Temporal&lt;br&gt;(src/data/splitter.py)"]
+    T02 --&gt; T03["Tarefa 03: Feature Engineering&lt;br&gt;(src/features/pipeline.py)"]
+    
+    T03 --&gt; T04["Tarefa 04: Estágio 1 - Binário&lt;br&gt;(src/models/stage1_binary.py)"]
+    T03 --&gt; T05["Tarefa 05: Estágio 2 - Multiclasse&lt;br&gt;(src/models/stage2_multiclass.py)"]
+    T03 --&gt; T06["Tarefa 06: Estágio 3 - Regressão&lt;br&gt;(src/models/stage3_regressor.py)"]
+    
+    T04 --&gt; T07["Tarefa 07: Orquestrador Hurdle&lt;br&gt;(src/models/predict.py)"]
+    T05 --&gt; T07
+    T06 --&gt; T07
+    
+    T04 --&gt; T08["Tarefa 08: Explicabilidade SHAP&lt;br&gt;(src/models/explainability.py)"]
+    
+    T02 --&gt; T09["Tarefa 09: Storytelling &amp; Figuras&lt;br&gt;(src/visualization/figures.py)"]
+    T04 --&gt; T09
+    T05 --&gt; T09
+    T06 --&gt; T09
+    T08 --&gt; T09
+    
+    T09 --&gt; T10["Tarefa 10: Relatório Quarto &amp; Render&lt;br&gt;(index.qmd ➔ docs_site/)"]</code></pre>
+<hr>
+</section>
+<section id="checklist-atômico-de-tarefas-e-ciclos-tdd" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="checklist-atômico-de-tarefas-e-ciclos-tdd"><span class="header-section-number">2</span> 2. Checklist Atômico de Tarefas e Ciclos TDD</h2>
+<section id="tarefa-01-ingestão-segura-saneamento-e-validação-de-contratos" class="level3" data-number="2.1">
+<h3 data-number="2.1" class="anchored" data-anchor-id="tarefa-01-ingestão-segura-saneamento-e-validação-de-contratos"><span class="header-section-number">2.1</span> Tarefa 01: Ingestão Segura, Saneamento e Validação de Contratos</h3>
+<ul>
+<li><strong>Arquivos:</strong>
+<ul>
+<li>Código: <code>src/data/loader.py</code></li>
+<li>Teste: <code>tests/data/test_loader.py</code></li>
+</ul></li>
+<li><strong>Responsabilidades:</strong>
+<ol type="1">
+<li>Carregar <code>credit_card_fraud_detection_2026.csv</code> com <code>keep_default_na=False</code>, assegurando que <code>browser == 'N/A'</code> não se converta em <code>NaN</code> (ADR 0004).</li>
+<li>Ordenar cronologicamente por <code>transaction_datetime</code> crescente (sanando a inversão de 28/02).</li>
+<li>Descartar as colunas redundantes <code>transaction_id</code> e <code>card_id</code>.</li>
+<li>Validar os contratos de dados estipulados no Gate 1 (100.000 linhas, 41 colunas resultantes, 0 nulos).</li>
+</ol></li>
+<li><strong>Ciclo TDD:</strong>
+<ul>
+<li><em>Red:</em> Criar <code>tests/data/test_loader.py</code> com testes para conferência de shape, ausência de nulos na coluna <code>browser</code> e ordenação estrita de datetime.</li>
+<li><em>Green:</em> Implementar <code>load_clean_data(filepath: str) -&gt; pd.DataFrame</code> em <code>src/data/loader.py</code>.</li>
+<li><em>Comando de Validação:</em> <code>pytest tests/data/test_loader.py -v</code></li>
+</ul></li>
+</ul>
+<hr>
+</section>
+<section id="tarefa-02-particionamento-temporal-out-of-time" class="level3" data-number="2.2">
+<h3 data-number="2.2" class="anchored" data-anchor-id="tarefa-02-particionamento-temporal-out-of-time"><span class="header-section-number">2.2</span> Tarefa 02: Particionamento Temporal Out-of-Time</h3>
+<ul>
+<li><strong>Arquivos:</strong>
+<ul>
+<li>Código: <code>src/data/splitter.py</code></li>
+<li>Teste: <code>tests/data/test_splitter.py</code></li>
+</ul></li>
+<li><strong>Responsabilidades:</strong>
+<ol type="1">
+<li>Dividir a base ordenada por máscaras temporais estritas (ADR 0002):
+<ul>
+<li>Treino: <code>datetime &lt; '2026-09-01'</code> (~66.860 linhas).</li>
+<li>Validação: <code>'2026-09-01' &lt;= datetime &lt; '2026-11-01'</code> (~16.905 linhas).</li>
+<li>Teste Cego: <code>datetime &gt;= '2026-11-01'</code> (~16.235 linhas).</li>
+</ul></li>
+<li>Garantir isolamento dos alvos (<span class="math inline">\(X\)</span> separado de <span class="math inline">\(y_{bin}\)</span>, <span class="math inline">\(y_{multi}\)</span>, <span class="math inline">\(y_{reg}\)</span>).</li>
+</ol></li>
+<li><strong>Ciclo TDD:</strong>
+<ul>
+<li><em>Red:</em> Escrever teste em <code>tests/data/test_splitter.py</code> verificando limites de data de cada conjunto, integridade de tamanho e ausência de interseção temporal.</li>
+<li><em>Green:</em> Implementar <code>time_ordered_split(df: pd.DataFrame)</code> retornando <code>DataSplits(X_train, y_train, X_val, y_val, X_test, y_test)</code>.</li>
+<li><em>Comando de Validação:</em> <code>pytest tests/data/test_splitter.py -v</code></li>
+</ul></li>
+</ul>
+<hr>
+</section>
+<section id="tarefa-03-pipeline-de-engenharia-de-features" class="level3" data-number="2.3">
+<h3 data-number="2.3" class="anchored" data-anchor-id="tarefa-03-pipeline-de-engenharia-de-features"><span class="header-section-number">2.3</span> Tarefa 03: Pipeline de Engenharia de Features</h3>
+<ul>
+<li><strong>Arquivos:</strong>
+<ul>
+<li>Código: <code>src/features/pipeline.py</code></li>
+<li>Teste: <code>tests/features/test_pipeline.py</code></li>
+</ul></li>
+<li><strong>Responsabilidades:</strong>
+<ol type="1">
+<li>Transformações Cíclicas: <span class="math inline">\(\sin(2\pi \cdot \text{hour}/24)\)</span> e <span class="math inline">\(\cos(2\pi \cdot \text{hour}/24)\)</span>.</li>
+<li>Dinâmica Espacial: velocidade aparente <span class="math inline">\(V_{aparente} = \frac{\text{distance\_from\_last\_tx\_km}}{\text{days\_since\_last\_tx} \cdot 24 + 0,1}\)</span> e flag de salto <span class="math inline">\(&gt;500\)</span> km/h.</li>
+<li>Desvio de Gastos: z-score do valor da transação e ratio <span class="math inline">\(amount\_vs\_avg\_ratio \ge 5.0\)</span>.</li>
+<li>Encoders: OneHotEncoder para categorias nominais baixas e TargetEncoder regularizado (fit exclusivo no Treino) para categorias de alta cardinalidade (<code>merchant_category</code>, <code>merchant_country</code>, <code>customer_state</code>).</li>
+</ol></li>
+<li><strong>Ciclo TDD:</strong>
+<ul>
+<li><em>Red:</em> Escrever teste em <code>tests/features/test_pipeline.py</code> validando que <code>.fit()</code> no treino e <code>.transform()</code> na validação produzem número idêntico de colunas sem valores nulos.</li>
+<li><em>Green:</em> Implementar <code>build_feature_pipeline() -&gt; ColumnTransformer</code> em <code>src/features/pipeline.py</code>.</li>
+<li><em>Comando de Validação:</em> <code>pytest tests/features/test_pipeline.py -v</code></li>
+</ul></li>
+</ul>
+<hr>
+</section>
+<section id="tarefa-04-estágio-1-classificador-binário-e-otimização-de-custo" class="level3" data-number="2.4">
+<h3 data-number="2.4" class="anchored" data-anchor-id="tarefa-04-estágio-1-classificador-binário-e-otimização-de-custo"><span class="header-section-number">2.4</span> Tarefa 04: Estágio 1 — Classificador Binário e Otimização de Custo</h3>
+<ul>
+<li><strong>Arquivos:</strong>
+<ul>
+<li>Código: <code>src/models/stage1_binary.py</code></li>
+<li>Teste: <code>tests/models/test_stage1_binary.py</code></li>
+</ul></li>
+<li><strong>Responsabilidades:</strong>
+<ol type="1">
+<li>Treinar baselines (Dummy Classifier, Regressão Logística ponderada) e modelos candidatos (LightGBM com <code>scale_pos_weight</code>, XGBoost).</li>
+<li>Avaliar PR-AUC primário e ROC-AUC secundário na Validação.</li>
+<li>Implementar a função de custo financeiro: <span class="math display">\[C(t) = \sum_{FN} \text{PerdaReal}_i + \sum_{FP} \$3,50\]</span></li>
+<li>Determinar o threshold de probabilidade ótimo <span class="math inline">\(t^*\)</span> que minimiza <span class="math inline">\(C(t)\)</span> na Validação e congelá-lo.</li>
+</ol></li>
+<li><strong>Ciclo TDD:</strong>
+<ul>
+<li><em>Red:</em> Testar que o estimador treinado atinge PR-AUC <span class="math inline">\(\ge 0,75\)</span> na validação e que o threshold ótimo <span class="math inline">\(t^*\)</span> está compreendido no intervalo <span class="math inline">\((0.05, 0.60)\)</span>.</li>
+<li><em>Green:</em> Implementar <code>train_stage1_binary(X_train, y_train, X_val, y_val)</code> retornando o modelo ajustado, métricas e <span class="math inline">\(t^*\)</span>.</li>
+<li><em>Comando de Validação:</em> <code>pytest tests/models/test_stage1_binary.py -v</code></li>
+</ul></li>
+</ul>
+<hr>
+</section>
+<section id="tarefa-05-estágio-2-classificador-multiclasse-de-tipos-de-fraude" class="level3" data-number="2.5">
+<h3 data-number="2.5" class="anchored" data-anchor-id="tarefa-05-estágio-2-classificador-multiclasse-de-tipos-de-fraude"><span class="header-section-number">2.5</span> Tarefa 05: Estágio 2 — Classificador Multiclasse de Tipos de Fraude</h3>
+<ul>
+<li><strong>Arquivos:</strong>
+<ul>
+<li>Código: <code>src/models/stage2_multiclass.py</code></li>
+<li>Teste: <code>tests/models/test_stage2_multiclass.py</code></li>
+</ul></li>
+<li><strong>Responsabilidades:</strong>
+<ol type="1">
+<li>Filtrar transações fraudulentas (<code>is_fraud == 1</code>) ou treinar classificador com as 4 modalidades de fraude (<code>Card-Not-Present</code>, <code>Account-Takeover</code>, <code>Synthetic-Identity</code>, <code>Card-Present</code>).</li>
+<li>Aplicar pesos balanceados inversos à frequência de cada classe.</li>
+<li>Medir Macro F1-Score e Balanced Accuracy.</li>
+</ol></li>
+<li><strong>Ciclo TDD:</strong>
+<ul>
+<li><em>Red:</em> Testar que o classificador retorna previsões das 4 classes de fraude e obtém Macro F1 <span class="math inline">\(\ge 0,65\)</span> na validação.</li>
+<li><em>Green:</em> Implementar <code>train_stage2_multiclass(X_train_fraud, y_train_fraud, X_val_fraud, y_val_fraud)</code>.</li>
+<li><em>Comando de Validação:</em> <code>pytest tests/models/test_stage2_multiclass.py -v</code></li>
+</ul></li>
+</ul>
+<hr>
+</section>
+<section id="tarefa-06-estágio-3-regressor-condicional-de-perda-financeira" class="level3" data-number="2.6">
+<h3 data-number="2.6" class="anchored" data-anchor-id="tarefa-06-estágio-3-regressor-condicional-de-perda-financeira"><span class="header-section-number">2.6</span> Tarefa 06: Estágio 3 — Regressor Condicional de Perda Financeira</h3>
+<ul>
+<li><strong>Arquivos:</strong>
+<ul>
+<li>Código: <code>src/models/stage3_regressor.py</code></li>
+<li>Teste: <code>tests/models/test_stage3_regressor.py</code></li>
+</ul></li>
+<li><strong>Responsabilidades:</strong>
+<ol type="1">
+<li>Treinar regressor estritamente sobre fraudes confirmadas do Treino para estimar <code>fraud_amount_lost</code>.</li>
+<li>Utilizar LightGBM Regressor com função de perda Huber (resistente a outliers na cauda longa) e comparar com baseline Ridge.</li>
+<li>Avaliar RMSE e MAE.</li>
+</ol></li>
+<li><strong>Ciclo TDD:</strong>
+<ul>
+<li><em>Red:</em> Testar que as predições de perda são estritamente não-negativas e que o RMSE condicional situa-se entre $45 e $75.</li>
+<li><em>Green:</em> Implementar <code>train_stage3_regressor(X_train_fraud, y_train_fraud, X_val_fraud, y_val_fraud)</code>.</li>
+<li><em>Comando de Validação:</em> <code>pytest tests/models/test_stage3_regressor.py -v</code></li>
+</ul></li>
+</ul>
+<hr>
+</section>
+<section id="tarefa-07-orquestrador-do-hurdle-model-end-to-end-pipeline" class="level3" data-number="2.7">
+<h3 data-number="2.7" class="anchored" data-anchor-id="tarefa-07-orquestrador-do-hurdle-model-end-to-end-pipeline"><span class="header-section-number">2.7</span> Tarefa 07: Orquestrador do Hurdle Model (End-to-End Pipeline)</h3>
+<ul>
+<li><strong>Arquivos:</strong>
+<ul>
+<li>Código: <code>src/models/predict.py</code></li>
+<li>Teste: <code>tests/models/test_predict_pipeline.py</code></li>
+</ul></li>
+<li><strong>Responsabilidades:</strong>
+<ol type="1">
+<li>Unificar os três estágios na classe <code>FraudDetectionHurdlePipeline</code>.</li>
+<li>Aplicar a lógica condicional desacoplada:
+<ul>
+<li>Se probabilidade <span class="math inline">\(\ge t^*\)</span>: <code>is_fraud_pred = 1</code>, subtipo predito pelo Estágio 2 e valor predito pelo Estágio 3.</li>
+<li>Se probabilidade <span class="math inline">\(&lt; t^*\)</span>: <code>is_fraud_pred = 0</code>, subtipo <code>'Legitimate'</code> e valor <code>0.0</code>.</li>
+</ul></li>
+<li>Serializar o pipeline completo em <code>models/hurdle_pipeline.joblib</code>.</li>
+</ol></li>
+<li><strong>Ciclo TDD:</strong>
+<ul>
+<li><em>Red:</em> Passar lote de transações cruas de teste e verificar consistência estrita (zero perdas para casos rotulados como legítimos, tipos coerentes).</li>
+<li><em>Green:</em> Implementar a classe <code>FraudDetectionHurdlePipeline</code> e método <code>predict_transactions()</code>.</li>
+<li><em>Comando de Validação:</em> <code>pytest tests/models/test_predict_pipeline.py -v</code></li>
+</ul></li>
+</ul>
+<hr>
+</section>
+<section id="tarefa-08-motor-de-explicabilidade-shap" class="level3" data-number="2.8">
+<h3 data-number="2.8" class="anchored" data-anchor-id="tarefa-08-motor-de-explicabilidade-shap"><span class="header-section-number">2.8</span> Tarefa 08: Motor de Explicabilidade SHAP</h3>
+<ul>
+<li><strong>Arquivos:</strong>
+<ul>
+<li>Código: <code>src/models/explainability.py</code></li>
+<li>Teste: <code>tests/models/test_explainability.py</code></li>
+</ul></li>
+<li><strong>Responsabilidades:</strong>
+<ol type="1">
+<li>Inicializar <code>shap.TreeExplainer</code> sobre o modelo campeão do Estágio 1.</li>
+<li>Extrair a matriz de valores SHAP para a amostra de validação/teste.</li>
+<li>Exportar tabela com as 15 variáveis mais determinantes pelo ganho médio absoluto.</li>
+<li>Extrair casos locais paradigmáticos (verdadeiro positivo e falso positivo).</li>
+</ol></li>
+<li><strong>Ciclo TDD:</strong>
+<ul>
+<li><em>Red:</em> Testar que a soma dos valores SHAP com o valor base recompõe o log-odds do modelo.</li>
+<li><em>Green:</em> Implementar <code>compute_shap_explanations(model, X_sample)</code>.</li>
+<li><em>Comando de Validação:</em> <code>pytest tests/models/test_explainability.py -v</code></li>
+</ul></li>
+</ul>
+<hr>
+</section>
+<section id="tarefa-09-storytelling-visual-e-geração-das-8-figuras" class="level3" data-number="2.9">
+<h3 data-number="2.9" class="anchored" data-anchor-id="tarefa-09-storytelling-visual-e-geração-das-8-figuras"><span class="header-section-number">2.9</span> Tarefa 09: Storytelling Visual e Geração das 8 Figuras</h3>
+<ul>
+<li><strong>Arquivos:</strong>
+<ul>
+<li>Código: <code>src/visualization/figures.py</code></li>
+<li>Teste: <code>tests/visualization/test_figures.py</code></li>
+<li>Saída: <code>reports/figures/fig01_*.png</code> a <code>reports/figures/fig08_*.png</code> (300 DPI)</li>
+</ul></li>
+<li><strong>Responsabilidades:</strong>
+<ol type="1">
+<li>Gerar e salvar as 8 figuras acordadas no storyboard do PRD:
+<ul>
+<li><code>fig01_hourly_fraud_risk.png</code> (Horário x Fraude com destaque noturno).</li>
+<li><code>fig02_country_risk_multiplier.png</code> (Barras horizontais de país com baseline).</li>
+<li><code>fig03_authentication_shield.png</code> (Comparativo EMV Chip e PIN).</li>
+<li><code>fig04_velocity_amount_anomaly.png</code> (Painel duplo <code>1x2</code> com <code>set_box_aspect(1)</code> para velocidade e ticket).</li>
+<li><code>fig05_model_performance_cost.png</code> (Painel duplo <code>1x2</code> com Curva PR e Curva de Custo Total em $).</li>
+<li><code>fig06_shap_explainability.png</code> (Beeswarm plot SHAP das top 15 features).</li>
+<li><code>fig07_multiclass_confusion_matrix.png</code> (Matriz de confusão normalizada).</li>
+<li><code>fig08_fraud_amount_residuals.png</code> (Dispersão Real vs Previsto e resíduos).</li>
+</ul></li>
+<li>Aplicar <code>sns.despine()</code>, grid suave <code>alpha=0.25</code> e tipografia consistente.</li>
+</ol></li>
+<li><strong>Ciclo TDD:</strong>
+<ul>
+<li><em>Red:</em> Verificar que as 8 figuras existem no disco em <code>reports/figures/</code>, não estão corrompidas e possuem resolução <span class="math inline">\(\ge 300\)</span> DPI.</li>
+<li><em>Green:</em> Implementar <code>generate_all_figures()</code> em <code>src/visualization/figures.py</code>.</li>
+<li><em>Comando de Validação:</em> <code>pytest tests/visualization/test_figures.py -v</code></li>
+</ul></li>
+</ul>
+<hr>
+</section>
+<section id="tarefa-10-integração-do-relatório-quarto-e-publicação" class="level3" data-number="2.10">
+<h3 data-number="2.10" class="anchored" data-anchor-id="tarefa-10-integração-do-relatório-quarto-e-publicação"><span class="header-section-number">2.10</span> Tarefa 10: Integração do Relatório Quarto e Publicação</h3>
+<ul>
+<li><strong>Arquivos:</strong>
+<ul>
+<li>Código: <code>index.qmd</code>, <code>_quarto.yml</code></li>
+<li>Saída: <code>docs_site/index.html</code></li>
+</ul></li>
+<li><strong>Responsabilidades:</strong>
+<ol type="1">
+<li><p>Preencher <code>index.qmd</code> incorporando tabelas de métricas definitivas e links das 8 figuras salvas em <code>reports/figures/</code>.</p></li>
+<li><p>Checar conformidade com o <code>quarto-quality-checklist.md</code> (sem títulos com numeração manual, metadados em português, callout blocks).</p></li>
+<li><p>Executar compilação com o binário validado:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">/usr/lib/rstudio/resources/app/bin/quarto/bin/quarto</span> render <span class="at">--to</span> html</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div></li>
+<li><p>Verificar geração do artefato estático em <code>docs_site/</code>.</p></li>
+</ol></li>
+<li><strong>Validação:</strong>
+<ul>
+<li>Conferir a existência e renderização limpa de <code>docs_site/index.html</code>.</li>
+</ul></li>
+</ul>
+<hr>
+</section>
+</section>
+<section id="comandos-padronizados-de-verificação-automatizada" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="comandos-padronizados-de-verificação-automatizada"><span class="header-section-number">3</span> 3. Comandos Padronizados de Verificação Automatizada</h2>
+<p>A validação de integridade do pipeline completo é executada através de comandos determinísticos:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Verificação de estilo e sintaxe (Linter)</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="ex">ruff</span> check src tests</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Execução da suíte completa de testes unitários e de integração</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="ex">pytest</span> tests/ <span class="at">-v</span> <span class="at">--durations</span><span class="op">=</span>10</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Compilação estática do relatório executivo Quarto</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="ex">/usr/lib/rstudio/resources/app/bin/quarto/bin/quarto</span> render index.qmd <span class="at">--output-dir</span> docs_site</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+<hr>
+</section>
+<section id="critério-de-parada-e-liberação-para-código" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="critério-de-parada-e-liberação-para-código"><span class="header-section-number">4</span> 4. Critério de Parada e Liberação para Código</h2>
+<p>Este plano encerra o ciclo de concepção pré-código (Gates 1 a 5). Nenhum código de aplicação ou treinamento foi escrito até este ponto. A aprovação formal deste artefato autoriza o início da execução física das tarefas na Fase 1 (Ingestão e Contratos).</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copiada");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copiada");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/talesgomes27\.github\.io\/credit_card_fraud_detection");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+<script src="../site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>

@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="pt-BR" xml:lang="pt-BR"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Tales">
+
+<title>Documento de Requisitos de Produto (PRD) — Gate 2 – Detecção e Prevenção de Fraudes em Cartões de Crédito</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-515660fabfa64519d5b0c404a8346fd4.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "Nenhum resultado",
+    "search-matching-documents-text": "documentos correspondentes",
+    "search-copy-link-title": "Copiar link para a busca",
+    "search-hide-matches-text": "Esconder correspondências adicionais",
+    "search-more-match-text": "mais correspondência neste documento",
+    "search-more-matches-text": "mais correspondências neste documento",
+    "search-clear-button-title": "Limpar",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancelar",
+    "search-submit-button-title": "Enviar",
+    "search-label": "Procurar"
+  }
+}</script>
+<style>html{ scroll-behavior: smooth; }</style>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Detecção e Prevenção de Fraudes em Cartões de Crédito</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Procurar"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Alternar de navegação" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html"> 
+<span class="menu-text">Relatório Executivo</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../docs/01-data-discovery-and-contracts.html"> 
+<span class="menu-text">Contratos de Dados</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="../docs/02-PRD-and-specs.html" aria-current="page"> 
+<span class="menu-text">PRD &amp; Especificações</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-arquitetura--engenharia" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Arquitetura &amp; Engenharia</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-arquitetura--engenharia">    
+        <li>
+    <a class="dropdown-item" href="../docs/03-architecture-and-schema.html">
+ <span class="dropdown-text">Topologia &amp; Esquema</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../docs/04-scaffolding-and-conventions.html">
+ <span class="dropdown-text">Convenções &amp; Scaffolding</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../docs/00_archetype.html">
+ <span class="dropdown-text">Metadados do Arquétipo</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-decisões-de-arquitetura-(adrs" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Decisões de Arquitetura (ADRs)</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-decisões-de-arquitetura-(adrs">    
+        <li>
+    <a class="dropdown-item" href="../docs/adr/0001-hurdle-three-stage-architecture.html">
+ <span class="dropdown-text">ADR 0001: Hurdle Model em 3 Estágios</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../docs/adr/0002-time-ordered-validation-split.html">
+ <span class="dropdown-text">ADR 0002: Split Temporal Out-of-Time</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../docs/adr/0003-tabular-gradient-boosting-vs-deep-learning.html">
+ <span class="dropdown-text">ADR 0003: Tabular Gradient Boosting vs Deep Learning</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../docs/adr/0004-browser-na-preservation-and-data-contract.html">
+ <span class="dropdown-text">ADR 0004: Preservação de N/A no Browser</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../docs/adr/0005-financial-cost-threshold-optimization.html">
+ <span class="dropdown-text">ADR 0005: Otimização de Custo Financeiro</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="../docs/05-implementation-plan.html"> 
+<span class="menu-text">Plano &amp; Testes</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/talesgomes27/credit_card_fraud_detection"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Documento de Requisitos de Produto (PRD) — Gate 2</h1>
+            <p class="subtitle lead">Especificação de negócio, métricas assimétricas e matriz 1:1 de rastreabilidade</p>
+                      </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Autor</div>
+      <div class="quarto-title-meta-contents">
+               <p>Tales </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Data de Publicação</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">14 de outubro de 2026</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Neste Relatório</h2>
+   
+  <ul>
+  <li><a href="#visão-geral-do-problema-e-contexto-de-negócio" id="toc-visão-geral-do-problema-e-contexto-de-negócio" class="nav-link active" data-scroll-target="#visão-geral-do-problema-e-contexto-de-negócio"><span class="header-section-number">1</span> 1. Visão Geral do Problema e Contexto de Negócio</a>
+  <ul class="collapse">
+  <li><a href="#stakeholders-e-usuários-primários" id="toc-stakeholders-e-usuários-primários" class="nav-link" data-scroll-target="#stakeholders-e-usuários-primários"><span class="header-section-number">1.1</span> Stakeholders e Usuários Primários</a></li>
+  </ul></li>
+  <li><a href="#questões-norteadoras-da-fase-ask-e-hipóteses-de-negócio" id="toc-questões-norteadoras-da-fase-ask-e-hipóteses-de-negócio" class="nav-link" data-scroll-target="#questões-norteadoras-da-fase-ask-e-hipóteses-de-negócio"><span class="header-section-number">2</span> 2. Questões Norteadoras da Fase ASK e Hipóteses de Negócio</a>
+  <ul class="collapse">
+  <li><a href="#questões-norteadoras-centrais" id="toc-questões-norteadoras-centrais" class="nav-link" data-scroll-target="#questões-norteadoras-centrais"><span class="header-section-number">2.1</span> 2.1 Questões Norteadoras Centrais</a></li>
+  <li><a href="#hipóteses-de-negócio-e-engenharia-h1-a-h8" id="toc-hipóteses-de-negócio-e-engenharia-h1-a-h8" class="nav-link" data-scroll-target="#hipóteses-de-negócio-e-engenharia-h1-a-h8"><span class="header-section-number">2.2</span> 2.2 Hipóteses de Negócio e Engenharia (H1 a H8)</a></li>
+  </ul></li>
+  <li><a href="#justificativa-matemática-das-métricas-de-avaliação" id="toc-justificativa-matemática-das-métricas-de-avaliação" class="nav-link" data-scroll-target="#justificativa-matemática-das-métricas-de-avaliação"><span class="header-section-number">3</span> 3. Justificativa Matemática das Métricas de Avaliação</a>
+  <ul class="collapse">
+  <li><a href="#estágio-1-classificação-binária-is_fraud" id="toc-estágio-1-classificação-binária-is_fraud" class="nav-link" data-scroll-target="#estágio-1-classificação-binária-is_fraud"><span class="header-section-number">3.1</span> 3.1 Estágio 1 — Classificação Binária (<code>is_fraud</code>)</a></li>
+  <li><a href="#estágio-2-classificação-multiclasse-fraud_type" id="toc-estágio-2-classificação-multiclasse-fraud_type" class="nav-link" data-scroll-target="#estágio-2-classificação-multiclasse-fraud_type"><span class="header-section-number">3.2</span> 3.2 Estágio 2 — Classificação Multiclasse (<code>fraud_type</code>)</a></li>
+  <li><a href="#estágio-3-quantificação-contínua-de-dano-fraud_amount_lost" id="toc-estágio-3-quantificação-contínua-de-dano-fraud_amount_lost" class="nav-link" data-scroll-target="#estágio-3-quantificação-contínua-de-dano-fraud_amount_lost"><span class="header-section-number">3.3</span> 3.3 Estágio 3 — Quantificação Contínua de Dano (<code>fraud_amount_lost</code>)</a></li>
+  </ul></li>
+  <li><a href="#estratégia-de-partição-e-protocolo-de-validação" id="toc-estratégia-de-partição-e-protocolo-de-validação" class="nav-link" data-scroll-target="#estratégia-de-partição-e-protocolo-de-validação"><span class="header-section-number">4</span> 4. Estratégia de Partição e Protocolo de Validação</a></li>
+  <li><a href="#matriz-11-de-rastreabilidade-ask-métrica-share-quarto" id="toc-matriz-11-de-rastreabilidade-ask-métrica-share-quarto" class="nav-link" data-scroll-target="#matriz-11-de-rastreabilidade-ask-métrica-share-quarto"><span class="header-section-number">5</span> 5. Matriz 1:1 de Rastreabilidade (Ask ➔ Métrica ➔ Share Quarto)</a></li>
+  <li><a href="#requisitos-do-sistema" id="toc-requisitos-do-sistema" class="nav-link" data-scroll-target="#requisitos-do-sistema"><span class="header-section-number">6</span> 6. Requisitos do Sistema</a>
+  <ul class="collapse">
+  <li><a href="#requisitos-funcionais-rf" id="toc-requisitos-funcionais-rf" class="nav-link" data-scroll-target="#requisitos-funcionais-rf"><span class="header-section-number">6.1</span> 6.1 Requisitos Funcionais (RF)</a></li>
+  <li><a href="#requisitos-não-funcionais-rnf" id="toc-requisitos-não-funcionais-rnf" class="nav-link" data-scroll-target="#requisitos-não-funcionais-rnf"><span class="header-section-number">6.2</span> 6.2 Requisitos Não-Funcionais (RNF)</a></li>
+  </ul></li>
+  <li><a href="#escopo-negativo-non-goals" id="toc-escopo-negativo-non-goals" class="nav-link" data-scroll-target="#escopo-negativo-non-goals"><span class="header-section-number">7</span> 7. Escopo Negativo (Non-Goals)</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+
+<ul>
+<li><strong>Projeto:</strong> Detecção, Tipificação e Quantificação de Fraudes em Cartão de Crédito</li>
+<li><strong>Arquétipo:</strong> A — Data Science, Analytics &amp; Machine Learning</li>
+<li><strong>Artefato:</strong> <code>docs/02-PRD-and-specs.md</code></li>
+</ul>
+<hr>
+<section id="visão-geral-do-problema-e-contexto-de-negócio" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="visão-geral-do-problema-e-contexto-de-negócio"><span class="header-section-number">1</span> 1. Visão Geral do Problema e Contexto de Negócio</h2>
+<p>Fraudes financeiras com cartões de pagamento causam prejuízos bilionários anuais a emissores, adquirentes e lojistas. Além do valor direto subtraído na transação, as instituições arcam com custos administrativos de estorno (<em>chargebacks</em>), despesas de análise operacional e atrito com clientes legítimos bloqueados por falsos positivos.</p>
+<p>O dataset inspecionado no Gate 1 disponibiliza 100.000 transações de 2026. Os atributos refletem comportamentos reais do sistema financeiro, sem anonimização artificial por PCA. O objetivo central deste projeto é desenhar, validar e documentar um pipeline analítico em múltiplos estágios (<em>Hurdle Model</em>) capaz de: 1. Detectar transações fraudulentas em tempo real com alta precisão e sensibilidade calibrada. 2. Identificar a modalidade específica da fraude entre as 4 classes ativas do ecossistema. 3. Estimar o dano financeiro residual esperado pós-recuperação parcial para priorização de filas de contestação. 4. Comunicar os achados técnicos e recomendações operacionais por meio de um relatório executivo em Quarto publicado no GitHub Pages.</p>
+<section id="stakeholders-e-usuários-primários" class="level3" data-number="1.1">
+<h3 data-number="1.1" class="anchored" data-anchor-id="stakeholders-e-usuários-primários"><span class="header-section-number">1.1</span> Stakeholders e Usuários Primários</h3>
+<ul>
+<li><strong>Equipe de Risco e Prevenção à Fraude:</strong> Demanda regras claras, pontuação de probabilidade contínua e interpretabilidade de decisões (SHAP) para justificar bloqueios a clientes.</li>
+<li><strong>Operações de Chargeback:</strong> Necessita de triagem por subtipo de fraude e valor estimado para direcionar esforços de recuperação de crédito.</li>
+<li><strong>Liderança Executiva (C-Level / Head de Risco):</strong> Requer visibilidade do balanço econômico entre perda financeira evitada e custo de fricção operacional.</li>
+</ul>
+<hr>
+</section>
+</section>
+<section id="questões-norteadoras-da-fase-ask-e-hipóteses-de-negócio" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="questões-norteadoras-da-fase-ask-e-hipóteses-de-negócio"><span class="header-section-number">2</span> 2. Questões Norteadoras da Fase ASK e Hipóteses de Negócio</h2>
+<section id="questões-norteadoras-centrais" class="level3" data-number="2.1">
+<h3 data-number="2.1" class="anchored" data-anchor-id="questões-norteadoras-centrais"><span class="header-section-number">2.1</span> 2.1 Questões Norteadoras Centrais</h3>
+<ul>
+<li><strong>Q1:</strong> Qual o padrão temporal das fraudes ao longo das 24 horas e qual o incremento de risco na madrugada?</li>
+<li><strong>Q2:</strong> Como fatores geográficos (operações internacionais e jurisdições de alto risco) amplificam a taxa de fraude?</li>
+<li><strong>Q3:</strong> Qual a redução empírica de risco proporcionada por autenticações fortes (Chip EMV e senha PIN) em relação a transações não presenciais?</li>
+<li><strong>Q4:</strong> Em que medida o comportamento recente de velocidade de transações e a distorção do ticket médio sinalizam ataques em andamento?</li>
+<li><strong>Q5:</strong> Qual o ponto de corte ótimo de probabilidade para minimizar a perda financeira global considerando o custo de falso positivo?</li>
+<li><strong>Q6:</strong> Quais atributos do perfil do cliente e da transação mais influenciam o algoritmo em nível global e local?</li>
+<li><strong>Q7:</strong> O modelo multiclasse consegue separar satisfatoriamente ataques cibernéticos (<em>Account Takeover</em>) de fraudes de identidade sintética?</li>
+<li><strong>Q8:</strong> A estimativa de perda financeira residual apresenta resíduos homocedásticos e erro médio compatível com os limites operacionais?</li>
+</ul>
+</section>
+<section id="hipóteses-de-negócio-e-engenharia-h1-a-h8" class="level3" data-number="2.2">
+<h3 data-number="2.2" class="anchored" data-anchor-id="hipóteses-de-negócio-e-engenharia-h1-a-h8"><span class="header-section-number">2.2</span> 2.2 Hipóteses de Negócio e Engenharia (H1 a H8)</h3>
+<ul>
+<li><strong>H1 (Janela Noturna):</strong> Transações efetuadas entre 01h e 04h apresentam odds ratio superior a 3,5x em comparação com o horário comercial regular, devido à menor vigilância ativa do titular.</li>
+<li><strong>H2 (Geografia de Risco):</strong> Estabelecimentos sediados no quarteto de risco (China, Nigéria, Romênia e Rússia) concentram taxas de fraude superiores a 10%, funcionando como red flags independentes.</li>
+<li><strong>H3 (Barreira Física EMV):</strong> A presença simultânea de leitura de chip e validação de PIN reduz a probabilidade de fraude para menos de 0,6%, tornando transações presenciais seguras contra clonagem direta.</li>
+<li><strong>H4 (Disparada de Frequência):</strong> Três ou mais transações no intervalo de uma hora (<code>transactions_last_1h &gt;= 3</code>) indicam testes repetidos de cartão, multiplicando a taxa de fraude em pelo menos 2,5x.</li>
+<li><strong>H5 (Desvio de Ticket Médio):</strong> Compras com razão <code>amount_vs_avg_ratio &gt;= 5.0</code> concentram perdas financeiras desproporcionais, justificando regras de bloqueio preventivo condicional.</li>
+<li><strong>H6 (Assimetria de Custos):</strong> O threshold padrão de 0,50 é subótimo para o negócio. Ajustar o corte para balancear custo de falso positivo ($3,00) contra perda média ($136,18) reduz o custo operacional global.</li>
+<li><strong>H7 (Separabilidade por Subtipo):</strong> Fraudes de <em>Card-Not-Present</em> são primariamente guiadas por canal digital e ausência de chip, enquanto <em>Account Takeover</em> é caracterizada por salto geográfico (<code>distance_from_last_tx_km</code>) e hiato temporal prévio prolongado.</li>
+<li><strong>H8 (Condicionamento de Perda):</strong> Modelar o montante residual apenas sobre a partição fraudulenta (<em>Hurdle regression</em>) gera resíduos com menor viés em comparação a uma regressão linear direta sobre a base zero-inflada.</li>
+</ul>
+<hr>
+</section>
+</section>
+<section id="justificativa-matemática-das-métricas-de-avaliação" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="justificativa-matemática-das-métricas-de-avaliação"><span class="header-section-number">3</span> 3. Justificativa Matemática das Métricas de Avaliação</h2>
+<p>A escolha das métricas reflete a física do problema em cada estágio do pipeline:</p>
+<pre><code>                  ┌─────────────────────────────────────────────────────────┐
+                  │                 Dataset Bruto (100k)                    │
+                  └───────────────────────────┬─────────────────────────────┘
+                                              │
+                                              ▼
+                    ┌─────────────────────────────────────────────────────┐
+                    │      Estágio 1: is_fraud (Classificação Binária)     │
+                    │      Prevalência: 2,05%  |  Métrica: PR-AUC &amp; Custo │
+                    └─────────────────────────┬───────────────────────────┘
+                                              │
+                            ┌─────────────────┴─────────────────┐
+                            │ (Predição Positiva: Fraude)       │
+                            ▼                                   ▼
+          ┌───────────────────────────────────┐ ┌───────────────────────────────────┐
+          │   Estágio 2: fraud_type           │ │   Estágio 3: fraud_amount_lost    │
+          │   Classificação Multiclasse (4)   │ │   Regressão Condicional ($)       │
+          │   Métrica: Macro F1-Score         │ │   Métrica: RMSE e MAE             │
+          └───────────────────────────────────┘ └───────────────────────────────────┘</code></pre>
+<section id="estágio-1-classificação-binária-is_fraud" class="level3" data-number="3.1">
+<h3 data-number="3.1" class="anchored" data-anchor-id="estágio-1-classificação-binária-is_fraud"><span class="header-section-number">3.1</span> 3.1 Estágio 1 — Classificação Binária (<code>is_fraud</code>)</h3>
+<ul>
+<li><strong>Métrica Primária: PR-AUC (Área sob a Curva Precision-Recall)</strong>
+<ul>
+<li><em>Justificativa Matemática:</em> A base possui apenas 2,05% de eventos positivos (<span class="math inline">\(N_{positivo} = 2.055\)</span>). Em bases severamente desbalanceadas, a curva ROC-AUC é enganosa. Como a taxa de falsos positivos (<span class="math inline">\(FPR = \frac{FP}{FP + TN}\)</span>) tem no denominador o universo maciço de legítimas (<span class="math inline">\(TN \approx 98.000\)</span>), mesmo centenas de falsos alarmes mantêm o <span class="math inline">\(FPR\)</span> ínfimo, inflando artificialmente o ROC-AUC para acima de 0,92.</li>
+<li>A curva Precision-Recall exclui <span class="math inline">\(TN\)</span> de sua formulação. Avalia diretamente o compromisso entre Precisão (<span class="math inline">\(\frac{TP}{TP + FP}\)</span>) e Recall (<span class="math inline">\(\frac{TP}{TP + FN}\)</span>): <span class="math display">\[\text{PR-AUC} = \int_{0}^{1} P(R) \, dR\]</span> O baseline aleatório no PR-AUC é exatamente a prevalência histórica (<span class="math inline">\(\approx 0,0205\)</span>), permitindo medir ganho real sobre o chute aleatório.</li>
+</ul></li>
+<li><strong>Métrica de Negócio: Função de Custo Financeiro Total (<span class="math inline">\(C_{total}\)</span>)</strong>
+<ul>
+<li>Seja <span class="math inline">\(t \in [0, 1]\)</span> o limiar de decisão. Para cada transação <span class="math inline">\(i\)</span>: <span class="math display">\[C(t) = \sum_{i \in FN(t)} \text{PerdaReal}_i + \sum_{i \in FP(t)} C_{atrito}\]</span> Assumimos como premissa conservadora de mercado que cada falso positivo gera um custo operacional e de atrito de <span class="math inline">\(C_{atrito} = \$3,50\)</span> (contato via SMS/push e suporte), enquanto o falso negativo custa o valor integral não recuperado da transação fraudulenta. O ponto ótimo <span class="math inline">\(t^*\)</span> é obtido por: <span class="math display">\[t^* = \arg\min_{t} C(t)\]</span></li>
+</ul></li>
+<li><strong>Métricas Secundárias:</strong> Recall na faixa de alta precisão (ex: Precision <span class="math inline">\(\ge 0,80\)</span>), F1-Score no limiar ótimo e ROC-AUC para comparação bibliográfica.</li>
+</ul>
+</section>
+<section id="estágio-2-classificação-multiclasse-fraud_type" class="level3" data-number="3.2">
+<h3 data-number="3.2" class="anchored" data-anchor-id="estágio-2-classificação-multiclasse-fraud_type"><span class="header-section-number">3.2</span> 3.2 Estágio 2 — Classificação Multiclasse (<code>fraud_type</code>)</h3>
+<ul>
+<li><strong>Métrica Primária: Macro F1-Score</strong>
+<ul>
+<li><em>Justificativa Matemática:</em> A distribuição entre os 4 subtipos de fraude no universo fraudulento é altamente desigual: Card-Not-Present (51,3%), Account-Takeover (21,8%), Synthetic-Identity (15,0%) e Card-Present (11,9%).</li>
+<li>O cálculo Micro F1 ou Acurácia Simples seria dominado pela categoria majoritária. O Macro F1 calcula a média aritmética não ponderada dos <span class="math inline">\(F_1\)</span> individuais de cada classe <span class="math inline">\(k\)</span>: <span class="math display">\[\text{Macro } F_1 = \frac{1}{K} \sum_{k=1}^{K} \frac{2 \cdot P_k \cdot R_k}{P_k + R_k}\]</span> Isso penaliza severamente o modelo caso ele falhe em identificar modalidades raras, como <em>Card-Present</em> fraudulento.</li>
+</ul></li>
+<li><strong>Métricas Secundárias:</strong> Balanced Accuracy e Matriz de Confusão Normalizada por Linha (Recall por classe).</li>
+</ul>
+</section>
+<section id="estágio-3-quantificação-contínua-de-dano-fraud_amount_lost" class="level3" data-number="3.3">
+<h3 data-number="3.3" class="anchored" data-anchor-id="estágio-3-quantificação-contínua-de-dano-fraud_amount_lost"><span class="header-section-number">3.3</span> 3.3 Estágio 3 — Quantificação Contínua de Dano (<code>fraud_amount_lost</code>)</h3>
+<ul>
+<li><strong>Métrica Primária: RMSE (Root Mean Squared Error) em Instâncias Fraudulentas</strong>
+<ul>
+<li><em>Justificativa Matemática:</em> A distribuição de perda em fraudes varia de $0,58 a $4.482,16 (média $136,18, desvio padrão $273,26). O RMSE penaliza desproporcionalmente desvios em fraudes de grande magnitude: <span class="math display">\[\text{RMSE} = \sqrt{\frac{1}{N_{fraude}} \sum_{i=1}^{N_{fraude}} (y_i - \hat{y}_i)^2}\]</span> Como o prejuízo institucional se concentra na cauda longa de valores altos, o RMSE é o estimador adequado para calibração de reservas de capital.</li>
+</ul></li>
+<li><strong>Métrica Secundária: MAE (Mean Absolute Error)</strong>
+<ul>
+<li>O MAE quantifica o erro mediano típico da perda em dólares sem a hipersensibilidade a outliers.</li>
+</ul></li>
+</ul>
+<hr>
+</section>
+</section>
+<section id="estratégia-de-partição-e-protocolo-de-validação" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="estratégia-de-partição-e-protocolo-de-validação"><span class="header-section-number">4</span> 4. Estratégia de Partição e Protocolo de Validação</h2>
+<p>Para impedir vazamento temporal (<em>lookahead bias</em>) e respeitar a dinâmica anual de 2026, adota-se <strong>divisão temporal out-of-time cronológica</strong>:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Partição</th>
+<th style="text-align: left;">Período Cronológico</th>
+<th style="text-align: left;">Volume de Transações</th>
+<th style="text-align: left;">Proporção</th>
+<th style="text-align: left;">Fraudes Esperadas</th>
+<th style="text-align: left;">Papel Metodológico</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><strong>Treino</strong></td>
+<td style="text-align: left;">Jan a Ago / 2026 (<code>2026-01-01</code> a <code>2026-08-31</code>)</td>
+<td style="text-align: left;">~66.860</td>
+<td style="text-align: left;">~66,9%</td>
+<td style="text-align: left;">~1.378 (2,06%)</td>
+<td style="text-align: left;">Treinamento de pesos e calibração interna de árvores.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Validação</strong></td>
+<td style="text-align: left;">Set a Out / 2026 (<code>2026-09-01</code> a <code>2026-10-31</code>)</td>
+<td style="text-align: left;">~16.905</td>
+<td style="text-align: left;">~16,9%</td>
+<td style="text-align: left;">~362 (2,14%)</td>
+<td style="text-align: left;">Tuning de hiperparâmetros, corte ótimo <span class="math inline">\(t^*\)</span> e seleção de modelos.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Teste Cego</strong></td>
+<td style="text-align: left;">Nov a Dez / 2026 (<code>2026-11-01</code> a <code>2026-12-31</code>)</td>
+<td style="text-align: left;">~16.235</td>
+<td style="text-align: left;">~16,2%</td>
+<td style="text-align: left;">~315 (1,94%)</td>
+<td style="text-align: left;">Avaliação final intocada de generalização out-of-time.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Regras estritas de validação:</strong> 1. A base inteira será previamente ordenada por <code>transaction_datetime</code> crescente para corrigir a inversão pontual detectada em 28/02. 2. Todas as transformações estatísticas (médias de encoding, escaladores numéricos e pipelines) serão ajustadas estritamente com os dados de Treino, aplicando-se apenas o método <code>.transform()</code> nos conjuntos de Validação e Teste. 3. Fixação mandatória de semente determinística (<code>random_state=42</code>) em qualquer operação amostral.</p>
+<hr>
+</section>
+<section id="matriz-11-de-rastreabilidade-ask-métrica-share-quarto" class="level2" data-number="5">
+<h2 data-number="5" class="anchored" data-anchor-id="matriz-11-de-rastreabilidade-ask-métrica-share-quarto"><span class="header-section-number">5</span> 5. Matriz 1:1 de Rastreabilidade (Ask ➔ Métrica ➔ Share Quarto)</h2>
+<p>Conforme as diretrizes do <code>quarto-quality-checklist.md</code>, toda pergunta de negócio possui correspondência unívoca com uma métrica quantitativa e uma visualização planejada para o relatório executivo:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">ID</th>
+<th style="text-align: left;">Pergunta de Negócio (Ask)</th>
+<th style="text-align: left;">Métrica / Hipótese</th>
+<th style="text-align: left;">Figura Planejada na Fase Share</th>
+<th style="text-align: left;">Especificações Visuais</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><strong>P1</strong></td>
+<td style="text-align: left;">Como a taxa de fraude varia por hora do dia e onde está o pico de risco?</td>
+<td style="text-align: left;">Taxa de fraude horária (%) e Odds Ratio da madrugada (H1).</td>
+<td style="text-align: left;"><code>fig01_hourly_fraud_risk</code></td>
+<td style="text-align: left;">Painel com barras de volume e linha de taxa de fraude horária, com preenchimento sombreado na faixa de 01h–04h e anotação do multiplicador 4,15x.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>P2</strong></td>
+<td style="text-align: left;">Qual o impacto do país do lojista na concentração de ataques?</td>
+<td style="text-align: left;">Taxa de fraude por país vs.&nbsp;baseline global (H2).</td>
+<td style="text-align: left;"><code>fig02_country_risk_multiplier</code></td>
+<td style="text-align: left;">Gráfico de barras horizontais ordenadas com linha de referência vertical no baseline (2,05%) e realce nas 4 jurisdições críticas.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>P3</strong></td>
+<td style="text-align: left;">Autenticação física (Chip e PIN) anula o risco de fraude?</td>
+<td style="text-align: left;">Redução percentual de fraude por canal e tipo de credencial (H3).</td>
+<td style="text-align: left;"><code>fig03_authentication_shield</code></td>
+<td style="text-align: left;">Barras agrupadas comparando taxa de fraude em presença física vs.&nbsp;canais digitais, cruzadas com uso de Chip e PIN.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>P4</strong></td>
+<td style="text-align: left;">Disparadas de velocidade e distorções de ticket médio antecipam ataques?</td>
+<td style="text-align: left;">Risco relativo por faixa de <code>transactions_last_1h</code> e <code>amount_vs_avg_ratio</code> (H4, H5).</td>
+<td style="text-align: left;"><code>fig04_velocity_amount_anomaly</code></td>
+<td style="text-align: left;">Painel duplo lado a lado <code>1x2</code> com proporções quadradas idênticas (<code>set_box_aspect(1)</code>): (a) Fraude por transações na última hora; (b) Fraude por razão de valor.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>P5</strong></td>
+<td style="text-align: left;">Qual o desempenho preditivo do modelo binário e o ponto de equilíbrio financeiro?</td>
+<td style="text-align: left;">PR-AUC, ROC-AUC e Curva de Custo Financeiro Total (<span class="math inline">\() (H6). | `fig05_model_performance_cost` | Painel duplo lado a lado `1x2`: (a) Curva Precision-Recall com corte ótimo anotado; (b) Curva de Custo Total (\)</span>) vs.&nbsp;Threshold com indicação de <span class="math inline">\(t^*\)</span>.</td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>P6</strong></td>
+<td style="text-align: left;">Quais variáveis mais pesam nas decisões do motor de detecção?</td>
+<td style="text-align: left;">Valores SHAP médios absolutos globais e contribuições locais.</td>
+<td style="text-align: left;"><code>fig06_shap_explainability</code></td>
+<td style="text-align: left;">Gráfico de abelha (<em>beeswarm</em>) com as top 15 features por impacto médio absoluto, complementado por waterfall plot para transação de alto risco.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>P7</strong></td>
+<td style="text-align: left;">Qual a capacidade do modelo em tipificar corretamente os 4 tipos de fraude?</td>
+<td style="text-align: left;">Macro F1 e taxa de acerto por modalidade (H7).</td>
+<td style="text-align: left;"><code>fig07_multiclass_confusion_matrix</code></td>
+<td style="text-align: left;">Matriz de confusão normalizada por linha com mapa de calor suave, destacando acertos em diagonais e confusões entre CNP e Synthetic.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>P8</strong></td>
+<td style="text-align: left;">Quão precisa é a estimativa de perda monetária para fraudes confirmadas?</td>
+<td style="text-align: left;">RMSE, MAE e resíduos em instâncias fraudulentas (H8).</td>
+<td style="text-align: left;"><code>fig08_fraud_amount_residuals</code></td>
+<td style="text-align: left;">Gráfico de dispersão entre Perda Real vs.&nbsp;Prevista em escala logarítmica com linha de identidade <span class="math inline">\(y=x\)</span> e histograma marginal de resíduos.</td>
+</tr>
+</tbody>
+</table>
+<hr>
+</section>
+<section id="requisitos-do-sistema" class="level2" data-number="6">
+<h2 data-number="6" class="anchored" data-anchor-id="requisitos-do-sistema"><span class="header-section-number">6</span> 6. Requisitos do Sistema</h2>
+<section id="requisitos-funcionais-rf" class="level3" data-number="6.1">
+<h3 data-number="6.1" class="anchored" data-anchor-id="requisitos-funcionais-rf"><span class="header-section-number">6.1</span> 6.1 Requisitos Funcionais (RF)</h3>
+<ul>
+<li><strong>RF01 (Ingestão Segura):</strong> Carregar o arquivo <code>credit_card_fraud_detection_2026.csv</code> preservando <code>'N/A'</code> na coluna <code>browser</code> sem conversão espúria para missing value.</li>
+<li><strong>RF02 (Saneamento Estrutural):</strong> Ordenar estavelmente a base cronologicamente por <code>transaction_datetime</code> e descartar as colunas redundantes <code>transaction_id</code> e <code>card_id</code>.</li>
+<li><strong>RF03 (Particionamento Temporal):</strong> Dividir a base no regime temporal estrito (Treino até 31/08, Validação até 31/10, Teste até 31/12).</li>
+<li><strong>RF04 (Modelagem Estágio 1 - Binária):</strong> Treinar e comparar baselines (Regressão Logística ponderada, Random Forest, LightGBM, XGBoost) avaliando PR-AUC e otimizando o limiar financeiro <span class="math inline">\(t^*\)</span>.</li>
+<li><strong>RF05 (Explicabilidade Estágio 1):</strong> Gerar explicações SHAP globais (TreeExplainer) e análises de casos paradigmáticos para auditabilidade regulatória.</li>
+<li><strong>RF06 (Modelagem Estágio 2 - Multiclasse):</strong> Treinar classificador multiclasse para os 4 subtipos de fraude utilizando balanceamento de classes e otimizando Macro F1.</li>
+<li><strong>RF07 (Modelagem Estágio 3 - Regressão):</strong> Ajustar regressor condicional sobre fraudes confirmadas para predizer <code>fraud_amount_lost</code>, medindo RMSE e MAE.</li>
+<li><strong>RF08 (Relatório Técnico Quarto):</strong> Compilar a narrativa analítica completa em Quarto (<code>index.qmd</code>) com metadados em português (<code>lang: pt-BR</code>), <code>execute: freeze: auto</code>, tema customizado e publicação automatizada via GitHub Pages.</li>
+</ul>
+</section>
+<section id="requisitos-não-funcionais-rnf" class="level3" data-number="6.2">
+<h3 data-number="6.2" class="anchored" data-anchor-id="requisitos-não-funcionais-rnf"><span class="header-section-number">6.2</span> 6.2 Requisitos Não-Funcionais (RNF)</h3>
+<ul>
+<li><strong>RNF01 (Reprodutibilidade Estrita):</strong> Fixar semente aleatória (<code>seed=42</code>) em todo o ciclo de treino e avaliação.</li>
+<li><strong>RNF02 (Desempenho de Inferência):</strong> Pipeline de pré-processamento e escoragem com tempo de resposta inferior a 50 ms por transação individual.</li>
+<li><strong>RNF03 (Isolamento de Alvos):</strong> Garantir via testes automatizados que nenhum modelo de estágio preliminar acesse variáveis de estágios posteriores.</li>
+<li><strong>RNF04 (Padrão Estético de Figuras):</strong> Exportar todas as figuras estáticas em <code>dpi=300</code>, com proporções niveladas, remoção de bordas superiores/direitas (<code>despine</code>) e grid sutil (<code>alpha=0.25</code>).</li>
+<li><strong>RNF05 (Manutenibilidade de Código):</strong> Módulos Python em <code>src/</code> organizados com tipagem estática, formatação via <code>ruff</code> e suíte de testes com <code>pytest</code>.</li>
+</ul>
+<hr>
+</section>
+</section>
+<section id="escopo-negativo-non-goals" class="level2" data-number="7">
+<h2 data-number="7" class="anchored" data-anchor-id="escopo-negativo-non-goals"><span class="header-section-number">7</span> 7. Escopo Negativo (Non-Goals)</h2>
+<p>Para assegurar foco e entrega rigorosa dentro dos limites desta sprint, estabelecem-se as seguintes exclusões de escopo: 1. <strong>Não construiremos microsserviços ou APIs REST de produção:</strong> O projeto entrega o pipeline analítico completo, código modular versionado, artefatos de modelos treinados e relatório Quarto. Não inclui containers Docker para servir endpoints HTTP em Kubernetes. 2. <strong>Não utilizaremos Deep Learning tabular complexo:</strong> Modelos baseados em gradient boosting de árvores (LightGBM e XGBoost) apresentam eficiência superior em dados tabulares deste perfil, dispensando arquiteturas de redes neurais pesadas. 3. <strong>Não utilizaremos <code>customer_id</code> ou <code>merchant_id</code> como features categóricas brutas:</strong> O uso direto desses IDs gera memorização espúria e não generaliza para novos clientes/lojistas. 4. <strong>Não utilizaremos validação cruzada k-fold aleatória:</strong> A aleatoriedade viola a causalidade temporal das transações. 5. <strong>Não faremos imputação sintética de nulos na coluna <code>browser</code>:</strong> A ausência de navegador em compras presenciais e caixas eletrônicos é uma verdade de negócio e deve ser tratada como categoria nominal própria (<code>N/A</code>).</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copiada");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copiada");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/talesgomes27\.github\.io\/credit_card_fraud_detection");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+<script src="../site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>

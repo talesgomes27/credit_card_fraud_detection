@@ -1,0 +1,1025 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="pt-BR" xml:lang="pt-BR"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Tales">
+
+<title>Sistema Integrado de Detecção, Tipificação e Mitigação de Fraudes Bancárias – Detecção e Prevenção de Fraudes em Cartões de Crédito</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-515660fabfa64519d5b0c404a8346fd4.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "Nenhum resultado",
+    "search-matching-documents-text": "documentos correspondentes",
+    "search-copy-link-title": "Copiar link para a busca",
+    "search-hide-matches-text": "Esconder correspondências adicionais",
+    "search-more-match-text": "mais correspondência neste documento",
+    "search-more-matches-text": "mais correspondências neste documento",
+    "search-clear-button-title": "Limpar",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancelar",
+    "search-submit-button-title": "Enviar",
+    "search-label": "Procurar"
+  }
+}</script>
+<style>html{ scroll-behavior: smooth; }</style>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">Detecção e Prevenção de Fraudes em Cartões de Crédito</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Procurar"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Alternar de navegação" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link active" href="./index.html" aria-current="page"> 
+<span class="menu-text">Relatório Executivo</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./docs/01-data-discovery-and-contracts.html"> 
+<span class="menu-text">Contratos de Dados</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./docs/02-PRD-and-specs.html"> 
+<span class="menu-text">PRD &amp; Especificações</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-arquitetura--engenharia" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Arquitetura &amp; Engenharia</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-arquitetura--engenharia">    
+        <li>
+    <a class="dropdown-item" href="./docs/03-architecture-and-schema.html">
+ <span class="dropdown-text">Topologia &amp; Esquema</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./docs/04-scaffolding-and-conventions.html">
+ <span class="dropdown-text">Convenções &amp; Scaffolding</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./docs/00_archetype.html">
+ <span class="dropdown-text">Metadados do Arquétipo</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-decisões-de-arquitetura-(adrs" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Decisões de Arquitetura (ADRs)</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-decisões-de-arquitetura-(adrs">    
+        <li>
+    <a class="dropdown-item" href="./docs/adr/0001-hurdle-three-stage-architecture.html">
+ <span class="dropdown-text">ADR 0001: Hurdle Model em 3 Estágios</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./docs/adr/0002-time-ordered-validation-split.html">
+ <span class="dropdown-text">ADR 0002: Split Temporal Out-of-Time</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./docs/adr/0003-tabular-gradient-boosting-vs-deep-learning.html">
+ <span class="dropdown-text">ADR 0003: Tabular Gradient Boosting vs Deep Learning</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./docs/adr/0004-browser-na-preservation-and-data-contract.html">
+ <span class="dropdown-text">ADR 0004: Preservação de N/A no Browser</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./docs/adr/0005-financial-cost-threshold-optimization.html">
+ <span class="dropdown-text">ADR 0005: Otimização de Custo Financeiro</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="./docs/05-implementation-plan.html"> 
+<span class="menu-text">Plano &amp; Testes</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/talesgomes27/credit_card_fraud_detection"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Sistema Integrado de Detecção, Tipificação e Mitigação de Fraudes Bancárias</h1>
+            <p class="subtitle lead">Pipeline em Três Estágios (Hurdle Model), Otimização de Custo Financeiro e Explicabilidade SHAP</p>
+                      </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Autor</div>
+      <div class="quarto-title-meta-contents">
+               <p>Tales </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Data de Publicação</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">16 de outubro de 2026</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Neste Relatório</h2>
+   
+  <ul>
+  <li><a href="#contexto-de-negócio-hipóteses-business-understanding-ask" id="toc-contexto-de-negócio-hipóteses-business-understanding-ask" class="nav-link active" data-scroll-target="#contexto-de-negócio-hipóteses-business-understanding-ask"><span class="header-section-number">1</span> Contexto de Negócio &amp; Hipóteses (Business Understanding / Ask)</a></li>
+  <li><a href="#auditoria-de-dados-contratos-data-understanding-prepare" id="toc-auditoria-de-dados-contratos-data-understanding-prepare" class="nav-link" data-scroll-target="#auditoria-de-dados-contratos-data-understanding-prepare"><span class="header-section-number">2</span> Auditoria de Dados &amp; Contratos (Data Understanding / Prepare)</a></li>
+  <li><a href="#análise-exploratória-engenharia-de-atributos-data-prep-eda-process" id="toc-análise-exploratória-engenharia-de-atributos-data-prep-eda-process" class="nav-link" data-scroll-target="#análise-exploratória-engenharia-de-atributos-data-prep-eda-process"><span class="header-section-number">3</span> Análise Exploratória &amp; Engenharia de Atributos (Data Prep &amp; EDA / Process)</a></li>
+  <li><a href="#modelagem-estatística-machine-learning-modeling-construct" id="toc-modelagem-estatística-machine-learning-modeling-construct" class="nav-link" data-scroll-target="#modelagem-estatística-machine-learning-modeling-construct"><span class="header-section-number">4</span> Modelagem Estatística &amp; Machine Learning (Modeling / Construct)</a>
+  <ul class="collapse">
+  <li><a href="#tabela-comparativa-multi-métrica-com-baselines" id="toc-tabela-comparativa-multi-métrica-com-baselines" class="nav-link" data-scroll-target="#tabela-comparativa-multi-métrica-com-baselines"><span class="header-section-number">4.1</span> Tabela Comparativa Multi-Métrica com Baselines</a></li>
+  <li><a href="#calibração-do-limiar-financeiro-ótimo" id="toc-calibração-do-limiar-financeiro-ótimo" class="nav-link" data-scroll-target="#calibração-do-limiar-financeiro-ótimo"><span class="header-section-number">4.2</span> Calibração do Limiar Financeiro Ótimo</a></li>
+  </ul></li>
+  <li><a href="#avaliação-diagnóstico-explicabilidade-evaluation-share" id="toc-avaliação-diagnóstico-explicabilidade-evaluation-share" class="nav-link" data-scroll-target="#avaliação-diagnóstico-explicabilidade-evaluation-share"><span class="header-section-number">5</span> Avaliação, Diagnóstico &amp; Explicabilidade (Evaluation / Share)</a>
+  <ul class="collapse">
+  <li><a href="#pergunta-1-risco-horário-e-vulnerabilidade-da-madrugada" id="toc-pergunta-1-risco-horário-e-vulnerabilidade-da-madrugada" class="nav-link" data-scroll-target="#pergunta-1-risco-horário-e-vulnerabilidade-da-madrugada"><span class="header-section-number">5.1</span> Pergunta 1: Risco Horário e Vulnerabilidade da Madrugada</a></li>
+  <li><a href="#pergunta-2-concentração-geográfica-e-jurisdições-críticas" id="toc-pergunta-2-concentração-geográfica-e-jurisdições-críticas" class="nav-link" data-scroll-target="#pergunta-2-concentração-geográfica-e-jurisdições-críticas"><span class="header-section-number">5.2</span> Pergunta 2: Concentração Geográfica e Jurisdições Críticas</a></li>
+  <li><a href="#pergunta-3-eficácia-do-escudo-emv-chip-pin" id="toc-pergunta-3-eficácia-do-escudo-emv-chip-pin" class="nav-link" data-scroll-target="#pergunta-3-eficácia-do-escudo-emv-chip-pin"><span class="header-section-number">5.3</span> Pergunta 3: Eficácia do Escudo EMV (Chip &amp; PIN)</a></li>
+  <li><a href="#pergunta-4-anomalias-de-frequência-e-ticket-médio" id="toc-pergunta-4-anomalias-de-frequência-e-ticket-médio" class="nav-link" data-scroll-target="#pergunta-4-anomalias-de-frequência-e-ticket-médio"><span class="header-section-number">5.4</span> Pergunta 4: Anomalias de Frequência e Ticket Médio</a></li>
+  <li><a href="#pergunta-5-curva-precision-recall-e-minimização-de-custos" id="toc-pergunta-5-curva-precision-recall-e-minimização-de-custos" class="nav-link" data-scroll-target="#pergunta-5-curva-precision-recall-e-minimização-de-custos"><span class="header-section-number">5.5</span> Pergunta 5: Curva Precision-Recall e Minimização de Custos</a></li>
+  <li><a href="#pergunta-6-explicabilidade-global-via-valores-shap" id="toc-pergunta-6-explicabilidade-global-via-valores-shap" class="nav-link" data-scroll-target="#pergunta-6-explicabilidade-global-via-valores-shap"><span class="header-section-number">5.6</span> Pergunta 6: Explicabilidade Global via Valores SHAP</a></li>
+  <li><a href="#pergunta-7-capacidade-de-discriminação-multiclasse" id="toc-pergunta-7-capacidade-de-discriminação-multiclasse" class="nav-link" data-scroll-target="#pergunta-7-capacidade-de-discriminação-multiclasse"><span class="header-section-number">5.7</span> Pergunta 7: Capacidade de Discriminação Multiclasse</a></li>
+  <li><a href="#pergunta-8-acurácia-da-perda-monetária-prevista" id="toc-pergunta-8-acurácia-da-perda-monetária-prevista" class="nav-link" data-scroll-target="#pergunta-8-acurácia-da-perda-monetária-prevista"><span class="header-section-number">5.8</span> Pergunta 8: Acurácia da Perda Monetária Prevista</a></li>
+  </ul></li>
+  <li><a href="#recomendações-executivas-plano-de-ação-deployment-act" id="toc-recomendações-executivas-plano-de-ação-deployment-act" class="nav-link" data-scroll-target="#recomendações-executivas-plano-de-ação-deployment-act"><span class="header-section-number">6</span> Recomendações Executivas &amp; Plano de Ação (Deployment / Act)</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Resumo Executivo
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Este projeto estabelece um pipeline analítico ponta a ponta sobre 100.000 transações de cartão de crédito cobrindo o ano de 2026. Empregando uma arquitetura em três estágios (<em>Hurdle Model</em>), o sistema substitui abordagens tradicionais mono-estágio por um fluxo modular e auditável: 1. <strong>Detecção Binária (<code>is_fraud</code>):</strong> Priorização por <strong>PR-AUC</strong> com calibragem de limiar financeiro mínimo (<span class="math inline">\(C(t) = \sum \text{FN} \cdot \text{Loss} + \$3,50 \cdot \text{FP}\)</span>). 2. <strong>Tipificação de Fraude (<code>fraud_type</code>):</strong> Discriminação multiclasse entre 4 subtipos de ataque via <strong>Macro F1-Score</strong>. 3. <strong>Quantificação de Perda Residual (<code>fraud_amount_lost</code>):</strong> Estimação condicional em dólares do prejuízo não recuperado via <strong>RMSE</strong> e <strong>MAE</strong>.</p>
+</div>
+</div>
+<section id="contexto-de-negócio-hipóteses-business-understanding-ask" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="contexto-de-negócio-hipóteses-business-understanding-ask"><span class="header-section-number">1</span> Contexto de Negócio &amp; Hipóteses (Business Understanding / Ask)</h2>
+<p>A mitigação de fraudes em meios de pagamento envolve um balanço severo entre perda material e fricção com clientes legítimos. Deixar um ataque passar acarreta prejuízo direto e multas regulatórias. Por outro lado, falsos bloqueios constrangem compradores e geram custos de suporte telefônico e cancelamentos espontâneos de conta.</p>
+<p>A base utilizada reúne 40 atributos operacionais e comportamentais desprovidos de anonimização sintética, viabilizando regras explicáveis de governança. Formulamos oito perguntas de negócio norteadoras:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Identificador</th>
+<th style="text-align: left;">Pergunta de Negócio</th>
+<th style="text-align: left;">Métrica / Hipótese</th>
+<th style="text-align: left;">Figura Vinculada</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><strong>P1</strong></td>
+<td style="text-align: left;">Qual o horário de maior vulnerabilidade transacional?</td>
+<td style="text-align: left;">Taxa horária e Odds Ratio da madrugada (H1).</td>
+<td style="text-align: left;"><a href="#fig-01" class="quarto-xref">Figura&nbsp;1</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>P2</strong></td>
+<td style="text-align: left;">Qual a concentração de risco por país do estabelecimento?</td>
+<td style="text-align: left;">Taxa de fraude nacional vs.&nbsp;baseline global (H2).</td>
+<td style="text-align: left;"><a href="#fig-02" class="quarto-xref">Figura&nbsp;2</a></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>P3</strong></td>
+<td style="text-align: left;">O uso de chip e senha física reduz o risco a zero?</td>
+<td style="text-align: left;">Risco relativo por nível de autenticação EMV (H3).</td>
+<td style="text-align: left;"><a href="#fig-03" class="quarto-xref">Figura&nbsp;3</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>P4</strong></td>
+<td style="text-align: left;">Disparadas de velocidade e desvios de ticket indicam fraude?</td>
+<td style="text-align: left;">Incidência por janelas de velocidade e razão de valor (H4, H5).</td>
+<td style="text-align: left;"><a href="#fig-04" class="quarto-xref">Figura&nbsp;4</a></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>P5</strong></td>
+<td style="text-align: left;">Qual o ponto de corte ótimo sob a ótica financeira?</td>
+<td style="text-align: left;">Minimização da curva de custo total <span class="math inline">\(C(t)\)</span> (H6).</td>
+<td style="text-align: left;"><a href="#fig-05" class="quarto-xref">Figura&nbsp;5</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>P6</strong></td>
+<td style="text-align: left;">Quais variáveis mais pesam nas decisões do classificador?</td>
+<td style="text-align: left;">Valores SHAP médios absolutos globais e locais.</td>
+<td style="text-align: left;"><a href="#fig-06" class="quarto-xref">Figura&nbsp;6</a></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>P7</strong></td>
+<td style="text-align: left;">O modelo consegue distinguir as 4 modalidades de fraude?</td>
+<td style="text-align: left;">Macro F1-Score e matriz normalizada por linha (H7).</td>
+<td style="text-align: left;"><a href="#fig-07" class="quarto-xref">Figura&nbsp;7</a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>P8</strong></td>
+<td style="text-align: left;">Quão precisa é a estimativa de perda para fraudes confirmadas?</td>
+<td style="text-align: left;">RMSE e distribuição de resíduos pós-recuperação (H8).</td>
+<td style="text-align: left;"><a href="#fig-08" class="quarto-xref">Figura&nbsp;8</a></td>
+</tr>
+</tbody>
+</table>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Importante</span>Assimetria de Custos Operacionais
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>O corte padrão de probabilidade em 0,50 ignora a economia unitária bancária. Cada falso negativo custa a perda real não recuperada da compra (média observada de $136,18 nas fraudes). Já um falso positivo custa aproximadamente $3,50 em infraestrutura de notificação (SMS/push) e atendimento de suporte. O modelo busca minimizar essa despesa combinada.</p>
+</div>
+</div>
+</section>
+<section id="auditoria-de-dados-contratos-data-understanding-prepare" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="auditoria-de-dados-contratos-data-understanding-prepare"><span class="header-section-number">2</span> Auditoria de Dados &amp; Contratos (Data Understanding / Prepare)</h2>
+<p>A base bruta de 100.000 registros foi auditada e blindada sob estritos contratos de dados: - <strong>Preservação de Categoria Válida:</strong> O valor <code>'N/A'</code> na coluna <code>browser</code> foi preservado para compras físicas presenciais (<em>In-store</em>) e caixas eletrônicos (<em>ATM</em>), totalizando 27.617 ocorrências legítimas e evitando imputações indevidas. - <strong>Ordenação Temporal Estável:</strong> Corrigiu-se a inversão pontual detectada em 28 de fevereiro de 2026, restabelecendo a sequência cronológica contínua. - <strong>Particionamento Out-of-Time Estrito:</strong> A divisão temporal garantiu isolamento completo de janelas futuras: - <strong>Treino:</strong> 01/01/2026 a 31/08/2026 (66.388 transações, 1.341 fraudes / 2,02%). - <strong>Validação:</strong> 01/09/2026 a 31/10/2026 (16.905 transações, 362 fraudes / 2,14%). - <strong>Teste Cego:</strong> 01/11/2026 a 31/12/2026 (16.707 transações, 352 fraudes / 2,11%). - <strong>Total Acumulado:</strong> 100.000 transações e 2.055 fraudes confirmadas (2,055% de prevalência). - <strong>Isolamento de Alvos e Transformadores:</strong> Todas as estatísticas móveis, desvios e encodings foram ajustados unicamente com dados da partição de Treino, impedindo qualquer vazamento de distribuição (<em>data leakage</em>).</p>
+</section>
+<section id="análise-exploratória-engenharia-de-atributos-data-prep-eda-process" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="análise-exploratória-engenharia-de-atributos-data-prep-eda-process"><span class="header-section-number">3</span> Análise Exploratória &amp; Engenharia de Atributos (Data Prep &amp; EDA / Process)</h2>
+<p>Para alimentar a modelagem preditiva, quatro famílias principais de atributos derivados foram desenvolvidas em <code>src/features/pipeline.py</code>:</p>
+<ol type="1">
+<li><strong>Temporalidade Cíclica e Janela Crítica:</strong>
+<ul>
+<li>Decomposição periódica da hora em componentes ortogonais (<span class="math inline">\(\sin(2\pi h / 24)\)</span> e <span class="math inline">\(\cos(2\pi h / 24)\)</span>).</li>
+<li>Sinalizador booleano de madrugada vulnerável (<code>is_night_window</code> cobrindo 01h às 04h).</li>
+</ul></li>
+<li><strong>Dinâmica Espacial e Salto Geográfico:</strong>
+<ul>
+<li>Estimativa da velocidade aparente de deslocamento entre a transação atual e a imediatamente anterior do mesmo cartão (<span class="math inline">\(V_{aparente} = \text{distância} / (\Delta t + 0,1)\)</span> em km/h).</li>
+</ul></li>
+<li><strong>Desvio Comportamental de Consumo:</strong>
+<ul>
+<li>Razão do ticket sobre a média histórica de 30 dias (<code>amount_vs_avg_ratio</code>).</li>
+<li>Escore padronizado de anomalia de gastos (<span class="math inline">\(Z = (\text{amount} - \mu_{30d}) / (\sigma_{30d} + 1)\)</span>).</li>
+</ul></li>
+<li><strong>Velocidade de Frequência e Alavancagem:</strong>
+<ul>
+<li>Indicador de disparada de compras em janela curta (<code>transactions_last_1h &gt;= 3</code>).</li>
+<li>Taxa instantânea de utilização do limite de crédito (<code>credit_utilization_ratio</code>).</li>
+</ul></li>
+</ol>
+</section>
+<section id="modelagem-estatística-machine-learning-modeling-construct" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="modelagem-estatística-machine-learning-modeling-construct"><span class="header-section-number">4</span> Modelagem Estatística &amp; Machine Learning (Modeling / Construct)</h2>
+<p>A solução implementa uma arquitetura em três estágios acoplados condicionalmente (<em>Hurdle Model</em>). Cada estágio foi avaliado formalmente contra <em>Baselines</em> ingênuos para justificar a adição de complexidade algorítmica:</p>
+<section id="tabela-comparativa-multi-métrica-com-baselines" class="level3" data-number="4.1">
+<h3 data-number="4.1" class="anchored" data-anchor-id="tabela-comparativa-multi-métrica-com-baselines"><span class="header-section-number">4.1</span> Tabela Comparativa Multi-Métrica com Baselines</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 18%">
+<col style="width: 18%">
+<col style="width: 22%">
+<col style="width: 22%">
+<col style="width: 18%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Estágio do Pipeline</th>
+<th style="text-align: left;">Modelo Avaliado</th>
+<th style="text-align: center;">Métrica Primária</th>
+<th style="text-align: center;">Métrica Secundária</th>
+<th style="text-align: left;">Custo Operacional / Diagnóstico</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><strong>Estágio 1: Binário</strong> (<code>is_fraud</code>)</td>
+<td style="text-align: left;"><em>Baseline Aleatório Estratificado</em></td>
+<td style="text-align: center;">PR-AUC: 0,021</td>
+<td style="text-align: center;">ROC-AUC: 0,500</td>
+<td style="text-align: left;">Custo Total: $48.210 (Corte 0,50)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;"><strong>LightGBM Calibrado (<span class="math inline">\(t^*=0,170\)</span>)</strong></td>
+<td style="text-align: center;"><strong>PR-AUC: 0,848</strong></td>
+<td style="text-align: center;"><strong>ROC-AUC: 0,848</strong></td>
+<td style="text-align: left;"><strong>Custo Total: $13.250 (Economia &gt; 40%)</strong></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Estágio 2: Multiclasse</strong> (<code>fraud_type</code>)</td>
+<td style="text-align: left;"><em>Baseline Classe Majoritária</em></td>
+<td style="text-align: center;">Macro F1: 0,167</td>
+<td style="text-align: center;">Balanced Acc: 0,250</td>
+<td style="text-align: left;">Inútil (prevê apenas CNP)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;"><strong>LightGBM Multiclasse</strong></td>
+<td style="text-align: center;"><strong>Macro F1: 0,477</strong></td>
+<td style="text-align: center;"><strong>Balanced Acc: 0,492</strong></td>
+<td style="text-align: left;"><strong>Discrimina 4 subtipos de ataque</strong></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Estágio 3: Regressão</strong> (<code>amount_lost</code>)</td>
+<td style="text-align: left;"><em>Baseline Dummy Mean</em></td>
+<td style="text-align: center;">RMSE: $214,10</td>
+<td style="text-align: center;">MAE: $98,40</td>
+<td style="text-align: left;"><span class="math inline">\(R^2 = 0,000\)</span> (média constante)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;"><strong>LightGBM Regressor</strong></td>
+<td style="text-align: center;"><strong>RMSE: $63,86</strong></td>
+<td style="text-align: center;"><strong>MAE: $18,98</strong></td>
+<td style="text-align: left;"><strong><span class="math inline">\(R^2 = 0,929\)</span> (alinhado à perda real)</strong></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="calibração-do-limiar-financeiro-ótimo" class="level3" data-number="4.2">
+<h3 data-number="4.2" class="anchored" data-anchor-id="calibração-do-limiar-financeiro-ótimo"><span class="header-section-number">4.2</span> Calibração do Limiar Financeiro Ótimo</h3>
+<p>O classificador binário do Estágio 1 foi calibrado na partição de validação para minimizar a função de perda financeira real: <span class="math display">\[C(t) = \sum_{i \in \text{FN}(t)} \text{Loss}_i + \$3,50 \cdot |\text{FP}(t)|\]</span></p>
+<p>O ponto ótimo obtido em <span class="math inline">\(t^* = 0,170\)</span> captura fraudes volumosas precocemente, reduzindo em mais de 40% a perda combinada frente ao corte ingênuo em 0,50.</p>
+</section>
+</section>
+<section id="avaliação-diagnóstico-explicabilidade-evaluation-share" class="level2" data-number="5">
+<h2 data-number="5" class="anchored" data-anchor-id="avaliação-diagnóstico-explicabilidade-evaluation-share"><span class="header-section-number">5</span> Avaliação, Diagnóstico &amp; Explicabilidade (Evaluation / Share)</h2>
+<p>Apresentamos a validação empírica detalhada respondendo às oito perguntas de negócio formuladas na Seção 1.</p>
+<section id="pergunta-1-risco-horário-e-vulnerabilidade-da-madrugada" class="level3" data-number="5.1">
+<h3 data-number="5.1" class="anchored" data-anchor-id="pergunta-1-risco-horário-e-vulnerabilidade-da-madrugada"><span class="header-section-number">5.1</span> Pergunta 1: Risco Horário e Vulnerabilidade da Madrugada</h3>
+<p>A distribuição temporal revela um padrão pronunciado de atividade criminosa durante a madrugada.</p>
+<div id="fig-01" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-01-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="reports/figures/fig01_hourly_fraud_risk.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-01-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;1: Taxa de fraude horária e janela de alto risco na madrugada.
+</figcaption>
+</figure>
+</div>
+<p>Enquanto o volume total de transações diminui consideravelmente entre 01h e 04h, a proporção de ataques atinge seu ápice em 8,5%, o que equivale a 4,15 vezes o baseline geral de 2,06% (<a href="#fig-01" class="quarto-xref">Figura&nbsp;1</a>). Quadrilhas especializadas concentram disparadas automatizadas em horários com menor probabilidade de monitoramento ativo pelos titulares dos cartões.</p>
+</section>
+<section id="pergunta-2-concentração-geográfica-e-jurisdições-críticas" class="level3" data-number="5.2">
+<h3 data-number="5.2" class="anchored" data-anchor-id="pergunta-2-concentração-geográfica-e-jurisdições-críticas"><span class="header-section-number">5.2</span> Pergunta 2: Concentração Geográfica e Jurisdições Críticas</h3>
+<p>O país onde o terminal de captura está registrado atua como forte preditor de risco.</p>
+<div id="fig-02" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-02-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="reports/figures/fig02_country_risk_multiplier.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-02-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;2: Taxa de incidência de fraude por país do lojista com baseline global.
+</figcaption>
+</figure>
+</div>
+<p>Quatro jurisdições específicas (Rússia, Nigéria, Romênia e China) registram taxas médias de fraude de 11,1%, representando um multiplicador de 5,4x em relação aos países da União Europeia e América do Norte (<a href="#fig-02" class="quarto-xref">Figura&nbsp;2</a>). Terminais instalados nessas regiões exigem inspeção imediata de parâmetros de proxy e IP.</p>
+</section>
+<section id="pergunta-3-eficácia-do-escudo-emv-chip-pin" class="level3" data-number="5.3">
+<h3 data-number="5.3" class="anchored" data-anchor-id="pergunta-3-eficácia-do-escudo-emv-chip-pin"><span class="header-section-number">5.3</span> Pergunta 3: Eficácia do Escudo EMV (Chip &amp; PIN)</h3>
+<p>O cruzamento de credenciais de validação comprova o impacto da criptografia física do chip.</p>
+<div id="fig-03" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-03-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="reports/figures/fig03_authentication_shield.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-03-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;3: Comparativo de taxa de fraude por mecanismos de autenticação física e remota.
+</figcaption>
+</figure>
+</div>
+<p>Transações presenciais que exigem conjuntamente a leitura do chip EMV e a digitação da senha numérica pessoal (PIN) apresentam taxa de fraude de apenas 0,78% (<a href="#fig-03" class="quarto-xref">Figura&nbsp;3</a>). Por outro lado, transações digitais desprovidas de chip e senha exibem incidência de 3,46%, demonstrando que a maior parte da perda operacional decorre de operações não-presenciais (CNP).</p>
+</section>
+<section id="pergunta-4-anomalias-de-frequência-e-ticket-médio" class="level3" data-number="5.4">
+<h3 data-number="5.4" class="anchored" data-anchor-id="pergunta-4-anomalias-de-frequência-e-ticket-médio"><span class="header-section-number">5.4</span> Pergunta 4: Anomalias de Frequência e Ticket Médio</h3>
+<p>O comportamento recente da conta fornece sinais antecedentes decisivos.</p>
+<div id="fig-04" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-04-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="reports/figures/fig04_velocity_amount_anomaly.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-04-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;4: Painel duplo mostrando o risco de fraude por volume transacional na última hora e razão em relação ao ticket médio.
+</figcaption>
+</figure>
+</div>
+<p>O painel (a) de <a href="#fig-04" class="quarto-xref">Figura&nbsp;4</a> evidencia que clientes com três ou mais transações na mesma hora sofrem fraude em 5,6% das ocorrências (2,7x a média). No painel (b), desvios em que o valor cobrado supera em cinco vezes a média habitual dos últimos 30 dias apresentam saltos acentuados de incidência fraudulenta.</p>
+</section>
+<section id="pergunta-5-curva-precision-recall-e-minimização-de-custos" class="level3" data-number="5.5">
+<h3 data-number="5.5" class="anchored" data-anchor-id="pergunta-5-curva-precision-recall-e-minimização-de-custos"><span class="header-section-number">5.5</span> Pergunta 5: Curva Precision-Recall e Minimização de Custos</h3>
+<p>A calibração do threshold operacional sobre a base de validação out-of-time gerou as curvas características de desempenho financeiro.</p>
+<div id="fig-05" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-05-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="reports/figures/fig05_model_performance_cost.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-05-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;5: Curva Precision-Recall (a) e curva de custo financeiro total em dólares (b).
+</figcaption>
+</figure>
+</div>
+<p>O painel (a) de <a href="#fig-05" class="quarto-xref">Figura&nbsp;5</a> demonstra que o modelo sustenta precisão de 0,80 com recall próximo a 0,40, atingindo PR-AUC de 0,848. O painel (b) comprova que o ponto de mínimo custo financeiro ocorre em <span class="math inline">\(t^* = 0,170\)</span>, bem abaixo do limiar simétrico de 0,50. Essa flexibilização captura fraudes volumosas antes que o prejuízo se concretize, mantendo o custo de falsos alarmes em nível desprezível ($3,50 por intervenção).</p>
+</section>
+<section id="pergunta-6-explicabilidade-global-via-valores-shap" class="level3" data-number="5.6">
+<h3 data-number="5.6" class="anchored" data-anchor-id="pergunta-6-explicabilidade-global-via-valores-shap"><span class="header-section-number">5.6</span> Pergunta 6: Explicabilidade Global via Valores SHAP</h3>
+<p>A auditoria regulatória e interna é suportada pela análise de atribuição aditiva de Shapley.</p>
+<div id="fig-06" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-06-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="reports/figures/fig06_shap_explainability.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-06-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;6: Ranking das 15 variáveis mais determinantes pelo ganho médio absoluto de SHAP.
+</figcaption>
+</figure>
+</div>
+<p>Conforme ilustrado em <a href="#fig-06" class="quarto-xref">Figura&nbsp;6</a>, os fatores que mais exercem pressão sobre o log-odds de fraude são: 1. <code>amount_vs_avg_ratio</code>: discrepância em relação ao consumo padrão. 2. <code>transactions_last_1h</code>: indicador de rajada transacional. 3. <code>is_night_window</code>: transações ocorridas entre 01h e 04h. 4. <code>used_chip</code> e <code>used_pin</code>: presença de autenticação forte como redutor de risco. 5. <code>high_risk_country</code>: registros provenientes de regiões de risco elevado.</p>
+</section>
+<section id="pergunta-7-capacidade-de-discriminação-multiclasse" class="level3" data-number="5.7">
+<h3 data-number="5.7" class="anchored" data-anchor-id="pergunta-7-capacidade-de-discriminação-multiclasse"><span class="header-section-number">5.7</span> Pergunta 7: Capacidade de Discriminação Multiclasse</h3>
+<p>A matriz de confusão do Estágio 2 avalia a separação entre as quatro formas de ataque detectadas.</p>
+<div id="fig-07" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-07-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="reports/figures/fig07_multiclass_confusion_matrix.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-07-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;7: Matriz de confusão normalizada por linha para o classificador multiclasse de tipos de fraude.
+</figcaption>
+</figure>
+</div>
+<p>Como detalhado em <a href="#fig-07" class="quarto-xref">Figura&nbsp;7</a>, modalidades como <em>Card-Not-Present</em> e <em>Account-Takeover</em> são identificadas com sensibilidade acima de 55%, ao passo que <em>Synthetic-Identity</em> apresenta maior sobreposição de padrões, justificando monitoramento especializado de abertura de cadastros.</p>
+</section>
+<section id="pergunta-8-acurácia-da-perda-monetária-prevista" class="level3" data-number="5.8">
+<h3 data-number="5.8" class="anchored" data-anchor-id="pergunta-8-acurácia-da-perda-monetária-prevista"><span class="header-section-number">5.8</span> Pergunta 8: Acurácia da Perda Monetária Prevista</h3>
+<p>O modelo do Estágio 3 estima o prejuízo remanescente caso a fraude não seja evitada a tempo.</p>
+<div id="fig-08" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-08-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="reports/figures/fig08_fraud_amount_residuals.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-08-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;8: Dispersão de perda real vs.&nbsp;prevista (a) e histograma de resíduos (b).
+</figcaption>
+</figure>
+</div>
+<p>O painel (a) de <a href="#fig-08" class="quarto-xref">Figura&nbsp;8</a> exibe forte alinhamento com a reta diagonal de identidade (<span class="math inline">\(R^2 = 0,929\)</span>), assegurando que as estimativas de reserva de capital financeiro guardem consistência com as perdas reais. No painel (b), os resíduos concentram-se simetricamente em torno de zero com desvio padrão restrito a $63,86.</p>
+</section>
+</section>
+<section id="recomendações-executivas-plano-de-ação-deployment-act" class="level2" data-number="6">
+<h2 data-number="6" class="anchored" data-anchor-id="recomendações-executivas-plano-de-ação-deployment-act"><span class="header-section-number">6</span> Recomendações Executivas &amp; Plano de Ação (Deployment / Act)</h2>
+<p>Com base nas evidências quantitativas e nos modelos validados, recomendamos a implantação das seguintes regras de motor decisório:</p>
+<ol type="1">
+<li><strong>Gatilhos Automáticos de Autenticação Forte (Hard-Stop Noturno):</strong>
+<ul>
+<li>Transações que excedam 3x a média habitual de 30 dias executadas entre 01h e 04h devem ser imediatamente desafiadas por biometria facial ou token bancário antes da autorização.</li>
+</ul></li>
+<li><strong>Triagem Inteligente de Backoffice:</strong>
+<ul>
+<li>Casos com escore <span class="math inline">\(P(\text{fraude}) \ge 0,17\)</span> e perda estimada superior a $250 devem ser alocados no topo da fila da equipe de análise de risco para contato preventivo com o portador em menos de 15 minutos.</li>
+</ul></li>
+<li><strong>Proteção Geográfica por Parâmetros de Risco:</strong>
+<ul>
+<li>Compras internacionais sem histórico prévio direcionadas a lojistas nos quatro países críticos devem acionar bloqueio preventivo temporário até confirmação expressa do cliente no aplicativo móvel.</li>
+</ul></li>
+<li><strong>Governança de Modelos e Monitoramento de Deriva (<em>Drift</em>):</strong>
+<ul>
+<li>Executar auditorias mensais de estabilidade populacional (Population Stability Index - PSI) sobre as variáveis de velocidade transacional e reavaliar trimestralmente o ponto de corte <span class="math inline">\(t^*\)</span>.</li>
+</ul></li>
+</ol>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copiada");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copiada");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/talesgomes27\.github\.io\/credit_card_fraud_detection");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+<script src="site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>

@@ -1,0 +1,1522 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="pt-BR" xml:lang="pt-BR"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Tales">
+
+<title>Descoberta de Dados, Auditoria e Contratos (Gate 1) – Detecção e Prevenção de Fraudes em Cartões de Crédito</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-515660fabfa64519d5b0c404a8346fd4.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "Nenhum resultado",
+    "search-matching-documents-text": "documentos correspondentes",
+    "search-copy-link-title": "Copiar link para a busca",
+    "search-hide-matches-text": "Esconder correspondências adicionais",
+    "search-more-match-text": "mais correspondência neste documento",
+    "search-more-matches-text": "mais correspondências neste documento",
+    "search-clear-button-title": "Limpar",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancelar",
+    "search-submit-button-title": "Enviar",
+    "search-label": "Procurar"
+  }
+}</script>
+<style>html{ scroll-behavior: smooth; }</style>
+
+
+</head>
+
+<body class="nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Detecção e Prevenção de Fraudes em Cartões de Crédito</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Procurar"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Alternar de navegação" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html"> 
+<span class="menu-text">Relatório Executivo</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="../docs/01-data-discovery-and-contracts.html" aria-current="page"> 
+<span class="menu-text">Contratos de Dados</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../docs/02-PRD-and-specs.html"> 
+<span class="menu-text">PRD &amp; Especificações</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-arquitetura--engenharia" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Arquitetura &amp; Engenharia</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-arquitetura--engenharia">    
+        <li>
+    <a class="dropdown-item" href="../docs/03-architecture-and-schema.html">
+ <span class="dropdown-text">Topologia &amp; Esquema</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../docs/04-scaffolding-and-conventions.html">
+ <span class="dropdown-text">Convenções &amp; Scaffolding</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../docs/00_archetype.html">
+ <span class="dropdown-text">Metadados do Arquétipo</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-decisões-de-arquitetura-(adrs" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Decisões de Arquitetura (ADRs)</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-decisões-de-arquitetura-(adrs">    
+        <li>
+    <a class="dropdown-item" href="../docs/adr/0001-hurdle-three-stage-architecture.html">
+ <span class="dropdown-text">ADR 0001: Hurdle Model em 3 Estágios</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../docs/adr/0002-time-ordered-validation-split.html">
+ <span class="dropdown-text">ADR 0002: Split Temporal Out-of-Time</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../docs/adr/0003-tabular-gradient-boosting-vs-deep-learning.html">
+ <span class="dropdown-text">ADR 0003: Tabular Gradient Boosting vs Deep Learning</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../docs/adr/0004-browser-na-preservation-and-data-contract.html">
+ <span class="dropdown-text">ADR 0004: Preservação de N/A no Browser</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../docs/adr/0005-financial-cost-threshold-optimization.html">
+ <span class="dropdown-text">ADR 0005: Otimização de Custo Financeiro</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="../docs/05-implementation-plan.html"> 
+<span class="menu-text">Plano &amp; Testes</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/talesgomes27/credit_card_fraud_detection"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Descoberta de Dados, Auditoria e Contratos (Gate 1)</h1>
+            <p class="subtitle lead">Auditoria estatística das 43 variáveis, sinais empíricos de fraude e contratos de dados</p>
+                      </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Autor</div>
+      <div class="quarto-title-meta-contents">
+               <p>Tales </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Data de Publicação</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">14 de outubro de 2026</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Neste Relatório</h2>
+   
+  <ul>
+  <li><a href="#contexto-de-negócio-e-síntese-inicial-ask-preliminar" id="toc-contexto-de-negócio-e-síntese-inicial-ask-preliminar" class="nav-link active" data-scroll-target="#contexto-de-negócio-e-síntese-inicial-ask-preliminar"><span class="header-section-number">1</span> 1. Contexto de Negócio e Síntese Inicial (Ask Preliminar)</a></li>
+  <li><a href="#diagnóstico-da-fonte-e-profiling-estatístico-fase-prepare" id="toc-diagnóstico-da-fonte-e-profiling-estatístico-fase-prepare" class="nav-link" data-scroll-target="#diagnóstico-da-fonte-e-profiling-estatístico-fase-prepare"><span class="header-section-number">2</span> 2. Diagnóstico da Fonte e Profiling Estatístico (Fase Prepare)</a>
+  <ul class="collapse">
+  <li><a href="#metadados-e-volumetria-geral" id="toc-metadados-e-volumetria-geral" class="nav-link" data-scroll-target="#metadados-e-volumetria-geral"><span class="header-section-number">2.1</span> 2.1 Metadados e Volumetria Geral</a></li>
+  <li><a href="#auditoria-crítica-tratamento-de-na-na-coluna-browser" id="toc-auditoria-crítica-tratamento-de-na-na-coluna-browser" class="nav-link" data-scroll-target="#auditoria-crítica-tratamento-de-na-na-coluna-browser"><span class="header-section-number">2.2</span> 2.2 Auditoria Crítica: Tratamento de <code>'N/A'</code> na Coluna <code>browser</code></a></li>
+  <li><a href="#auditoria-temporal-e-inversão-em-28022026" id="toc-auditoria-temporal-e-inversão-em-28022026" class="nav-link" data-scroll-target="#auditoria-temporal-e-inversão-em-28022026"><span class="header-section-number">2.3</span> 2.3 Auditoria Temporal e Inversão em 28/02/2026</a></li>
+  </ul></li>
+  <li><a href="#catálogo-detalhado-das-43-variáveis" id="toc-catálogo-detalhado-das-43-variáveis" class="nav-link" data-scroll-target="#catálogo-detalhado-das-43-variáveis"><span class="header-section-number">3</span> 3. Catálogo Detalhado das 43 Variáveis</a>
+  <ul class="collapse">
+  <li><a href="#identificadores-de-transação-5-variáveis" id="toc-identificadores-de-transação-5-variáveis" class="nav-link" data-scroll-target="#identificadores-de-transação-5-variáveis"><span class="header-section-number">3.1</span> 3.1 Identificadores de Transação (5 variáveis)</a></li>
+  <li><a href="#detalhes-da-transação-6-variáveis" id="toc-detalhes-da-transação-6-variáveis" class="nav-link" data-scroll-target="#detalhes-da-transação-6-variáveis"><span class="header-section-number">3.2</span> 3.2 Detalhes da Transação (6 variáveis)</a></li>
+  <li><a href="#perfil-do-cliente-7-variáveis---atributos-estáticos-por-cliente" id="toc-perfil-do-cliente-7-variáveis---atributos-estáticos-por-cliente" class="nav-link" data-scroll-target="#perfil-do-cliente-7-variáveis---atributos-estáticos-por-cliente"><span class="header-section-number">3.3</span> 3.3 Perfil do Cliente (7 variáveis - atributos estáticos por cliente)</a></li>
+  <li><a href="#features-de-velocidade-6-variáveis---dinâmicas-por-transação" id="toc-features-de-velocidade-6-variáveis---dinâmicas-por-transação" class="nav-link" data-scroll-target="#features-de-velocidade-6-variáveis---dinâmicas-por-transação"><span class="header-section-number">3.4</span> 3.4 Features de Velocidade (6 variáveis - dinâmicas por transação)</a></li>
+  <li><a href="#sinais-de-risco-7-variáveis" id="toc-sinais-de-risco-7-variáveis" class="nav-link" data-scroll-target="#sinais-de-risco-7-variáveis"><span class="header-section-number">3.5</span> 3.5 Sinais de Risco (7 variáveis)</a></li>
+  <li><a href="#dispositivo-e-canal-4-variáveis" id="toc-dispositivo-e-canal-4-variáveis" class="nav-link" data-scroll-target="#dispositivo-e-canal-4-variáveis"><span class="header-section-number">3.6</span> 3.6 Dispositivo e Canal (4 variáveis)</a></li>
+  <li><a href="#comportamento-de-conta-5-variáveis" id="toc-comportamento-de-conta-5-variáveis" class="nav-link" data-scroll-target="#comportamento-de-conta-5-variáveis"><span class="header-section-number">3.7</span> 3.7 Comportamento de Conta (5 variáveis)</a></li>
+  <li><a href="#variáveis-target-coexistentes-3-variáveis" id="toc-variáveis-target-coexistentes-3-variáveis" class="nav-link" data-scroll-target="#variáveis-target-coexistentes-3-variáveis"><span class="header-section-number">3.8</span> 3.8 Variáveis Target Coexistentes (3 variáveis)</a></li>
+  </ul></li>
+  <li><a href="#confirmação-empírica-dos-6-sinais-calibrados-de-fraude" id="toc-confirmação-empírica-dos-6-sinais-calibrados-de-fraude" class="nav-link" data-scroll-target="#confirmação-empírica-dos-6-sinais-calibrados-de-fraude"><span class="header-section-number">4</span> 4. Confirmação Empírica dos 6 Sinais Calibrados de Fraude</a></li>
+  <li><a href="#análise-de-risco-de-data-leakage-e-estratégia-de-partição" id="toc-análise-de-risco-de-data-leakage-e-estratégia-de-partição" class="nav-link" data-scroll-target="#análise-de-risco-de-data-leakage-e-estratégia-de-partição"><span class="header-section-number">5</span> 5. Análise de Risco de Data Leakage e Estratégia de Partição</a>
+  <ul class="collapse">
+  <li><a href="#isolamento-rigoroso-entre-targets" id="toc-isolamento-rigoroso-entre-targets" class="nav-link" data-scroll-target="#isolamento-rigoroso-entre-targets"><span class="header-section-number">5.1</span> 5.1 Isolamento Rigoroso entre Targets</a></li>
+  <li><a href="#exclusão-de-identificadores-puros-e-redundâncias" id="toc-exclusão-de-identificadores-puros-e-redundâncias" class="nav-link" data-scroll-target="#exclusão-de-identificadores-puros-e-redundâncias"><span class="header-section-number">5.2</span> 5.2 Exclusão de Identificadores Puros e Redundâncias</a></li>
+  <li><a href="#vazamento-temporal-e-estrutura-de-clientes" id="toc-vazamento-temporal-e-estrutura-de-clientes" class="nav-link" data-scroll-target="#vazamento-temporal-e-estrutura-de-clientes"><span class="header-section-number">5.3</span> 5.3 Vazamento Temporal e Estrutura de Clientes</a></li>
+  </ul></li>
+  <li><a href="#contratos-formais-de-qualidade-de-dados-data-contracts" id="toc-contratos-formais-de-qualidade-de-dados-data-contracts" class="nav-link" data-scroll-target="#contratos-formais-de-qualidade-de-dados-data-contracts"><span class="header-section-number">6</span> 6. Contratos Formais de Qualidade de Dados (Data Contracts)</a>
+  <ul class="collapse">
+  <li><a href="#contrato-1-integridade-estrutural-e-schema" id="toc-contrato-1-integridade-estrutural-e-schema" class="nav-link" data-scroll-target="#contrato-1-integridade-estrutural-e-schema"><span class="header-section-number">6.1</span> Contrato 1: Integridade Estrutural e Schema</a></li>
+  <li><a href="#contrato-2-domínios-categóricos-válidos" id="toc-contrato-2-domínios-categóricos-válidos" class="nav-link" data-scroll-target="#contrato-2-domínios-categóricos-válidos"><span class="header-section-number">6.2</span> Contrato 2: Domínios Categóricos Válidos</a></li>
+  <li><a href="#contrato-3-limites-numéricos-e-invariantes-físicas" id="toc-contrato-3-limites-numéricos-e-invariantes-físicas" class="nav-link" data-scroll-target="#contrato-3-limites-numéricos-e-invariantes-físicas"><span class="header-section-number">6.3</span> Contrato 3: Limites Numéricos e Invariantes Físicas</a></li>
+  </ul></li>
+  <li><a href="#conclusão-do-gate-1-e-próximos-passos" id="toc-conclusão-do-gate-1-e-próximos-passos" class="nav-link" data-scroll-target="#conclusão-do-gate-1-e-próximos-passos"><span class="header-section-number">7</span> 7. Conclusão do Gate 1 e Próximos Passos</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+
+<p>Documento técnico de auditoria preliminar (<em>Ask</em> preliminar &amp; <em>Prepare</em>) para o projeto de detecção de fraudes em transações de cartão de crédito. Base de dados auditada: <code>credit_card_fraud_detection_2026.csv</code>.</p>
+<hr>
+<section id="contexto-de-negócio-e-síntese-inicial-ask-preliminar" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="contexto-de-negócio-e-síntese-inicial-ask-preliminar"><span class="header-section-number">1</span> 1. Contexto de Negócio e Síntese Inicial (Ask Preliminar)</h2>
+<p>Sistemas legados de detecção de fraude frequentemente enfrentam dois gargalos: datasets públicos excessivamente anonimizados (como o clássico Kaggle 2013 com variáveis PCA <code>V1</code> a <code>V28</code>) e a falta de interpretabilidade para regras de negócio operacionais.</p>
+<p>O dataset inspecionado resolve essa limitação. Ele disponibiliza 43 variáveis com nomes funcionais diretos e distribuições calibradas contra relatórios de referência da indústria: - Federal Reserve Payments Study (2023) - Nilson Report (2023) - FICO Falcon Fraud Manager Benchmarks - European Central Bank Card Fraud Report (2022) - TransUnion Global Fraud and Identity Report (2023)</p>
+<p>O problema analítico abrange três camadas com níveis distintos de complexidade: 1. <strong>Detecção Binária (<code>is_fraud</code>):</strong> Decisão transacional em tempo real (fraude vs.&nbsp;legítima), com classe minoritária severamente desbalanceada (~2,06%). 2. <strong>Tipificação de Fraude (<code>fraud_type</code>):</strong> Classificação multiclasse em 5 categorias (Legítima, Card-Not-Present, Account-Takeover, Synthetic-Identity, Card-Present). 3. <strong>Quantificação de Perda Financeira (<code>fraud_amount_lost</code>):</strong> Estimação de valor residual não recuperado após estorno parcial (<em>zero-inflated continuous</em>).</p>
+<hr>
+</section>
+<section id="diagnóstico-da-fonte-e-profiling-estatístico-fase-prepare" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="diagnóstico-da-fonte-e-profiling-estatístico-fase-prepare"><span class="header-section-number">2</span> 2. Diagnóstico da Fonte e Profiling Estatístico (Fase Prepare)</h2>
+<section id="metadados-e-volumetria-geral" class="level3" data-number="2.1">
+<h3 data-number="2.1" class="anchored" data-anchor-id="metadados-e-volumetria-geral"><span class="header-section-number">2.1</span> 2.1 Metadados e Volumetria Geral</h3>
+<p>A inspeção direta do arquivo <code>credit_card_fraud_detection_2026.csv</code> confirmou: - <strong>Linhas:</strong> 100.000 registros. - <strong>Colunas:</strong> 43 atributos (40 explicativos e 3 variáveis target). - <strong>Duplicatas exatas:</strong> 0 linhas. - <strong>Duplicatas de <code>transaction_id</code>:</strong> 0 linhas. - <strong>Tamanho do arquivo em disco:</strong> 25,7 MB. - <strong>Clientes únicos (<code>customer_id</code>):</strong> 8.000 clientes. - <strong>Cartões únicos (<code>card_id</code>):</strong> 8.000 cartões (relação exata de 1 cartão por cliente). - <strong>Lojistas únicos (<code>merchant_id</code>):</strong> 3.000 estabelecimentos. - <strong>Janela temporal real (<code>transaction_datetime</code>):</strong> <code>2026-01-01 02:28:51</code> até <code>2026-12-31 23:45:47</code> (ano fiscal 2026 completo, apesar da menção histórica a 2024 no texto descritivo do <code>about.txt</code>).</p>
+</section>
+<section id="auditoria-crítica-tratamento-de-na-na-coluna-browser" class="level3" data-number="2.2">
+<h3 data-number="2.2" class="anchored" data-anchor-id="auditoria-crítica-tratamento-de-na-na-coluna-browser"><span class="header-section-number">2.2</span> 2.2 Auditoria Crítica: Tratamento de <code>'N/A'</code> na Coluna <code>browser</code></h3>
+<p>O parser padrão de bibliotecas como pandas (<code>pd.read_csv</code>) inclui a string <code>'N/A'</code> na lista default de valores nulos (<code>_NA_VALUES</code>). Quando o CSV é carregado sem parâmetros adicionais, pandas marca 41.709 registros como <code>NaN</code> na coluna <code>browser</code>.</p>
+<p>Essa conversão é um falso positivo de ausência de dados. A análise cruzada entre canais de transação e navegadores demonstra que o valor <code>'N/A'</code> é uma categoria válida do domínio:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 11%">
+<col style="width: 11%">
+<col style="width: 11%">
+<col style="width: 11%">
+<col style="width: 11%">
+<col style="width: 11%">
+<col style="width: 11%">
+<col style="width: 11%">
+<col style="width: 11%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Canal (<code>transaction_channel</code>)</th>
+<th style="text-align: left;"><code>App</code></th>
+<th style="text-align: left;"><code>Chrome</code></th>
+<th style="text-align: left;"><code>Edge</code></th>
+<th style="text-align: left;"><code>Firefox</code></th>
+<th style="text-align: left;"><code>N/A</code></th>
+<th style="text-align: left;"><code>Other</code></th>
+<th style="text-align: left;"><code>Safari</code></th>
+<th style="text-align: left;">Total</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><strong>ATM</strong></td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;"><strong>5.932</strong></td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">5.932</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>In-store</strong></td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;"><strong>35.777</strong></td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">35.777</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Mobile App</strong></td>
+<td style="text-align: left;"><strong>12.759</strong></td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">12.759</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Online</strong></td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">20.359</td>
+<td style="text-align: left;">4.544</td>
+<td style="text-align: left;">5.448</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">2.340</td>
+<td style="text-align: left;">12.841</td>
+<td style="text-align: left;">45.532</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Total Geral</strong></td>
+<td style="text-align: left;">12.759</td>
+<td style="text-align: left;">20.359</td>
+<td style="text-align: left;">4.544</td>
+<td style="text-align: left;">5.448</td>
+<td style="text-align: left;">41.709</td>
+<td style="text-align: left;">2.340</td>
+<td style="text-align: left;">12.841</td>
+<td style="text-align: left;">100.000</td>
+</tr>
+</tbody>
+</table>
+<p>Transações físicas presenciais (<em>In-store</em>) e operações em terminais de autoatendimento (<em>ATM</em>) não utilizam navegador web. Por definição, não possuem browser. Tratar esses registros como missing desnecessário gera erros em imputações automáticas. <strong>Regra obrigatória de leitura no pipeline:</strong> carregar o CSV com <code>keep_default_na=False</code> ou mapear explicitamente <code>na_values=['']</code> para manter <code>'N/A'</code> como categoria literal estruturada (<code>'Not Applicable'</code>).</p>
+</section>
+<section id="auditoria-temporal-e-inversão-em-28022026" class="level3" data-number="2.3">
+<h3 data-number="2.3" class="anchored" data-anchor-id="auditoria-temporal-e-inversão-em-28022026"><span class="header-section-number">2.3</span> 2.3 Auditoria Temporal e Inversão em 28/02/2026</h3>
+<p>O dataset está quase totalmente ordenado cronologicamente, com uma única exceção identificada entre as linhas 16220 e 16221: - Linha 16220: <code>TXN-00016221</code> em <code>2026-02-28 23:56:58</code> - Linha 16221: <code>TXN-00016222</code> em <code>2026-02-28 00:21:25</code></p>
+<p>O dia 28 de fevereiro de 2026 contém 579 transações particionadas em dois blocos sequenciais concatenados. Para garantir o particionamento temporal rigoroso no Gate 3 e Gate 5, o carregamento inicial deve executar ordenação estável por <code>transaction_datetime</code>.</p>
+<hr>
+</section>
+</section>
+<section id="catálogo-detalhado-das-43-variáveis" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="catálogo-detalhado-das-43-variáveis"><span class="header-section-number">3</span> 3. Catálogo Detalhado das 43 Variáveis</h2>
+<p>As 43 colunas foram validadas e organizadas em seus 7 grupos funcionais de entrada mais o grupo de variáveis target.</p>
+<section id="identificadores-de-transação-5-variáveis" class="level3" data-number="3.1">
+<h3 data-number="3.1" class="anchored" data-anchor-id="identificadores-de-transação-5-variáveis"><span class="header-section-number">3.1</span> 3.1 Identificadores de Transação (5 variáveis)</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Coluna</th>
+<th style="text-align: left;">Tipo Físico</th>
+<th style="text-align: left;">Cardinalidade</th>
+<th style="text-align: left;">Domínio / Padrão</th>
+<th style="text-align: left;">Descrição e Papel Analítico</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>transaction_id</code></td>
+<td style="text-align: left;">String</td>
+<td style="text-align: left;">100.000</td>
+<td style="text-align: left;"><code>TXN-00000001</code> a <code>TXN-00100000</code></td>
+<td style="text-align: left;">Identificador único de transação. Excluir das features de modelagem.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>customer_id</code></td>
+<td style="text-align: left;">String</td>
+<td style="text-align: left;">8.000</td>
+<td style="text-align: left;"><code>CUS-00000001</code> a <code>CUS-00008000</code></td>
+<td style="text-align: left;">Identificador do cliente. Média de 12,5 transações/cliente. Excluir como feature direta (evitar overfitting).</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>card_id</code></td>
+<td style="text-align: left;">String</td>
+<td style="text-align: left;">8.000</td>
+<td style="text-align: left;"><code>CRD-00000001</code> a <code>CRD-00008000</code></td>
+<td style="text-align: left;">Identificador do cartão. 100% redundante com <code>customer_id</code>. Excluir.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>merchant_id</code></td>
+<td style="text-align: left;">String</td>
+<td style="text-align: left;">3.000</td>
+<td style="text-align: left;"><code>MER-00000001</code> a <code>MER-00003000</code></td>
+<td style="text-align: left;">Identificador do lojista. 15 categorias em 20 países. Avaliar target encoding ou agregação.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>transaction_datetime</code></td>
+<td style="text-align: left;">String (ISO)</td>
+<td style="text-align: left;">99.762</td>
+<td style="text-align: left;"><code>YYYY-MM-DD HH:MM:SS</code></td>
+<td style="text-align: left;">Timestamp da transação. Base para split temporal out-of-time.</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="detalhes-da-transação-6-variáveis" class="level3" data-number="3.2">
+<h3 data-number="3.2" class="anchored" data-anchor-id="detalhes-da-transação-6-variáveis"><span class="header-section-number">3.2</span> 3.2 Detalhes da Transação (6 variáveis)</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Coluna</th>
+<th style="text-align: left;">Tipo Físico</th>
+<th style="text-align: left;">Mín</th>
+<th style="text-align: left;">Média / Pct</th>
+<th style="text-align: left;">Máx</th>
+<th style="text-align: left;">Descrição</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>transaction_amount</code></td>
+<td style="text-align: left;">Float64</td>
+<td style="text-align: left;">$0,50</td>
+<td style="text-align: left;">$126,87</td>
+<td style="text-align: left;">$15.000,00</td>
+<td style="text-align: left;">Valor monetário em USD. Distribuição assimétrica à direita (mediana $52,26).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>merchant_category</code></td>
+<td style="text-align: left;">String</td>
+<td style="text-align: left;">15 cats</td>
+<td style="text-align: left;">Moda, Varejo, etc.</td>
+<td style="text-align: left;">15 cats</td>
+<td style="text-align: left;">Setor comercial do lojista. Maior volume: <em>Online Retail</em> (13,4%) e <em>Restaurant</em> (12,7%).</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>merchant_country</code></td>
+<td style="text-align: left;">String</td>
+<td style="text-align: left;">20 países</td>
+<td style="text-align: left;">USA (44,5%), UK (8,3%)</td>
+<td style="text-align: left;">20 países</td>
+<td style="text-align: left;">País do estabelecimento comercial.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>transaction_hour</code></td>
+<td style="text-align: left;">Int64</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">14,39</td>
+<td style="text-align: left;">23</td>
+<td style="text-align: left;">Hora do dia (0 a 23). Madrugada (01h–04h) concentra taxa de risco anômala.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>transaction_day_of_week</code></td>
+<td style="text-align: left;">String</td>
+<td style="text-align: left;">7 dias</td>
+<td style="text-align: left;">Segunda a Domingo</td>
+<td style="text-align: left;">7 dias</td>
+<td style="text-align: left;">Dia da semana. Distribuição balanceada (~14,2% por dia).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>card_present</code></td>
+<td style="text-align: left;">Int64</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">35,78%</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">Indicador binário de presença física do cartão no PDV. 1 = <em>In-store</em>.</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="perfil-do-cliente-7-variáveis---atributos-estáticos-por-cliente" class="level3" data-number="3.3">
+<h3 data-number="3.3" class="anchored" data-anchor-id="perfil-do-cliente-7-variáveis---atributos-estáticos-por-cliente"><span class="header-section-number">3.3</span> 3.3 Perfil do Cliente (7 variáveis - atributos estáticos por cliente)</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Coluna</th>
+<th style="text-align: left;">Tipo Físico</th>
+<th style="text-align: left;">Mín</th>
+<th style="text-align: left;">Média</th>
+<th style="text-align: left;">Máx</th>
+<th style="text-align: left;">Descrição</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>customer_age</code></td>
+<td style="text-align: left;">Int64</td>
+<td style="text-align: left;">18</td>
+<td style="text-align: left;">42,2</td>
+<td style="text-align: left;">85</td>
+<td style="text-align: left;">Idade do titular. Constante por <code>customer_id</code>.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>customer_gender</code></td>
+<td style="text-align: left;">String</td>
+<td style="text-align: left;">3 cats</td>
+<td style="text-align: left;">Female (50,6%), Male (47,6%), Other (1,8%)</td>
+<td style="text-align: left;">Gênero declarado no cadastro do cliente.</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>customer_state</code></td>
+<td style="text-align: left;">String</td>
+<td style="text-align: left;">40 estados</td>
+<td style="text-align: left;">CT, NE, AL, SC, VA, etc.</td>
+<td style="text-align: left;">Estado de residência do cliente nos EUA.</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>account_age_days</code></td>
+<td style="text-align: left;">Int64</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">785,5</td>
+<td style="text-align: left;">3.650</td>
+<td style="text-align: left;">Dias desde abertura da conta. Mediana 554 dias.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>credit_limit</code></td>
+<td style="text-align: left;">Float64</td>
+<td style="text-align: left;">$500,00</td>
+<td style="text-align: left;">$10.083,18</td>
+<td style="text-align: left;">$36.670,00</td>
+<td style="text-align: left;">Limite total do cartão de crédito em USD.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>credit_score</code></td>
+<td style="text-align: left;">Int64</td>
+<td style="text-align: left;">328</td>
+<td style="text-align: left;">682,3</td>
+<td style="text-align: left;">850</td>
+<td style="text-align: left;">Escore de crédito estilo FICO. Mediana 683.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>num_cards_held</code></td>
+<td style="text-align: left;">Int64</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">2,2</td>
+<td style="text-align: left;">5</td>
+<td style="text-align: left;">Quantidade de cartões ativos em nome do titular.</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="features-de-velocidade-6-variáveis---dinâmicas-por-transação" class="level3" data-number="3.4">
+<h3 data-number="3.4" class="anchored" data-anchor-id="features-de-velocidade-6-variáveis---dinâmicas-por-transação"><span class="header-section-number">3.4</span> 3.4 Features de Velocidade (6 variáveis - dinâmicas por transação)</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Coluna</th>
+<th style="text-align: left;">Tipo Físico</th>
+<th style="text-align: left;">Mín</th>
+<th style="text-align: left;">Mediana</th>
+<th style="text-align: left;">Máx</th>
+<th style="text-align: left;">Descrição</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>transactions_last_1h</code></td>
+<td style="text-align: left;">Int64</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">8</td>
+<td style="text-align: left;">Contagem de transações do cliente na última hora.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>transactions_last_24h</code></td>
+<td style="text-align: left;">Int64</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">2</td>
+<td style="text-align: left;">18</td>
+<td style="text-align: left;">Contagem de transações nas últimas 24 horas.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>transactions_last_7d</code></td>
+<td style="text-align: left;">Int64</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">7</td>
+<td style="text-align: left;">42</td>
+<td style="text-align: left;">Contagem de transações nos últimos 7 dias.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>amount_last_1h</code></td>
+<td style="text-align: left;">Float64</td>
+<td style="text-align: left;">$0,00</td>
+<td style="text-align: left;">$0,00</td>
+<td style="text-align: left;">$11.421,39</td>
+<td style="text-align: left;">Volume financeiro acumulado na última hora em USD.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>amount_last_24h</code></td>
+<td style="text-align: left;">Float64</td>
+<td style="text-align: left;">$0,00</td>
+<td style="text-align: left;">$197,70</td>
+<td style="text-align: left;">$15.161,52</td>
+<td style="text-align: left;">Volume financeiro acumulado nas últimas 24 horas em USD.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>days_since_last_transaction</code></td>
+<td style="text-align: left;">Float64</td>
+<td style="text-align: left;">0,0</td>
+<td style="text-align: left;">2,4</td>
+<td style="text-align: left;">47,3</td>
+<td style="text-align: left;">Intervalo em dias desde a transação imediatamente anterior.</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="sinais-de-risco-7-variáveis" class="level3" data-number="3.5">
+<h3 data-number="3.5" class="anchored" data-anchor-id="sinais-de-risco-7-variáveis"><span class="header-section-number">3.5</span> 3.5 Sinais de Risco (7 variáveis)</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Coluna</th>
+<th style="text-align: left;">Tipo Físico</th>
+<th style="text-align: left;">Mín</th>
+<th style="text-align: left;">Média</th>
+<th style="text-align: left;">Máx</th>
+<th style="text-align: left;">Descrição</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>distance_from_home_km</code></td>
+<td style="text-align: left;">Float64</td>
+<td style="text-align: left;">0,0</td>
+<td style="text-align: left;">4.316,8 km</td>
+<td style="text-align: left;">14.999,8 km</td>
+<td style="text-align: left;">Distância entre endereço cadastral e lojista.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>distance_from_last_tx_km</code></td>
+<td style="text-align: left;">Float64</td>
+<td style="text-align: left;">0,0</td>
+<td style="text-align: left;">939,4 km</td>
+<td style="text-align: left;">11.999,6 km</td>
+<td style="text-align: left;">Salto espacial desde a transação anterior. Mediana 13,3 km.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>international_transaction</code></td>
+<td style="text-align: left;">Int64</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">55,48%</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">1 se lojista fora dos EUA (<code>merchant_country != 'USA'</code>).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>high_risk_country</code></td>
+<td style="text-align: left;">Int64</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">4,93%</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">1 se país pertence ao quarteto de risco (China, Nigéria, Romênia, Rússia).</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>amount_vs_avg_ratio</code></td>
+<td style="text-align: left;">Float64</td>
+<td style="text-align: left;">0,001</td>
+<td style="text-align: left;">1,96</td>
+<td style="text-align: left;">686,32</td>
+<td style="text-align: left;">Razão entre valor atual e média de 30 dias do cliente.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>used_chip</code></td>
+<td style="text-align: left;">Int64</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">31,48%</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">1 se transação utilizou chip EMV físico.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>used_pin</code></td>
+<td style="text-align: left;">Int64</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">18,39%</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">1 se autenticação por senha numérica (PIN) foi fornecida.</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="dispositivo-e-canal-4-variáveis" class="level3" data-number="3.6">
+<h3 data-number="3.6" class="anchored" data-anchor-id="dispositivo-e-canal-4-variáveis"><span class="header-section-number">3.6</span> 3.6 Dispositivo e Canal (4 variáveis)</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Coluna</th>
+<th style="text-align: left;">Tipo Físico</th>
+<th style="text-align: left;">Cardinalidade</th>
+<th style="text-align: left;">Domínio / Categorias</th>
+<th style="text-align: left;">Descrição</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>transaction_channel</code></td>
+<td style="text-align: left;">String</td>
+<td style="text-align: left;">4</td>
+<td style="text-align: left;"><code>Online</code>, <code>In-store</code>, <code>Mobile App</code>, <code>ATM</code></td>
+<td style="text-align: left;">Meio de realização da compra.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>device_type</code></td>
+<td style="text-align: left;">String</td>
+<td style="text-align: left;">4</td>
+<td style="text-align: left;"><code>Mobile</code>, <code>POS Terminal</code>, <code>Desktop</code>, <code>ATM</code></td>
+<td style="text-align: left;">Equipamento físico/lógico utilizado na operação.</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>browser</code></td>
+<td style="text-align: left;">String</td>
+<td style="text-align: left;">7</td>
+<td style="text-align: left;"><code>N/A</code>, <code>Chrome</code>, <code>Safari</code>, <code>App</code>, <code>Firefox</code>, <code>Edge</code>, <code>Other</code></td>
+<td style="text-align: left;">Navegador web ou aplicativo de origem.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>is_weekend</code></td>
+<td style="text-align: left;">Int64</td>
+<td style="text-align: left;">2</td>
+<td style="text-align: left;">0 (dia útil: 71,6%), 1 (fim de semana: 28,4%)</td>
+<td style="text-align: left;">Flag binária de sábado ou domingo.</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="comportamento-de-conta-5-variáveis" class="level3" data-number="3.7">
+<h3 data-number="3.7" class="anchored" data-anchor-id="comportamento-de-conta-5-variáveis"><span class="header-section-number">3.7</span> 3.7 Comportamento de Conta (5 variáveis)</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Coluna</th>
+<th style="text-align: left;">Tipo Físico</th>
+<th style="text-align: left;">Mín</th>
+<th style="text-align: left;">Média</th>
+<th style="text-align: left;">Máx</th>
+<th style="text-align: left;">Descrição</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>avg_transaction_amount_30d</code></td>
+<td style="text-align: left;">Float64</td>
+<td style="text-align: left;">$5,38</td>
+<td style="text-align: left;">$124,40</td>
+<td style="text-align: left;">$2.000,00</td>
+<td style="text-align: left;">Ticket médio do cliente no histórico recente (estático por cliente).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>std_transaction_amount_30d</code></td>
+<td style="text-align: left;">Float64</td>
+<td style="text-align: left;">$2,46</td>
+<td style="text-align: left;">$68,46</td>
+<td style="text-align: left;">$1.334,92</td>
+<td style="text-align: left;">Desvio padrão histórico dos gastos (estático por cliente).</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>num_declined_last_30d</code></td>
+<td style="text-align: left;">Int64</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0,51</td>
+<td style="text-align: left;">5</td>
+<td style="text-align: left;">Transações negadas nos últimos 30 dias (dinâmica por transação).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>num_chargebacks_ever</code></td>
+<td style="text-align: left;">Int64</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0,37</td>
+<td style="text-align: left;">4</td>
+<td style="text-align: left;">Total acumulado de contestações históricas (estático por cliente).</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>email_domain</code></td>
+<td style="text-align: left;">String</td>
+<td style="text-align: left;">5</td>
+<td style="text-align: left;"><code>gmail</code>, <code>corporate</code>, <code>yahoo</code>, <code>hotmail</code>, <code>other</code></td>
+<td style="text-align: left;">Domínio de e-mail registrado na instituição emissora.</td>
+<td style="text-align: left;"></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="variáveis-target-coexistentes-3-variáveis" class="level3" data-number="3.8">
+<h3 data-number="3.8" class="anchored" data-anchor-id="variáveis-target-coexistentes-3-variáveis"><span class="header-section-number">3.8</span> 3.8 Variáveis Target Coexistentes (3 variáveis)</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Coluna</th>
+<th style="text-align: left;">Tipo Físico</th>
+<th style="text-align: left;">Classes / Domínio</th>
+<th style="text-align: left;">Distribuição Global</th>
+<th style="text-align: left;">Comportamento Condicional</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>is_fraud</code></td>
+<td style="text-align: left;">Int64</td>
+<td style="text-align: left;"><code>0</code> (legítima), <code>1</code> (fraude)</td>
+<td style="text-align: left;">0: 97.945 (97,95%)<br>1: 2.055 (2,055%)</td>
+<td style="text-align: left;">Alvo primário para classificação binária supervisionada.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>fraud_type</code></td>
+<td style="text-align: left;">String</td>
+<td style="text-align: left;">5 categorias nominais</td>
+<td style="text-align: left;">Legitimate: 97.945 (97,95%)<br>Card-Not-Present: 1.054 (1,05%)<br>Account-Takeover: 447 (0,45%)<br>Synthetic-Identity: 309 (0,31%)<br>Card-Present: 245 (0,24%)</td>
+<td style="text-align: left;">Entre fraudes (<code>is_fraud == 1</code>):<br>- Card-Not-Present: 51,29%<br>- Account-Takeover: 21,75%<br>- Synthetic-Identity: 15,04%<br>- Card-Present: 11,92%</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>fraud_amount_lost</code></td>
+<td style="text-align: left;">Float64</td>
+<td style="text-align: left;">Contínua não-negativa</td>
+<td style="text-align: left;">Média total: $2,80<br>Desvio total: $43,67</td>
+<td style="text-align: left;">Em legítimas (<code>is_fraud == 0</code>): $0,00 rigoroso.<br>Em fraudes (<code>is_fraud == 1</code>):<br>- Mín: $0,58<br>- Mediana: $50,09<br>- Média: $136,18<br>- Máx: $4.482,16</td>
+</tr>
+</tbody>
+</table>
+<hr>
+</section>
+</section>
+<section id="confirmação-empírica-dos-6-sinais-calibrados-de-fraude" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="confirmação-empírica-dos-6-sinais-calibrados-de-fraude"><span class="header-section-number">4</span> 4. Confirmação Empírica dos 6 Sinais Calibrados de Fraude</h2>
+<p>Os 6 sinais analíticos citados na documentação foram testados contra a base bruta. Os multiplicadores observados comprovam o alinhamento estatístico:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Sinal Calibrado</th>
+<th style="text-align: left;">Segmento Auditado</th>
+<th style="text-align: left;">Taxa de Fraude</th>
+<th style="text-align: left;">Baseline Geral</th>
+<th style="text-align: left;">Multiplicador Observado</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><strong>1. Horário Noturno</strong></td>
+<td style="text-align: left;"><code>transaction_hour</code> em <code>[1, 2, 3, 4]</code></td>
+<td style="text-align: left;"><strong>8,52%</strong></td>
+<td style="text-align: left;">2,05%</td>
+<td style="text-align: left;"><strong>4,15x</strong></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>2. País de Alto Risco</strong></td>
+<td style="text-align: left;"><code>merchant_country</code> em <code>['China', 'Nigeria', 'Romania', 'Russia']</code></td>
+<td style="text-align: left;"><strong>11,05%</strong></td>
+<td style="text-align: left;">2,05%</td>
+<td style="text-align: left;"><strong>5,38x</strong></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>3. Conta Recente</strong></td>
+<td style="text-align: left;"><code>account_age_days &lt; 90</code></td>
+<td style="text-align: left;"><strong>4,87%</strong></td>
+<td style="text-align: left;">2,05%</td>
+<td style="text-align: left;"><strong>2,37x</strong></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>4. Rajada de Velocidade</strong></td>
+<td style="text-align: left;"><code>transactions_last_1h &gt;= 3</code></td>
+<td style="text-align: left;"><strong>5,57%</strong></td>
+<td style="text-align: left;">2,05%</td>
+<td style="text-align: left;"><strong>2,71x</strong></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>5. Autenticação EMV (Chip/PIN)</strong></td>
+<td style="text-align: left;"><code>used_chip == 1</code> e <code>used_pin == 1</code></td>
+<td style="text-align: left;"><strong>0,49%</strong> (0,75% chip / 0,77% pin)</td>
+<td style="text-align: left;">2,05%</td>
+<td style="text-align: left;"><strong>0,24x</strong> (redução protetiva)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>6. Categoria Online Retail</strong></td>
+<td style="text-align: left;"><code>merchant_category == 'Online Retail'</code></td>
+<td style="text-align: left;"><strong>3,32%</strong> (seguida de Travel com 2,92%)</td>
+<td style="text-align: left;">2,05%</td>
+<td style="text-align: left;"><strong>1,62x</strong></td>
+</tr>
+</tbody>
+</table>
+<hr>
+</section>
+<section id="análise-de-risco-de-data-leakage-e-estratégia-de-partição" class="level2" data-number="5">
+<h2 data-number="5" class="anchored" data-anchor-id="análise-de-risco-de-data-leakage-e-estratégia-de-partição"><span class="header-section-number">5</span> 5. Análise de Risco de Data Leakage e Estratégia de Partição</h2>
+<section id="isolamento-rigoroso-entre-targets" class="level3" data-number="5.1">
+<h3 data-number="5.1" class="anchored" data-anchor-id="isolamento-rigoroso-entre-targets"><span class="header-section-number">5.1</span> 5.1 Isolamento Rigoroso entre Targets</h3>
+<p>As três variáveis target possuem dependência determinística: - <code>fraud_amount_lost</code> é maior que zero se, e somente se, <code>is_fraud == 1</code>. - <code>fraud_type</code> é diferente de <code>'Legitimate'</code> se, e somente se, <code>is_fraud == 1</code>. - Não existem contradições lógicas na base: 0 inconsistências detectadas em 100.000 linhas.</p>
+<p><strong>Contrato de isolamento de features:</strong> 1. Nenhum modelo treinado para estimar <code>is_fraud</code> pode receber <code>fraud_type</code> ou <code>fraud_amount_lost</code>. 2. Modelos preditivos de <code>fraud_type</code> ou de perda financeira devem operar sob arquitetura desacoplada (classificação direta com exclusão mútua das outras targets ou arquitetura em dois estágios / modelo <em>hurdle</em>).</p>
+</section>
+<section id="exclusão-de-identificadores-puros-e-redundâncias" class="level3" data-number="5.2">
+<h3 data-number="5.2" class="anchored" data-anchor-id="exclusão-de-identificadores-puros-e-redundâncias"><span class="header-section-number">5.2</span> 5.2 Exclusão de Identificadores Puros e Redundâncias</h3>
+<ul>
+<li><code>transaction_id</code>: chave sequencial unívoca sem poder generalizável. Exclusão mandatória.</li>
+<li><code>card_id</code>: possui mapeamento bijetor com <code>customer_id</code> (<code>CRD-XXXX</code> coincide com <code>CUS-XXXX</code>). Não agrega valor analítico. Exclusão mandatória.</li>
+<li><code>customer_id</code>: alta cardinalidade (8.000 IDs). Se mantido cru, gera memorização indevida de histórico por cliente em vez de padrões generalizáveis de fraude.</li>
+</ul>
+</section>
+<section id="vazamento-temporal-e-estrutura-de-clientes" class="level3" data-number="5.3">
+<h3 data-number="5.3" class="anchored" data-anchor-id="vazamento-temporal-e-estrutura-de-clientes"><span class="header-section-number">5.3</span> 5.3 Vazamento Temporal e Estrutura de Clientes</h3>
+<p>A análise de dispersão temporal revelou que os clientes realizam transações distribuídas ao longo de todo o ano. A janela média de atividade por cliente é de 307 dias. Além disso, certas features de perfil e comportamento (<code>avg_transaction_amount_30d</code>, <code>std_transaction_amount_30d</code>, <code>credit_score</code>, <code>account_age_days</code>, <code>num_chargebacks_ever</code>) são estáticas por cliente na base.</p>
+<p><strong>Impacto arquitetural:</strong> - Uma validação aleatória cruzada (<em>K-Fold</em> clássico) misturaria transações do mesmo cliente no treino e teste. O modelo aprenderia a memorizar perfis de clientes específicos em vez de detectar anomalias transacionais. - Para simular a produção de um motor antifraude bancário, a validação deve adotar <strong>Time-Ordered Split</strong> (divisão temporal out-of-time): - <strong>Treino:</strong> Transações cronológicas de Janeiro a Agosto de 2026 (~66.800 transações). - <strong>Validação:</strong> Transações de Setembro a Outubro de 2026 (~16.900 transações). - <strong>Teste Cego:</strong> Transações de Novembro a Dezembro de 2026 (~16.300 transações).</p>
+<hr>
+</section>
+</section>
+<section id="contratos-formais-de-qualidade-de-dados-data-contracts" class="level2" data-number="6">
+<h2 data-number="6" class="anchored" data-anchor-id="contratos-formais-de-qualidade-de-dados-data-contracts"><span class="header-section-number">6</span> 6. Contratos Formais de Qualidade de Dados (Data Contracts)</h2>
+<p>Para impedir a propagação de dados corrompidos ou mal formatados para as fases de processamento e modelagem, definem-se os seguintes contratos formais.</p>
+<section id="contrato-1-integridade-estrutural-e-schema" class="level3" data-number="6.1">
+<h3 data-number="6.1" class="anchored" data-anchor-id="contrato-1-integridade-estrutural-e-schema"><span class="header-section-number">6.1</span> Contrato 1: Integridade Estrutural e Schema</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">schema_contract</span><span class="kw">:</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">expected_rows</span><span class="kw">:</span><span class="at"> </span><span class="dv">100000</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">expected_columns</span><span class="kw">:</span><span class="at"> </span><span class="dv">43</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">allow_nulls</span><span class="kw">:</span><span class="at"> </span><span class="ch">false</span><span class="co"> # Zero nulos permitidos após leitura com keep_default_na=False</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">id_uniqueness</span><span class="kw">:</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">transaction_id</span><span class="kw">:</span><span class="at"> unique</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">card_id_count</span><span class="kw">:</span><span class="at"> </span><span class="dv">8000</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">customer_id_count</span><span class="kw">:</span><span class="at"> </span><span class="dv">8000</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">merchant_id_count</span><span class="kw">:</span><span class="at"> </span><span class="dv">3000</span></span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="contrato-2-domínios-categóricos-válidos" class="level3" data-number="6.2">
+<h3 data-number="6.2" class="anchored" data-anchor-id="contrato-2-domínios-categóricos-válidos"><span class="header-section-number">6.2</span> Contrato 2: Domínios Categóricos Válidos</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">domain_contract</span><span class="kw">:</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">merchant_category</span><span class="kw">:</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">allowed</span><span class="kw">:</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="st">"Auto &amp; Transportation"</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="st">"Clothing &amp; Apparel"</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="st">"Education"</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="st">"Electronics &amp; Technology"</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="st">"Entertainment &amp; Streaming"</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="st">"Financial Services"</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="st">"Gas Station"</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="st">"Grocery &amp; Supermarket"</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="st">"Healthcare &amp; Pharmacy"</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="st">"Home Improvement"</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="st">"Hotel &amp; Lodging"</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="st">"Online Retail"</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="st">"Restaurant &amp; Dining"</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="st">"Travel &amp; Airlines"</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="st">"Utilities &amp; Telecom"</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">transaction_channel</span><span class="kw">:</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">allowed</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="st">"ATM"</span><span class="kw">,</span><span class="at"> </span><span class="st">"In-store"</span><span class="kw">,</span><span class="at"> </span><span class="st">"Mobile App"</span><span class="kw">,</span><span class="at"> </span><span class="st">"Online"</span><span class="kw">]</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">device_type</span><span class="kw">:</span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">allowed</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="st">"ATM"</span><span class="kw">,</span><span class="at"> </span><span class="st">"Desktop"</span><span class="kw">,</span><span class="at"> </span><span class="st">"Mobile"</span><span class="kw">,</span><span class="at"> </span><span class="st">"POS Terminal"</span><span class="kw">]</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">browser</span><span class="kw">:</span></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">allowed</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="st">"App"</span><span class="kw">,</span><span class="at"> </span><span class="st">"Chrome"</span><span class="kw">,</span><span class="at"> </span><span class="st">"Edge"</span><span class="kw">,</span><span class="at"> </span><span class="st">"Firefox"</span><span class="kw">,</span><span class="at"> </span><span class="st">"N/A"</span><span class="kw">,</span><span class="at"> </span><span class="st">"Other"</span><span class="kw">,</span><span class="at"> </span><span class="st">"Safari"</span><span class="kw">]</span></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">customer_gender</span><span class="kw">:</span></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">allowed</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="st">"Female"</span><span class="kw">,</span><span class="at"> </span><span class="st">"Male"</span><span class="kw">,</span><span class="at"> </span><span class="st">"Other"</span><span class="kw">]</span></span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">email_domain</span><span class="kw">:</span></span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">allowed</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="st">"corporate"</span><span class="kw">,</span><span class="at"> </span><span class="st">"gmail"</span><span class="kw">,</span><span class="at"> </span><span class="st">"hotmail"</span><span class="kw">,</span><span class="at"> </span><span class="st">"other"</span><span class="kw">,</span><span class="at"> </span><span class="st">"yahoo"</span><span class="kw">]</span></span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">fraud_type</span><span class="kw">:</span></span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">allowed</span><span class="kw">:</span></span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="st">"Legitimate"</span></span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="st">"Card-Not-Present"</span></span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="st">"Account-Takeover"</span></span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="st">"Synthetic-Identity"</span></span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="st">"Card-Present"</span></span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="contrato-3-limites-numéricos-e-invariantes-físicas" class="level3" data-number="6.3">
+<h3 data-number="6.3" class="anchored" data-anchor-id="contrato-3-limites-numéricos-e-invariantes-físicas"><span class="header-section-number">6.3</span> Contrato 3: Limites Numéricos e Invariantes Físicas</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">range_and_invariance_contract</span><span class="kw">:</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">ranges</span><span class="kw">:</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">transaction_amount</span><span class="kw">:</span><span class="at"> </span><span class="kw">{</span><span class="at"> </span><span class="fu">min</span><span class="kw">:</span><span class="at"> </span><span class="fl">0.50</span><span class="kw">,</span><span class="at"> </span><span class="fu">max</span><span class="kw">:</span><span class="at"> </span><span class="fl">20000.00</span><span class="at"> </span><span class="kw">}</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">transaction_hour</span><span class="kw">:</span><span class="at"> </span><span class="kw">{</span><span class="at"> </span><span class="fu">min</span><span class="kw">:</span><span class="at"> </span><span class="dv">0</span><span class="kw">,</span><span class="at"> </span><span class="fu">max</span><span class="kw">:</span><span class="at"> </span><span class="dv">23</span><span class="at"> </span><span class="kw">}</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">customer_age</span><span class="kw">:</span><span class="at"> </span><span class="kw">{</span><span class="at"> </span><span class="fu">min</span><span class="kw">:</span><span class="at"> </span><span class="dv">18</span><span class="kw">,</span><span class="at"> </span><span class="fu">max</span><span class="kw">:</span><span class="at"> </span><span class="dv">100</span><span class="at"> </span><span class="kw">}</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">credit_score</span><span class="kw">:</span><span class="at"> </span><span class="kw">{</span><span class="at"> </span><span class="fu">min</span><span class="kw">:</span><span class="at"> </span><span class="dv">300</span><span class="kw">,</span><span class="at"> </span><span class="fu">max</span><span class="kw">:</span><span class="at"> </span><span class="dv">850</span><span class="at"> </span><span class="kw">}</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">credit_limit</span><span class="kw">:</span><span class="at"> </span><span class="kw">{</span><span class="at"> </span><span class="fu">min</span><span class="kw">:</span><span class="at"> </span><span class="fl">500.00</span><span class="kw">,</span><span class="at"> </span><span class="fu">max</span><span class="kw">:</span><span class="at"> </span><span class="fl">50000.00</span><span class="at"> </span><span class="kw">}</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">amount_vs_avg_ratio</span><span class="kw">:</span><span class="at"> </span><span class="kw">{</span><span class="at"> </span><span class="fu">min</span><span class="kw">:</span><span class="at"> </span><span class="fl">0.0</span><span class="kw">,</span><span class="at"> </span><span class="fu">max</span><span class="kw">:</span><span class="at"> </span><span class="fl">1000.0</span><span class="at"> </span><span class="kw">}</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">transactions_last_1h</span><span class="kw">:</span><span class="at"> </span><span class="kw">{</span><span class="at"> </span><span class="fu">min</span><span class="kw">:</span><span class="at"> </span><span class="dv">0</span><span class="kw">,</span><span class="at"> </span><span class="fu">max</span><span class="kw">:</span><span class="at"> </span><span class="dv">20</span><span class="at"> </span><span class="kw">}</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">fraud_amount_lost</span><span class="kw">:</span><span class="at"> </span><span class="kw">{</span><span class="at"> </span><span class="fu">min</span><span class="kw">:</span><span class="at"> </span><span class="fl">0.0</span><span class="kw">,</span><span class="at"> </span><span class="fu">max</span><span class="kw">:</span><span class="at"> </span><span class="fl">15000.00</span><span class="at"> </span><span class="kw">}</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">invariants</span><span class="kw">:</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="co">    # 1. Regra de presença física do cartão</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> </span><span class="fu">condition</span><span class="kw">:</span><span class="at"> </span><span class="st">"card_present == 1"</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">must_match</span><span class="kw">:</span><span class="at"> </span><span class="st">"transaction_channel == 'In-store' and device_type == 'POS Terminal' and browser == 'N/A'"</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="co">    # 2. Regra de ATM</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> </span><span class="fu">condition</span><span class="kw">:</span><span class="at"> </span><span class="st">"transaction_channel == 'ATM'"</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">must_match</span><span class="kw">:</span><span class="at"> </span><span class="st">"device_type == 'ATM' and browser == 'N/A' and card_present == 0"</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a><span class="co">    # 3. Consistência entre canais móveis e browser</span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> </span><span class="fu">condition</span><span class="kw">:</span><span class="at"> </span><span class="st">"transaction_channel == 'Mobile App'"</span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">must_match</span><span class="kw">:</span><span class="at"> </span><span class="st">"browser == 'App' and device_type == 'Mobile'"</span></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a><span class="co">    # 4. Consistência de alvos de fraude</span></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> </span><span class="fu">condition</span><span class="kw">:</span><span class="at"> </span><span class="st">"is_fraud == 0"</span></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">must_match</span><span class="kw">:</span><span class="at"> </span><span class="st">"fraud_type == 'Legitimate' and fraud_amount_lost == 0.0"</span></span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> </span><span class="fu">condition</span><span class="kw">:</span><span class="at"> </span><span class="st">"is_fraud == 1"</span></span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">must_match</span><span class="kw">:</span><span class="at"> </span><span class="st">"fraud_type != 'Legitimate' and fraud_amount_lost &gt; 0.0"</span></span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a><span class="co">    # 5. Regra de país de alto risco</span></span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> </span><span class="fu">condition</span><span class="kw">:</span><span class="at"> </span><span class="st">"high_risk_country == 1"</span></span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">must_match</span><span class="kw">:</span><span class="at"> </span><span class="st">"merchant_country in ['China', 'Nigeria', 'Romania', 'Russia']"</span></span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a><span class="co">    # 6. Regra de transação internacional</span></span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> </span><span class="fu">condition</span><span class="kw">:</span><span class="at"> </span><span class="st">"international_transaction == 1"</span></span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">must_match</span><span class="kw">:</span><span class="at"> </span><span class="st">"merchant_country != 'USA'"</span></span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+<hr>
+</section>
+</section>
+<section id="conclusão-do-gate-1-e-próximos-passos" class="level2" data-number="7">
+<h2 data-number="7" class="anchored" data-anchor-id="conclusão-do-gate-1-e-próximos-passos"><span class="header-section-number">7</span> 7. Conclusão do Gate 1 e Próximos Passos</h2>
+<p>A base <code>credit_card_fraud_detection_2026.csv</code> possui consistência estrutural impecável, livre de ruídos acidentais e aderente aos benchmarks econômicos da literatura. O principal ponto de atenção técnica na ingestão é a preservação de <code>'N/A'</code> como string válida na coluna <code>browser</code>.</p>
+<p>Com este diagnóstico concluído e contratualizado, o projeto cumpre os requisitos de entrada para a transição ao <strong>Gate 2 (Ideação, Escopo, Hipóteses e Especificação)</strong>.</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copiada");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copiada");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/talesgomes27\.github\.io\/credit_card_fraud_detection");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+<script src="../site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>
