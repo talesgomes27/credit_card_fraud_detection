@@ -104,10 +104,52 @@ ul.task-list li input[type="checkbox"] {
     <a class="nav-link" href="../docs/02-PRD-and-specs.html"> 
 <span class="menu-text">PRD &amp; Especificações</span></a>
   </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="../docs/03-architecture-and-schema.html"> 
-<span class="menu-text">Arquitetura</span></a>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-arquitetura--engenharia" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Arquitetura &amp; Engenharia</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-arquitetura--engenharia">    
+        <li>
+    <a class="dropdown-item" href="../docs/03-architecture-and-schema.html">
+ <span class="dropdown-text">Topologia &amp; Esquema</span></a>
   </li>  
+        <li>
+    <a class="dropdown-item" href="../docs/04-scaffolding-and-conventions.html">
+ <span class="dropdown-text">Convenções &amp; Scaffolding</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../docs/00_archetype.html">
+ <span class="dropdown-text">Metadados do Arquétipo</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-decisões-de-arquitetura-(adrs" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Decisões de Arquitetura (ADRs)</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-decisões-de-arquitetura-(adrs">    
+        <li>
+    <a class="dropdown-item" href="../docs/adr/0001-hurdle-three-stage-architecture.html">
+ <span class="dropdown-text">ADR 0001: Hurdle Model em 3 Estágios</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../docs/adr/0002-time-ordered-validation-split.html">
+ <span class="dropdown-text">ADR 0002: Split Temporal Out-of-Time</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../docs/adr/0003-tabular-gradient-boosting-vs-deep-learning.html">
+ <span class="dropdown-text">ADR 0003: Tabular Gradient Boosting vs Deep Learning</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../docs/adr/0004-browser-na-preservation-and-data-contract.html">
+ <span class="dropdown-text">ADR 0004: Preservação de N/A no Browser</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../docs/adr/0005-financial-cost-threshold-optimization.html">
+ <span class="dropdown-text">ADR 0005: Otimização de Custo Financeiro</span></a>
+  </li>  
+    </ul>
+  </li>
   <li class="nav-item">
     <a class="nav-link" href="../docs/05-implementation-plan.html"> 
 <span class="menu-text">Plano &amp; Testes</span></a>
@@ -115,7 +157,7 @@ ul.task-list li input[type="checkbox"] {
 </ul>
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item compact">
-    <a class="nav-link" href="https://github.com/tales/credit_card_fraud_detection"> <i class="bi bi-github" role="img">
+    <a class="nav-link" href="https://github.com/talesgomes27/credit_card_fraud_detection"> <i class="bi bi-github" role="img">
 </i> 
 <span class="menu-text"></span></a>
   </li>  
@@ -149,10 +191,11 @@ ul.task-list li input[type="checkbox"] {
 <h1 data-number="1"><span class="header-section-number">1</span> Metadados de Arquétipo do Projeto</h1>
 <ul>
 <li><strong>Arquétipo Selecionado:</strong> Arquétipo A — Data Science, Analytics &amp; ML (Python/Quarto)</li>
-<li><strong>Metodologia:</strong> Híbrida CRISP-ML(Q) + Six Phases of Data Analytics (<code>Ask</code>, <code>Prepare</code>, <code>Process</code>, <code>Construct</code>, <code>Share</code>, <code>Act</code>)</li>
+<li><strong>Metodologia:</strong> Híbrida CRISP-ML(Q) + Data Storytelling em 6 Seções Canônicas</li>
 <li><strong>Pipeline de Modelagem:</strong> Hurdle Model em 3 Estágios (Binário <code>is_fraud</code>, Multiclasse <code>fraud_type</code>, Regressão <code>fraud_amount_lost</code>)</li>
 <li><strong>Regime de Validação:</strong> Split temporal <em>out-of-time</em> estrito (Treino: Jan-Ago/2026, Validação: Set-Out/2026, Teste: Nov-Dez/2026)</li>
 <li><strong>Storytelling e Publicação:</strong> Quarto Website em <code>docs_site/</code> (GitHub Pages) com 8 figuras em 300 DPI e rastreabilidade 1:1 com as hipóteses de negócio.</li>
+<li><strong>Auditoria de Ambiente:</strong> Testes automatizados passando (17/17), linter <code>ruff</code> sem violações; Quarto CLI em <code>/usr/lib/rstudio/resources/app/bin/quarto/bin/quarto</code> (v1.9.38).</li>
 </ul>
 
 
@@ -232,7 +275,7 @@ ul.task-list li input[type="checkbox"] {
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp("https:\/\/tales\.github\.io\/credit_card_fraud_detection");
+        var filterRegex = new RegExp("https:\/\/talesgomes27\.github\.io\/credit_card_fraud_detection");
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }

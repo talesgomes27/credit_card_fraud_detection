@@ -147,7 +147,7 @@ A estratégia analítica implementa a arquitetura em três estágios (*Hurdle Mo
 
 ## 4. Desenho Detalhado da Etapa SHARE (Storyboard e Padrões Quarto)
 
-Conforme o [quarto-quality-checklist.md](file:///home/tales/.gemini/config/skills/pre-code-pipeline/references/quarto-quality-checklist.md), o relatório será estruturado em Quarto (`index.qmd`) com metadados em português (`lang: pt-BR`), `execute: freeze: auto` e figuras padronizadas.
+Conforme as diretrizes do Quarto Quality Checklist, o relatório é estruturado em Quarto (`index.qmd`) com metadados em português (`lang: pt-BR`), `execute: freeze: auto` e figuras padronizadas.
 
 ### 4.1 Especificação do Storyboard Visual (8 Figuras)
 

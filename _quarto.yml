@@ -1,11 +1,24 @@
 project:
   type: website
   output-dir: docs_site
+  render:
+    - index.qmd
+    - docs/00_archetype.md
+    - docs/01-data-discovery-and-contracts.md
+    - docs/02-PRD-and-specs.md
+    - docs/03-architecture-and-schema.md
+    - docs/04-scaffolding-and-conventions.md
+    - docs/05-implementation-plan.md
+    - docs/adr/0001-hurdle-three-stage-architecture.md
+    - docs/adr/0002-time-ordered-validation-split.md
+    - docs/adr/0003-tabular-gradient-boosting-vs-deep-learning.md
+    - docs/adr/0004-browser-na-preservation-and-data-contract.md
+    - docs/adr/0005-financial-cost-threshold-optimization.md
 
 website:
   title: "Detecção e Prevenção de Fraudes em Cartões de Crédito"
   description: "Pipeline analítico de ponta a ponta com Hurdle Model em três estágios, calibragem financeira e explicabilidade SHAP."
-  site-url: "https://tales.github.io/credit_card_fraud_detection"
+  site-url: "https://talesgomes27.github.io/credit_card_fraud_detection"
   navbar:
     left:
       - href: index.qmd
@@ -14,13 +27,31 @@ website:
         text: "Contratos de Dados"
       - href: "docs/02-PRD-and-specs.md"
         text: "PRD & Especificações"
-      - href: "docs/03-architecture-and-schema.md"
-        text: "Arquitetura"
+      - text: "Arquitetura & Engenharia"
+        menu:
+          - href: "docs/03-architecture-and-schema.md"
+            text: "Topologia & Esquema"
+          - href: "docs/04-scaffolding-and-conventions.md"
+            text: "Convenções & Scaffolding"
+          - href: "docs/00_archetype.md"
+            text: "Metadados do Arquétipo"
+      - text: "Decisões de Arquitetura (ADRs)"
+        menu:
+          - href: "docs/adr/0001-hurdle-three-stage-architecture.md"
+            text: "ADR 0001: Hurdle Model em 3 Estágios"
+          - href: "docs/adr/0002-time-ordered-validation-split.md"
+            text: "ADR 0002: Split Temporal Out-of-Time"
+          - href: "docs/adr/0003-tabular-gradient-boosting-vs-deep-learning.md"
+            text: "ADR 0003: Tabular Gradient Boosting vs Deep Learning"
+          - href: "docs/adr/0004-browser-na-preservation-and-data-contract.md"
+            text: "ADR 0004: Preservação de N/A no Browser"
+          - href: "docs/adr/0005-financial-cost-threshold-optimization.md"
+            text: "ADR 0005: Otimização de Custo Financeiro"
       - href: "docs/05-implementation-plan.md"
         text: "Plano & Testes"
     right:
       - icon: github
-        href: "https://github.com/tales/credit_card_fraud_detection"
+        href: "https://github.com/talesgomes27/credit_card_fraud_detection"
 
 format:
   html:
