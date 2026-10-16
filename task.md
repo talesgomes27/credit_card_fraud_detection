@@ -101,23 +101,25 @@
 ## Pipeline de Auditoria e Refatoração (Brownfield / Melhoria Contínua)
 
 - [x] **Gate 1: Reconhecimento, Engenharia Reversa e Enquadramento (Arquétipo A)**
-  - [x] Detecção de arquétipo e consolidação de `docs/00_archetype.md`
-  - [x] Reconhecimento da topologia existente, árvore de módulos e histórico Git
-  - [x] Verificação do estado de execução da suíte de testes (17/17 passando)
+  - [x] Detecção de arquétipo e consolidação de `docs/00_archetype.md` (Arquétipo A)
+  - [x] Reconhecimento da topologia existente, árvore de módulos e histórico Git recente
+  - [x] Auditoria de governança de dependências e ambiente Python (Conda science / Pytest 9.1 / Ruff 0.4 / Quarto 1.9.38)
+  - [x] Verificação do estado inicial de execução da suíte de testes (17/17 passando sem falhas)
   - [x] Checkpoint humano e aprovação do escopo de auditoria
-- [ ] **Gate 2: Diagnóstico Multi-Camadas Não-Destrutivo (docs/audit-report.md)**
-  - [ ] Camada de Código & Segurança (complexidade, acoplamento, tipagem e ruff)
-  - [ ] Camada de Testes (cobertura real, gaps e fragilidade de asserções)
-  - [ ] Camada Analítica, Científica & Visual (data leakage, sementes, gain vs. split, 300 DPI, box_aspect)
-  - [ ] Camada Documental & Editorial (fidelidade texto x código, estilo sênior anti-IA)
+- [/] **Gate 2: Diagnóstico Multi-Camadas Não-Destrutivo (docs/audit-report.md)**
+  - [ ] Camada de Código & Segurança (complexidade ciclomática, acoplamento, tipagem estrita, warnings)
+  - [ ] Camada de Testes (cobertura real com pytest-cov, lacunas e fragilidade de asserções)
+  - [ ] Camada Analítica, Científica & Visual (conformidade com as 6 seções canônicas CRISP-ML(Q), baselines na Seção 4, data leakage, sementes, gain vs. split, 300 DPI, box_aspect)
+  - [ ] Camada Documental & Editorial (auditoria de links e páginas sem implementação no Quarto, fidelidade texto x código, estilo sênior anti-IA)
   - [ ] Checkpoint humano e aprovação de `docs/audit-report.md`
 - [ ] **Gate 3: Rede de Segurança (Testes de Caracterização) & Plano de Fatias**
   - [ ] Construção de testes Golden Master em `tests/characterization/`
   - [ ] Elaboração do plano incremental em `docs/refactoring-plan.md`
   - [ ] Checkpoint humano e autorização para refatoração
 - [ ] **Gate 4: Execução da Refatoração Cirúrgica Polimórfica (Verify-Revert-Stop)**
-  - [ ] Aplicação de fatias atômicas com verificação contínua via pytest
-  - [ ] Refatoração analítica e estética (Quarto, Seaborn, Matplotlib)
+  - [ ] Reestruturação do relatório `.qmd` nas 6 seções canônicas do CRISP-ML(Q) + Storytelling
+  - [ ] Implementação de tabelas de baseline e saneamento de links/botões da navbar do Quarto
+  - [ ] Aplicação de fatias atômicas com verificação contínua via pytest e ruff
   - [ ] Checkpoint humano e validação das fatias
 - [ ] **Gate 5: Verificação de Regressão, Sincronização Documental & Handoff**
   - [ ] Execução da suíte completa de testes e recompilação do Quarto (`quarto render`)
