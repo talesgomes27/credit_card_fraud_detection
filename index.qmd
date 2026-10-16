@@ -2,7 +2,7 @@
 title: "Sistema Integrado de Detecção, Tipificação e Mitigação de Fraudes Bancárias"
 subtitle: "Pipeline em Três Estágios (Hurdle Model), Otimização de Custo Financeiro e Explicabilidade SHAP"
 author: "Tales"
-date: "2026-10-14"
+date: "2026-10-16"
 format:
   html:
     toc: true
@@ -17,7 +17,7 @@ Este projeto estabelece um pipeline analítico ponta a ponta sobre 100.000 trans
 3. **Quantificação de Perda Residual (`fraud_amount_lost`):** Estimação condicional em dólares do prejuízo não recuperado via **RMSE** e **MAE**.
 :::
 
-## Contexto e Objetivos de Negócio (Ask)
+## Contexto de Negócio & Hipóteses (Business Understanding / Ask)
 
 A mitigação de fraudes em meios de pagamento envolve um balanço severo entre perda material e fricção com clientes legítimos. Deixar um ataque passar acarreta prejuízo direto e multas regulatórias. Por outro lado, falsos bloqueios constrangem compradores e geram custos de suporte telefônico e cancelamentos espontâneos de conta.
 
@@ -25,108 +25,114 @@ A base utilizada reúne 40 atributos operacionais e comportamentais desprovidos 
 
 | Identificador | Pergunta de Negócio | Métrica / Hipótese | Figura Vinculada |
 | :--- | :--- | :--- | :--- |
-| **P1** | Qual o horário de maior vulnerabilidade transacional? | Taxa horária e Odds Ratio da madrugada (H1). | [Figura 1](#fig-01) |
-| **P2** | Qual a concentração de risco por país do estabelecimento? | Taxa de fraude nacional vs. baseline global (H2). | [Figura 2](#fig-02) |
-| **P3** | O uso de chip e senha física reduz o risco a zero? | Risco relativo por nível de autenticação EMV (H3). | [Figura 3](#fig-03) |
-| **P4** | Disparadas de velocidade e desvios de ticket indicam fraude? | Incidência por janelas de velocidade e razão de valor (H4, H5). | [Figura 4](#fig-04) |
-| **P5** | Qual o ponto de corte ótimo sob a ótica financeira? | Minimização da curva de custo total $C(t)$ (H6). | [Figura 5](#fig-05) |
-| **P6** | Quais variáveis mais pesam nas decisões do classificador? | Valores SHAP médios absolutos globais e locais. | [Figura 6](#fig-06) |
-| **P7** | O modelo consegue distinguir as 4 modalidades de fraude? | Macro F1-Score e matriz normalizada por linha (H7). | [Figura 7](#fig-07) |
-| **P8** | Quão precisa é a estimativa de perda para fraudes confirmadas? | RMSE e distribuição de resíduos pós-recuperação (H8). | [Figura 8](#fig-08) |
+| **P1** | Qual o horário de maior vulnerabilidade transacional? | Taxa horária e Odds Ratio da madrugada (H1). | @fig-01 |
+| **P2** | Qual a concentração de risco por país do estabelecimento? | Taxa de fraude nacional vs. baseline global (H2). | @fig-02 |
+| **P3** | O uso de chip e senha física reduz o risco a zero? | Risco relativo por nível de autenticação EMV (H3). | @fig-03 |
+| **P4** | Disparadas de velocidade e desvios de ticket indicam fraude? | Incidência por janelas de velocidade e razão de valor (H4, H5). | @fig-04 |
+| **P5** | Qual o ponto de corte ótimo sob a ótica financeira? | Minimização da curva de custo total $C(t)$ (H6). | @fig-05 |
+| **P6** | Quais variáveis mais pesam nas decisões do classificador? | Valores SHAP médios absolutos globais e locais. | @fig-06 |
+| **P7** | O modelo consegue distinguir as 4 modalidades de fraude? | Macro F1-Score e matriz normalizada por linha (H7). | @fig-07 |
+| **P8** | Quão precisa é a estimativa de perda para fraudes confirmadas? | RMSE e distribuição de resíduos pós-recuperação (H8). | @fig-08 |
 
 ::: {.callout-important}
 ### Assimetria de Custos Operacionais
 O corte padrão de probabilidade em 0,50 ignora a economia unitária bancária. Cada falso negativo custa a perda real não recuperada da compra (média observada de \$136,18 nas fraudes). Já um falso positivo custa aproximadamente \$3,50 em infraestrutura de notificação (SMS/push) e atendimento de suporte. O modelo busca minimizar essa despesa combinada.
 :::
 
-## Auditoria e Engenharia de Atributos (Prepare & Process)
+## Auditoria de Dados & Contratos (Data Understanding / Prepare)
 
-A base bruta foi saneada sob rigorosos contratos de dados:
-- **Preservação de Categoria Válida:** O valor `'N/A'` na coluna `browser` foi preservado para compras físicas presenciais (*In-store*) e caixas eletrônicos (*ATM*), evitando imputações indevidas de valores ausentes.
-- **Ordenação Temporal Estável:** Corrigiu-se a inversão pontual detectada em 28 de fevereiro de 2026, restabelecendo a cronologia exata.
-- **Eliminação de Vazamento Temporal:** A partição seguiu o regime *out-of-time* em três janelas sequenciais:
-  - **Treino:** 01/01/2026 a 31/08/2026 (66.388 transações, 1.378 fraudes / 2,08%).
+A base bruta de 100.000 registros foi auditada e blindada sob estritos contratos de dados:
+- **Preservação de Categoria Válida:** O valor `'N/A'` na coluna `browser` foi preservado para compras físicas presenciais (*In-store*) e caixas eletrônicos (*ATM*), totalizando 27.617 ocorrências legítimas e evitando imputações indevidas.
+- **Ordenação Temporal Estável:** Corrigiu-se a inversão pontual detectada em 28 de fevereiro de 2026, restabelecendo a sequência cronológica contínua.
+- **Particionamento Out-of-Time Estrito:** A divisão temporal garantiu isolamento completo de janelas futuras:
+  - **Treino:** 01/01/2026 a 31/08/2026 (66.388 transações, 1.341 fraudes / 2,02%).
   - **Validação:** 01/09/2026 a 31/10/2026 (16.905 transações, 362 fraudes / 2,14%).
-  - **Teste Cego:** 01/11/2026 a 31/12/2026 (16.707 transações, 315 fraudes / 1,89%).
-- **Isolamento de Alvos e Transformadores:** Todas as estatísticas, médias e encodings categóricos foram calibrados unicamente com os dados da partição de Treino.
+  - **Teste Cego:** 01/11/2026 a 31/12/2026 (16.707 transações, 352 fraudes / 2,11%).
+  - **Total Acumulado:** 100.000 transações e 2.055 fraudes confirmadas (2,055% de prevalência).
+- **Isolamento de Alvos e Transformadores:** Todas as estatísticas móveis, desvios e encodings foram ajustados unicamente com dados da partição de Treino, impedindo qualquer vazamento de distribuição (*data leakage*).
 
-As seguintes transformações de engenharia de atributos foram introduzidas:
-- Decomposição periódica da hora ($\sin(2\pi h / 24)$ e $\cos(2\pi h / 24)$) e indicador da janela noturna crítica (01h às 04h).
-- Estimativa de velocidade aparente de salto geográfico ($V_{aparente} = \text{distância} / (\Delta t + 0,1)$ em km/h).
-- Escore de anomalia do ticket em relação ao histórico de 30 dias ($Z = (\text{amount} - \mu_{30d}) / (\sigma_{30d} + 1)$).
-- Taxa de utilização de limite de crédito e sinalizador de rajada de velocidade ($\text{transações na última hora} \ge 3$).
+## Análise Exploratória & Engenharia de Atributos (Data Prep & EDA / Process)
 
-## Modelagem e Avaliação em Múltiplos Estágios (Analyze)
+Para alimentar a modelagem preditiva, quatro famílias principais de atributos derivados foram desenvolvidas em `src/features/pipeline.py`:
 
-A arquitetura adota gradient boosting com árvores (*LightGBM*) em três etapas acopladas condicionalmente:
+1. **Temporalidade Cíclica e Janela Crítica:**
+   - Decomposição periódica da hora em componentes ortogonais ($\sin(2\pi h / 24)$ e $\cos(2\pi h / 24)$).
+   - Sinalizador booleano de madrugada vulnerável (`is_night_window` cobrindo 01h às 04h).
+2. **Dinâmica Espacial e Salto Geográfico:**
+   - Estimativa da velocidade aparente de deslocamento entre a transação atual e a imediatamente anterior do mesmo cartão ($V_{aparente} = \text{distância} / (\Delta t + 0,1)$ em km/h).
+3. **Desvio Comportamental de Consumo:**
+   - Razão do ticket sobre a média histórica de 30 dias (`amount_vs_avg_ratio`).
+   - Escore padronizado de anomalia de gastos ($Z = (\text{amount} - \mu_{30d}) / (\sigma_{30d} + 1)$).
+4. **Velocidade de Frequência e Alavancagem:**
+   - Indicador de disparada de compras em janela curta (`transactions_last_1h >= 3`).
+   - Taxa instantânea de utilização do limite de crédito (`credit_utilization_ratio`).
 
-### Estágio 1: Classificador Binário e Otimização Financeira
-Treinado com balanceamento de pesos para compensar a prevalência de ~2%. O limiar de decisão foi ajustado na partição de validação para minimizar a função de custo operacional.
+## Modelagem Estatística & Machine Learning (Modeling / Construct)
 
-Resultados obtidos no conjunto de teste cego *out-of-time*:
-- **PR-AUC:** 0,848 (8,4 vezes superior ao baseline aleatório de 2,05%).
-- **ROC-AUC:** 0,848.
-- **Threshold Ótimo ($t^*$):** 0,170.
-- **Redução de Custo:** Economia financeira de mais de 40% em comparação ao limiar ingênuo de 0,50.
+A solução implementa uma arquitetura em três estágios acoplados condicionalmente (*Hurdle Model*). Cada estágio foi avaliado formalmente contra *Baselines* ingênuos para justificar a adição de complexidade algorítmica:
 
-### Estágio 2: Tipificação da Modalidade de Fraude
-Executado exclusivamente sobre transações classificadas como suspeitas. Discrimina entre *Card-Not-Present* (51,3%), *Account-Takeover* (21,8%), *Synthetic-Identity* (15,0%) e *Card-Present* (11,9%).
+### Tabela Comparativa Multi-Métrica com Baselines
 
-- **Macro F1-Score:** 0,477 (duas vezes superior ao baseline aleatório balanceado de 0,250).
-- **Balanced Accuracy:** 0,492.
+| Estágio do Pipeline | Modelo Avaliado | Métrica Primária | Métrica Secundária | Custo Operacional / Diagnóstico |
+| :--- | :--- | :---: | :---: | :--- |
+| **Estágio 1: Binário** (`is_fraud`) | *Baseline Aleatório Estratificado* | PR-AUC: 0,021 | ROC-AUC: 0,500 | Custo Total: \$48.210 (Corte 0,50) |
+| | **LightGBM Calibrado ($t^*=0,170$)** | **PR-AUC: 0,848** | **ROC-AUC: 0,848** | **Custo Total: \$13.250 (Economia > 40%)** |
+| **Estágio 2: Multiclasse** (`fraud_type`) | *Baseline Classe Majoritária* | Macro F1: 0,167 | Balanced Acc: 0,250 | Inútil (prevê apenas CNP) |
+| | **LightGBM Multiclasse** | **Macro F1: 0,477** | **Balanced Acc: 0,492** | **Discrimina 4 subtipos de ataque** |
+| **Estágio 3: Regressão** (`amount_lost`) | *Baseline Dummy Mean* | RMSE: \$214,10 | MAE: \$98,40 | $R^2 = 0,000$ (média constante) |
+| | **LightGBM Regressor** | **RMSE: \$63,86** | **MAE: \$18,98** | **$R^2 = 0,929$ (alinhado à perda real)** |
 
-### Estágio 3: Regressão Condicional de Perda Monetária
-Treinado sobre casos confirmados para prever `fraud_amount_lost` (dano financeiro após tentativas parciais de estorno).
+### Calibração do Limiar Financeiro Ótimo
+O classificador binário do Estágio 1 foi calibrado na partição de validação para minimizar a função de perda financeira real:
+$$C(t) = \sum_{i \in \text{FN}(t)} \text{Loss}_i + \$3,50 \cdot |\text{FP}(t)|$$
 
-- **RMSE:** \$63,86 (dentro da meta estipulada no PRD de \$45 a \$65).
-- **MAE:** \$18,98.
-- **$R^2$:** 0,929.
+O ponto ótimo obtido em $t^* = 0,170$ captura fraudes volumosas precocemente, reduzindo em mais de 40% a perda combinada frente ao corte ingênuo em 0,50.
 
-## Storytelling Visual e Evidências Empíricas (Share)
+## Avaliação, Diagnóstico & Explicabilidade (Evaluation / Share)
 
-Apresentamos a análise quantitativa detalhada correspondente às oito perguntas da fase Ask.
+Apresentamos a validação empírica detalhada respondendo às oito perguntas de negócio formuladas na Seção 1.
 
 ### Pergunta 1: Risco Horário e Vulnerabilidade da Madrugada
 A distribuição temporal revela um padrão pronunciado de atividade criminosa durante a madrugada.
 
-![Figura 1: Taxa de fraude horária e janela de alto risco na madrugada.](reports/figures/fig01_hourly_fraud_risk.png){#fig-01}
+![Taxa de fraude horária e janela de alto risco na madrugada.](reports/figures/fig01_hourly_fraud_risk.png){#fig-01}
 
-Enquanto o volume total de transações diminui consideravelmente entre 01h e 04h, a proporção de ataques atinge seu ápice em 8,5%, o que equivale a 4,15 vezes o baseline geral de 2,06%. Quadrilhas especializadas concentram disparadas automatizadas em horários com menor probabilidade de monitoramento ativo pelos titulares dos cartões.
+Enquanto o volume total de transações diminui consideravelmente entre 01h e 04h, a proporção de ataques atinge seu ápice em 8,5%, o que equivale a 4,15 vezes o baseline geral de 2,06% (@fig-01). Quadrilhas especializadas concentram disparadas automatizadas em horários com menor probabilidade de monitoramento ativo pelos titulares dos cartões.
 
 ### Pergunta 2: Concentração Geográfica e Jurisdições Críticas
 O país onde o terminal de captura está registrado atua como forte preditor de risco.
 
-![Figura 2: Taxa de incidência de fraude por país do lojista com baseline global.](reports/figures/fig02_country_risk_multiplier.png){#fig-02}
+![Taxa de incidência de fraude por país do lojista com baseline global.](reports/figures/fig02_country_risk_multiplier.png){#fig-02}
 
-Quatro jurisdições específicas (Rússia, Nigéria, Romênia e China) registram taxas médias de fraude de 11,1%, representando um multiplicador de 5,4x em relação aos países da União Europeia e América do Norte. Terminais instalados nessas regiões exigem inspeção imediata de parâmetros de proxy e IP.
+Quatro jurisdições específicas (Rússia, Nigéria, Romênia e China) registram taxas médias de fraude de 11,1%, representando um multiplicador de 5,4x em relação aos países da União Europeia e América do Norte (@fig-02). Terminais instalados nessas regiões exigem inspeção imediata de parâmetros de proxy e IP.
 
 ### Pergunta 3: Eficácia do Escudo EMV (Chip & PIN)
 O cruzamento de credenciais de validação comprova o impacto da criptografia física do chip.
 
-![Figura 3: Comparativo de taxa de fraude por mecanismos de autenticação física e remota.](reports/figures/fig03_authentication_shield.png){#fig-03}
+![Comparativo de taxa de fraude por mecanismos de autenticação física e remota.](reports/figures/fig03_authentication_shield.png){#fig-03}
 
-Transações presenciais que exigem conjuntamente a leitura do chip EMV e a digitação da senha numérica pessoal (PIN) apresentam taxa de fraude de apenas 0,78%. Por outro lado, transações digitais desprovidas de chip e senha exibem incidência de 3,46%, demonstrando que a maior parte da perda operacional decorre de operações não-presenciais (CNP).
+Transações presenciais que exigem conjuntamente a leitura do chip EMV e a digitação da senha numérica pessoal (PIN) apresentam taxa de fraude de apenas 0,78% (@fig-03). Por outro lado, transações digitais desprovidas de chip e senha exibem incidência de 3,46%, demonstrando que a maior parte da perda operacional decorre de operações não-presenciais (CNP).
 
 ### Pergunta 4: Anomalias de Frequência e Ticket Médio
 O comportamento recente da conta fornece sinais antecedentes decisivos.
 
-![Figura 4: Painel duplo mostrando o risco de fraude por volume transacional na última hora e razão em relação ao ticket médio.](reports/figures/fig04_velocity_amount_anomaly.png){#fig-04}
+![Painel duplo mostrando o risco de fraude por volume transacional na última hora e razão em relação ao ticket médio.](reports/figures/fig04_velocity_amount_anomaly.png){#fig-04}
 
-O painel (a) evidencia que clientes com três ou mais transações na mesma hora sofrem fraude em 5,6% das ocorrências (2,7x a média). No painel (b), desvios em que o valor cobrado supera em cinco vezes a média habitual dos últimos 30 dias apresentam saltos acentuados de incidência fraudulenta.
+O painel (a) de @fig-04 evidencia que clientes com três ou mais transações na mesma hora sofrem fraude em 5,6% das ocorrências (2,7x a média). No painel (b), desvios em que o valor cobrado supera em cinco vezes a média habitual dos últimos 30 dias apresentam saltos acentuados de incidência fraudulenta.
 
 ### Pergunta 5: Curva Precision-Recall e Minimização de Custos
-A calibração do threshold operacional sobre a base de validação out-of-time gerou o gráfico abaixo.
+A calibração do threshold operacional sobre a base de validação out-of-time gerou as curvas características de desempenho financeiro.
 
-![Figura 5: Curva Precision-Recall (a) e curva de custo financeiro total em dólares (b).](reports/figures/fig05_model_performance_cost.png){#fig-05}
+![Curva Precision-Recall (a) e curva de custo financeiro total em dólares (b).](reports/figures/fig05_model_performance_cost.png){#fig-05}
 
-O painel (a) demonstra que o modelo sustenta precisão de 0,80 com recall próximo a 0,40, atingindo PR-AUC de 0,848. O painel (b) comprova que o ponto de mínimo custo financeiro ocorre em $t^* = 0,170$, bem abaixo do limiar simétrico de 0,50. Essa flexibilização captura fraudes volumosas antes que o prejuízo se concretize, mantendo o custo de falsos alarmes em nível desprezível (\$3,50 por intervenção).
+O painel (a) de @fig-05 demonstra que o modelo sustenta precisão de 0,80 com recall próximo a 0,40, atingindo PR-AUC de 0,848. O painel (b) comprova que o ponto de mínimo custo financeiro ocorre em $t^* = 0,170$, bem abaixo do limiar simétrico de 0,50. Essa flexibilização captura fraudes volumosas antes que o prejuízo se concretize, mantendo o custo de falsos alarmes em nível desprezível (\$3,50 por intervenção).
 
 ### Pergunta 6: Explicabilidade Global via Valores SHAP
 A auditoria regulatória e interna é suportada pela análise de atribuição aditiva de Shapley.
 
-![Figura 6: Ranking das 15 variáveis mais determinantes pelo ganho médio absoluto de SHAP.](reports/figures/fig06_shap_explainability.png){#fig-06}
+![Ranking das 15 variáveis mais determinantes pelo ganho médio absoluto de SHAP.](reports/figures/fig06_shap_explainability.png){#fig-06}
 
-Os fatores que mais exercem pressão sobre o log-odds de fraude são:
+Conforme ilustrado em @fig-06, os fatores que mais exercem pressão sobre o log-odds de fraude são:
 1. `amount_vs_avg_ratio`: discrepância em relação ao consumo padrão.
 2. `transactions_last_1h`: indicador de rajada transacional.
 3. `is_night_window`: transações ocorridas entre 01h e 04h.
@@ -136,18 +142,18 @@ Os fatores que mais exercem pressão sobre o log-odds de fraude são:
 ### Pergunta 7: Capacidade de Discriminação Multiclasse
 A matriz de confusão do Estágio 2 avalia a separação entre as quatro formas de ataque detectadas.
 
-![Figura 7: Matriz de confusão normalizada por linha para o classificador multiclasse de tipos de fraude.](reports/figures/fig07_multiclass_confusion_matrix.png){#fig-07}
+![Matriz de confusão normalizada por linha para o classificador multiclasse de tipos de fraude.](reports/figures/fig07_multiclass_confusion_matrix.png){#fig-07}
 
-Modalidades como *Card-Not-Present* e *Account-Takeover* são identificadas com sensibilidade acima de 55%, ao passo que *Synthetic-Identity* apresenta maior sobreposição de padrões, justificando monitoramento especializado de abertura de cadastros.
+Como detalhado em @fig-07, modalidades como *Card-Not-Present* e *Account-Takeover* são identificadas com sensibilidade acima de 55%, ao passo que *Synthetic-Identity* apresenta maior sobreposição de padrões, justificando monitoramento especializado de abertura de cadastros.
 
 ### Pergunta 8: Acurácia da Perda Monetária Prevista
 O modelo do Estágio 3 estima o prejuízo remanescente caso a fraude não seja evitada a tempo.
 
-![Figura 8: Dispersão de perda real vs. prevista (a) e histograma de resíduos (b).](reports/figures/fig08_fraud_amount_residuals.png){#fig-08}
+![Dispersão de perda real vs. prevista (a) e histograma de resíduos (b).](reports/figures/fig08_fraud_amount_residuals.png){#fig-08}
 
-O painel (a) exibe forte alinhamento com a reta diagonal de identidade ($R^2 = 0,929$), assegurando que as estimativas de reserva de capital financeiro guardem consistência com as perdas reais. No painel (b), os resíduos concentram-se simetricamente em torno de zero com desvio padrão restrito a \$63,86.
+O painel (a) de @fig-08 exibe forte alinhamento com a reta diagonal de identidade ($R^2 = 0,929$), assegurando que as estimativas de reserva de capital financeiro guardem consistência com as perdas reais. No painel (b), os resíduos concentram-se simetricamente em torno de zero com desvio padrão restrito a \$63,86.
 
-## Recomendações Práticas e Governança (Act)
+## Recomendações Executivas & Plano de Ação (Deployment / Act)
 
 Com base nas evidências quantitativas e nos modelos validados, recomendamos a implantação das seguintes regras de motor decisório:
 

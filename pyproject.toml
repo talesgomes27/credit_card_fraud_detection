@@ -3,7 +3,7 @@ name = "credit-card-fraud-detection"
 version = "0.1.0"
 description = "Pipeline de detecção, tipificação e quantificação de fraudes em cartão de crédito via Hurdle Model em três estágios."
 readme = "README.md"
-requires-python = ">=3.12"
+requires-python = ">=3.11"
 dependencies = [
     "joblib>=1.4.0",
     "lightgbm>=4.3.0",
@@ -30,7 +30,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.ruff]
-target-version = "py312"
+target-version = "py311"
 line-length = 100
 
 [tool.ruff.lint]
@@ -53,3 +53,7 @@ python_files = ["test_*.py"]
 python_functions = ["test_*"]
 pythonpath = ["."]
 addopts = "-v --strict-markers"
+filterwarnings = [
+    "ignore:.*PyparsingDeprecationWarning.*:DeprecationWarning",
+    "ignore:.*LightGBM binary classifier with TreeExplainer.*:UserWarning",
+]
