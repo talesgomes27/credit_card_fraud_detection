@@ -95,3 +95,31 @@
   - [x] Consolidar métricas e gráficos em `index.qmd`
   - [x] Renderizar com Quarto 1.9.38 para `docs_site/`
   - [x] Commit final do relatório e site estático
+
+---
+
+## Pipeline de Auditoria e Refatoração (Brownfield / Melhoria Contínua)
+
+- [x] **Gate 1: Reconhecimento, Engenharia Reversa e Enquadramento (Arquétipo A)**
+  - [x] Detecção de arquétipo e consolidação de `docs/00_archetype.md`
+  - [x] Reconhecimento da topologia existente, árvore de módulos e histórico Git
+  - [x] Verificação do estado de execução da suíte de testes (17/17 passando)
+  - [x] Checkpoint humano e aprovação do escopo de auditoria
+- [ ] **Gate 2: Diagnóstico Multi-Camadas Não-Destrutivo (docs/audit-report.md)**
+  - [ ] Camada de Código & Segurança (complexidade, acoplamento, tipagem e ruff)
+  - [ ] Camada de Testes (cobertura real, gaps e fragilidade de asserções)
+  - [ ] Camada Analítica, Científica & Visual (data leakage, sementes, gain vs. split, 300 DPI, box_aspect)
+  - [ ] Camada Documental & Editorial (fidelidade texto x código, estilo sênior anti-IA)
+  - [ ] Checkpoint humano e aprovação de `docs/audit-report.md`
+- [ ] **Gate 3: Rede de Segurança (Testes de Caracterização) & Plano de Fatias**
+  - [ ] Construção de testes Golden Master em `tests/characterization/`
+  - [ ] Elaboração do plano incremental em `docs/refactoring-plan.md`
+  - [ ] Checkpoint humano e autorização para refatoração
+- [ ] **Gate 4: Execução da Refatoração Cirúrgica Polimórfica (Verify-Revert-Stop)**
+  - [ ] Aplicação de fatias atômicas com verificação contínua via pytest
+  - [ ] Refatoração analítica e estética (Quarto, Seaborn, Matplotlib)
+  - [ ] Checkpoint humano e validação das fatias
+- [ ] **Gate 5: Verificação de Regressão, Sincronização Documental & Handoff**
+  - [ ] Execução da suíte completa de testes e recompilação do Quarto (`quarto render`)
+  - [ ] Sincronização de docstrings, ADRs e relatórios
+  - [ ] Handoff para `release-and-ops-pipeline`
