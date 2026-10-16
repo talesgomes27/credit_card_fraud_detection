@@ -2,50 +2,50 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://talesgomes27.github.io/credit_card_fraud_detection/docs/adr/0005-financial-cost-threshold-optimization.html</loc>
-    <lastmod>2026-10-16T03:46:15.684Z</lastmod>
+    <lastmod>2026-10-16T03:50:19.606Z</lastmod>
   </url>
   <url>
     <loc>https://talesgomes27.github.io/credit_card_fraud_detection/docs/adr/0003-tabular-gradient-boosting-vs-deep-learning.html</loc>
-    <lastmod>2026-10-16T03:46:15.684Z</lastmod>
+    <lastmod>2026-10-16T03:50:19.606Z</lastmod>
   </url>
   <url>
     <loc>https://talesgomes27.github.io/credit_card_fraud_detection/docs/adr/0001-hurdle-three-stage-architecture.html</loc>
-    <lastmod>2026-10-16T03:46:15.684Z</lastmod>
+    <lastmod>2026-10-16T03:50:19.605Z</lastmod>
   </url>
   <url>
     <loc>https://talesgomes27.github.io/credit_card_fraud_detection/docs/04-scaffolding-and-conventions.html</loc>
-    <lastmod>2026-10-16T03:46:15.684Z</lastmod>
+    <lastmod>2026-10-16T03:50:19.605Z</lastmod>
   </url>
   <url>
     <loc>https://talesgomes27.github.io/credit_card_fraud_detection/docs/02-PRD-and-specs.html</loc>
-    <lastmod>2026-10-16T03:46:15.684Z</lastmod>
+    <lastmod>2026-10-16T03:50:19.605Z</lastmod>
   </url>
   <url>
     <loc>https://talesgomes27.github.io/credit_card_fraud_detection/docs/00_archetype.html</loc>
-    <lastmod>2026-10-16T03:46:15.682Z</lastmod>
+    <lastmod>2026-10-16T03:50:19.604Z</lastmod>
   </url>
   <url>
     <loc>https://talesgomes27.github.io/credit_card_fraud_detection/index.html</loc>
-    <lastmod>2026-10-16T03:46:15.703Z</lastmod>
+    <lastmod>2026-10-16T03:50:19.619Z</lastmod>
   </url>
   <url>
     <loc>https://talesgomes27.github.io/credit_card_fraud_detection/docs/01-data-discovery-and-contracts.html</loc>
-    <lastmod>2026-10-16T03:46:15.684Z</lastmod>
+    <lastmod>2026-10-16T03:50:19.605Z</lastmod>
   </url>
   <url>
     <loc>https://talesgomes27.github.io/credit_card_fraud_detection/docs/03-architecture-and-schema.html</loc>
-    <lastmod>2026-10-16T03:46:15.684Z</lastmod>
+    <lastmod>2026-10-16T03:50:19.605Z</lastmod>
   </url>
   <url>
     <loc>https://talesgomes27.github.io/credit_card_fraud_detection/docs/05-implementation-plan.html</loc>
-    <lastmod>2026-10-16T03:46:15.684Z</lastmod>
+    <lastmod>2026-10-16T03:50:19.605Z</lastmod>
   </url>
   <url>
     <loc>https://talesgomes27.github.io/credit_card_fraud_detection/docs/adr/0002-time-ordered-validation-split.html</loc>
-    <lastmod>2026-10-16T03:46:15.684Z</lastmod>
+    <lastmod>2026-10-16T03:50:19.606Z</lastmod>
   </url>
   <url>
     <loc>https://talesgomes27.github.io/credit_card_fraud_detection/docs/adr/0004-browser-na-preservation-and-data-contract.html</loc>
-    <lastmod>2026-10-16T03:46:15.684Z</lastmod>
+    <lastmod>2026-10-16T03:50:19.606Z</lastmod>
   </url>
 </urlset>
