@@ -150,11 +150,11 @@
   - [x] Validação do workflow com permissões `pages: write` e `id-token: write`
   - [x] Inclusão de `.nojekyll` em `docs_site/` para prevenção de bloqueios Jekyll
   - [x] Checkpoint humano e aprovação do workflow de CI/CD
-- [/] **Gate 4: Deploy, Publicação e Empacotamento (Polimórfico - GitHub Pages)**
-  - [ ] Execução de git push autorizado da branch `main` e da tag `v1.0.0` para `origin`
-  - [ ] Acompanhamento do disparo do workflow de publicação no GitHub Actions
-  - [ ] Confirmação de deploy da branch `gh-pages`
-- [ ] **Gate 5: Smoke Tests Pós-Deploy & Homologação Final**
-  - [ ] Verificação da URL pública do site (`https://talesgomes27.github.io/credit_card_fraud_detection`)
-  - [ ] Auditoria de HTTP status 200, links internos da navbar e integridade de carregamento das figuras
-  - [ ] Emissão do parecer final de entrega homologada
+- [x] **Gate 4: Deploy, Publicação e Empacotamento (Polimórfico - GitHub Pages)**
+  - [x] Execução de git push autorizado da branch `main` e da tag `v1.0.0` para `origin`
+  - [x] Execução e sucesso do workflow no GitHub Actions (`build-and-publish` verde em 1m48s)
+  - [x] Criação da branch `gh-pages` e habilitação do GitHub Pages na raiz `/`
+- [x] **Gate 5: Smoke Tests Pós-Deploy & Homologação Final**
+  - [x] Verificação da URL pública do site (`https://talesgomes27.github.io/credit_card_fraud_detection/`)
+  - [x] Auditoria automatizada de 14 rotas críticas com HTTP 200 OK (Home, Metadados, Contratos, PRD, Arquitetura, Scaffolding, Plano, ADRs 0001–0005 e Figuras 300 DPI)
+  - [x] Emissão do parecer final de entrega homologada (100% de sucesso)
