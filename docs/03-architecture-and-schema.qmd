@@ -13,10 +13,12 @@ date: "2026-10-14"
 
 ## 1. Topologia Geral do Pipeline (Process ➔ Analyze ➔ Share ➔ Act)
 
-O sistema foi estruturado em quatro macro-etapas sequenciais.
+O sistema foi estruturado em quatro macro-etapas sequenciais, como sintetizado na @fig-pipeline-topo.
 Cada etapa possui limites de responsabilidade claros e interfaces desacopladas.
 
-```mermaid
+```{mermaid}
+%%| label: fig-pipeline-topo
+%%| fig-cap: "Topologia da Arquitetura do Hurdle Model e Pipeline Analítico"
 flowchart TD
     subgraph S1["1. Fonte & Contratos"]
         D1["credit_card_fraud_detection_2026.csv"] --> L1["Loader com keep_default_na=False"]

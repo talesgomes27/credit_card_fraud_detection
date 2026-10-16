@@ -107,6 +107,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   }
 }</script>
 <style>html{ scroll-behavior: smooth; }</style>
+<script src="../site_libs/quarto-diagram/mermaid.min.js"></script>
+<script src="../site_libs/quarto-diagram/mermaid-init.js"></script>
+<link href="../site_libs/quarto-diagram/mermaid.css" rel="stylesheet">
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
   <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
@@ -315,8 +318,14 @@ window.Quarto = {
 <hr>
 <section id="topologia-geral-do-pipeline-process-analyze-share-act" class="level2" data-number="1">
 <h2 data-number="1" class="anchored" data-anchor-id="topologia-geral-do-pipeline-process-analyze-share-act"><span class="header-section-number">1</span> 1. Topologia Geral do Pipeline (Process ➔ Analyze ➔ Share ➔ Act)</h2>
-<p>O sistema foi estruturado em quatro macro-etapas sequenciais. Cada etapa possui limites de responsabilidade claros e interfaces desacopladas.</p>
-<pre class="mermaid"><code>flowchart TD
+<p>O sistema foi estruturado em quatro macro-etapas sequenciais, como sintetizado na <a href="#fig-pipeline-topo" class="quarto-xref">Figura&nbsp;1</a>. Cada etapa possui limites de responsabilidade claros e interfaces desacopladas.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-pipeline-topo" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-pipeline-topo-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div>
+<pre class="mermaid mermaid-js" data-label="fig-pipeline-topo">flowchart TD
     subgraph S1["1. Fonte &amp; Contratos"]
         D1["credit_card_fraud_detection_2026.csv"] --&gt; L1["Loader com keep_default_na=False"]
         L1 --&gt; V1["Validador de Contratos de Dados"]
@@ -351,7 +360,17 @@ window.Quarto = {
         QMD --&gt; RENDER["Quarto Render&lt;br&gt;(execute: freeze: auto)"]
         RENDER --&gt; PUB["Publicação GitHub Pages"]
         EVAL --&gt; DUMP["Exportação de Modelos (.joblib)&lt;br&gt;models/"]
-    end</code></pre>
+    end
+</pre>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-pipeline-topo-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;1: Topologia da Arquitetura do Hurdle Model e Pipeline Analítico
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
 <hr>
 </section>
 <section id="desenho-detalhado-da-etapa-process-saneamento-engenharia-de-atributos" class="level2" data-number="2">
@@ -543,15 +562,15 @@ window.Quarto = {
 <h3 data-number="5.2" class="anchored" data-anchor-id="interface-de-inferência-em-lote-srcmodelspredict.py"><span class="header-section-number">5.2</span> 5.2 Interface de Inferência em Lote (<code>src/models/predict.py</code>)</h3>
 <ul>
 <li><p>Fornece a classe unificada <code>FraudDetectionHurdlePipeline</code> com método:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> predict_transactions(<span class="va">self</span>, df_raw: pd.DataFrame) <span class="op">-&gt;</span> pd.DataFrame:</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co">    Aplica validação de contrato, engenharia de features e escoragem nos 3 estágios.</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co">    Retorna DataFrame enriquecido com:</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co">    - fraud_probability (float)</span></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co">    - is_fraud_predicted (0 ou 1, via threshold ótimo t*)</span></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co">    - predicted_fraud_type (Legitimate se is_fraud=0, senão predição do Estágio 2)</span></span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="co">    - predicted_amount_lost (0.0 se is_fraud=0, senão predição do Estágio 3)</span></span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div></li>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> predict_transactions(<span class="va">self</span>, df_raw: pd.DataFrame) <span class="op">-&gt;</span> pd.DataFrame:</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co">    Aplica validação de contrato, engenharia de features e escoragem nos 3 estágios.</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co">    Retorna DataFrame enriquecido com:</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co">    - fraud_probability (float)</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co">    - is_fraud_predicted (0 ou 1, via threshold ótimo t*)</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co">    - predicted_fraud_type (Legitimate se is_fraud=0, senão predição do Estágio 2)</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co">    - predicted_amount_lost (0.0 se is_fraud=0, senão predição do Estágio 3)</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div></li>
 </ul>
 </section>
 <section id="publicação-quarto-via-github-pages" class="level3" data-number="5.3">

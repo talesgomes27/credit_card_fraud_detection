@@ -6,9 +6,9 @@ project:
     - docs/00_archetype.md
     - docs/01-data-discovery-and-contracts.md
     - docs/02-PRD-and-specs.md
-    - docs/03-architecture-and-schema.md
+    - docs/03-architecture-and-schema.qmd
     - docs/04-scaffolding-and-conventions.md
-    - docs/05-implementation-plan.md
+    - docs/05-implementation-plan.qmd
     - docs/adr/0001-hurdle-three-stage-architecture.md
     - docs/adr/0002-time-ordered-validation-split.md
     - docs/adr/0003-tabular-gradient-boosting-vs-deep-learning.md
@@ -29,7 +29,7 @@ website:
         text: "PRD & Especificações"
       - text: "Arquitetura & Engenharia"
         menu:
-          - href: "docs/03-architecture-and-schema.md"
+          - href: "docs/03-architecture-and-schema.qmd"
             text: "Topologia & Esquema"
           - href: "docs/04-scaffolding-and-conventions.md"
             text: "Convenções & Scaffolding"
@@ -47,7 +47,7 @@ website:
             text: "ADR 0004: Preservação de N/A no Browser"
           - href: "docs/adr/0005-financial-cost-threshold-optimization.md"
             text: "ADR 0005: Otimização de Custo Financeiro"
-      - href: "docs/05-implementation-plan.md"
+      - href: "docs/05-implementation-plan.qmd"
         text: "Plano & Testes"
     right:
       - icon: github
