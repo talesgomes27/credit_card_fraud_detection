@@ -113,16 +113,17 @@
   - [x] Camada Documental & Editorial (auditoria de navbar, páginas órfãs, ADRs ausentes do menu e exclusão de task.md da renderização pública)
   - [x] Elaboração do relatório formal em `docs/audit-report.md` (9 achados triados: 4 P1, 4 P2, 1 P3)
   - [ ] Checkpoint humano e aprovação de `docs/audit-report.md`
-- [ ] **Gate 3: Rede de Segurança (Testes de Caracterização) & Plano de Fatias**
-  - [ ] Construção de testes Golden Master em `tests/characterization/`
-  - [ ] Elaboração do plano incremental em `docs/refactoring-plan.md`
+- [x] **Gate 3: Rede de Segurança (Testes de Caracterização) & Plano de Fatias**
+  - [x] Construção de testes Golden Master em `tests/characterization/test_pinning_hurdle_pipeline.py` (3 testes / 20 testes totais passando)
+  - [x] Congelamento de invariantes de splits, alvos, contagem real de fraudes (2.055) e integridade de figuras
+  - [x] Elaboração do plano incremental em `docs/refactoring-plan.md` (4 Fatias: Saneamento Quarto, CRISP-ML(Q), Referências @fig- e Sanidade Final)
   - [ ] Checkpoint humano e autorização para refatoração
 - [ ] **Gate 4: Execução da Refatoração Cirúrgica Polimórfica (Verify-Revert-Stop)**
-  - [ ] Reestruturação do relatório `.qmd` nas 6 seções canônicas do CRISP-ML(Q) + Storytelling
-  - [ ] Implementação de tabelas de baseline e saneamento de links/botões da navbar do Quarto
-  - [ ] Aplicação de fatias atômicas com verificação contínua via pytest e ruff
-  - [ ] Checkpoint humano e validação das fatias
+  - [ ] Fatia 1: Saneamento Quarto (Navbar com dropdowns de ADRs/Scaffolding, escopo de render e correção de links GitHub)
+  - [ ] Fatia 2: Reestruturação do relatório nas 6 seções canônicas CRISP-ML(Q), tabela comparativa com Baselines e fidelidade numérica
+  - [ ] Fatia 3: Sintaxe nativa de referências cruzadas `@fig-01` a `@fig-08` e silenciamento de warnings de bibliotecas
+  - [ ] Fatia 4: Validação integrada contínua e compilação limpa do site Quarto
 - [ ] **Gate 5: Verificação de Regressão, Sincronização Documental & Handoff**
-  - [ ] Execução da suíte completa de testes e recompilação do Quarto (`quarto render`)
+  - [ ] Execução da suíte completa de 20 testes e recompilação do Quarto (`quarto render`)
   - [ ] Sincronização de docstrings, ADRs e relatórios
   - [ ] Handoff para `release-and-ops-pipeline`
