@@ -1,6 +1,6 @@
 [project]
 name = "credit-card-fraud-detection"
-version = "0.1.0"
+version = "1.0.0"
 description = "Pipeline de detecção, tipificação e quantificação de fraudes em cartão de crédito via Hurdle Model em três estágios."
 readme = "README.md"
 requires-python = ">=3.11"
