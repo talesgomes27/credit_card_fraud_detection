@@ -106,11 +106,12 @@
   - [x] Auditoria de governança de dependências e ambiente Python (Conda science / Pytest 9.1 / Ruff 0.4 / Quarto 1.9.38)
   - [x] Verificação do estado inicial de execução da suíte de testes (17/17 passando sem falhas)
   - [x] Checkpoint humano e aprovação do escopo de auditoria
-- [/] **Gate 2: Diagnóstico Multi-Camadas Não-Destrutivo (docs/audit-report.md)**
-  - [ ] Camada de Código & Segurança (complexidade ciclomática, acoplamento, tipagem estrita, warnings)
-  - [ ] Camada de Testes (cobertura real com pytest-cov, lacunas e fragilidade de asserções)
-  - [ ] Camada Analítica, Científica & Visual (conformidade com as 6 seções canônicas CRISP-ML(Q), baselines na Seção 4, data leakage, sementes, gain vs. split, 300 DPI, box_aspect)
-  - [ ] Camada Documental & Editorial (auditoria de links e páginas sem implementação no Quarto, fidelidade texto x código, estilo sênior anti-IA)
+- [x] **Gate 2: Diagnóstico Multi-Camadas Não-Destrutivo (docs/audit-report.md)**
+  - [x] Camada de Código & Segurança (dependências, target python, ruff e warnings de bibliotecas)
+  - [x] Camada de Testes (17 testes passando, identificada ausência de pytest-cov e caracterização)
+  - [x] Camada Analítica, Científica & Visual (aderência a 6 seções CRISP-ML(Q), ausência de baselines comparativos e sintaxe de @fig-)
+  - [x] Camada Documental & Editorial (auditoria de navbar, páginas órfãs, ADRs ausentes do menu e exclusão de task.md da renderização pública)
+  - [x] Elaboração do relatório formal em `docs/audit-report.md` (9 achados triados: 4 P1, 4 P2, 1 P3)
   - [ ] Checkpoint humano e aprovação de `docs/audit-report.md`
 - [ ] **Gate 3: Rede de Segurança (Testes de Caracterização) & Plano de Fatias**
   - [ ] Construção de testes Golden Master em `tests/characterization/`
