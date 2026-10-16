@@ -37,9 +37,27 @@ A tabela abaixo classifica todos os achados diagnosticados nas 4 camadas segundo
 
 ---
 
-## 3. Próximos Passos (Plano de Transição para o Gate 3)
+## 3. Resolução Cirúrgica e Validação de Dívidas Técnicas (Gates 3 a 5)
 
-Com a aprovação deste diagnóstico pelo usuário:
-1. **No Gate 3:** Construiremos a suíte de caracterização em `tests/characterization/test_golden_master.py` e detalharemos as fatias cirúrgicas de refatoração em `docs/refactoring-plan.md`.
-2. **No Gate 4:** Executaremos a refatoração do `index.qmd` nas 6 seções canônicas CRISP-ML(Q), a inserção das tabelas de baseline, a reconfiguração completa da navbar e links do `_quarto.yml`, e a sanitização de warnings.
-3. **No Gate 5:** Validaremos a ausência total de regressões via `pytest` e recompilaremos o site Quarto sem links quebrados ou páginas órfãs.
+Todas as 9 dívidas técnicas triadas no Gate 2 foram resolvidas atomicamente sob o protocolo *Verify-Revert-Stop*:
+
+| ID | Severidade | Ação Executada | Status Pós-Refatoração |
+| :--- | :---: | :--- | :---: |
+| `AUD-01` | **Alto (P1)** | Reorganização do `index.qmd` nas 6 etapas canônicas do CRISP-ML(Q) + Storytelling. | **Resolvido** |
+| `AUD-02` | **Alto (P1)** | Inserção de tabela comparativa multi-métrica contra *Baselines* ingênuos na Seção 4. | **Resolvido** |
+| `AUD-03` | **Alto (P1)** | Reestruturação completa da navbar no `_quarto.yml` com menus de Arquitetura e ADRs (0001 a 0005) e correção da URL do GitHub (`talesgomes27`). | **Resolvido** |
+| `AUD-04` | **Alto (P1)** | Configuração de `project: render:` explícito no `_quarto.yml`, expurgando arquivos de memória interna (`task.md`) do build estático. | **Resolvido** |
+| `AUD-05` | **Médio (P2)** | Migração integral para referências cruzadas nativas do Quarto (`@fig-01` a `@fig-08`). | **Resolvido** |
+| `AUD-06` | **Médio (P2)** | Saneamento de link absoluto local `file:///` em `docs/03-architecture-and-schema.md`. | **Resolvido** |
+| `AUD-07` | **Médio (P2)** | Harmonização de `requires-python = ">=3.11"` e `target-version = "py311"` no `pyproject.toml`. | **Resolvido** |
+| `AUD-08` | **Médio (P2)** | Implementação da suíte de caracterização em `tests/characterization/test_pinning_hurdle_pipeline.py`. | **Resolvido** |
+| `AUD-09` | **Baixo (P3)** | Silenciamento seletivo de warnings de bibliotecas terceiras no `pytest.ini_options`. | **Resolvido** |
+
+---
+
+## 4. Métricas de Impacto e Parecer Técnico de Conclusão
+
+- **Dívidas Técnicas Eliminadas:** 9/9 (100% de cobertura dos achados triados).
+- **Métricas de Teste:** 20 testes verdes (3 testes de caracterização + 17 testes de unidade/integração).
+- **Integridade Quarto Website:** 12 documentos compilados com exit code `0`, sem links quebrados, páginas órfãs ou arquivos de controle expostos.
+- **Handoff Recomendado:** O repositório encontra-se saneado, documentado e testado, pronto para ingestão pela **`release-and-ops-pipeline`** para publicação no GitHub Pages.

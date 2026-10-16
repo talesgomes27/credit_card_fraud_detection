@@ -118,12 +118,13 @@
   - [x] Congelamento de invariantes de splits, alvos, contagem real de fraudes (2.055) e integridade de figuras
   - [x] Elaboração do plano incremental em `docs/refactoring-plan.md` (4 Fatias: Saneamento Quarto, CRISP-ML(Q), Referências @fig- e Sanidade Final)
   - [ ] Checkpoint humano e autorização para refatoração
-- [ ] **Gate 4: Execução da Refatoração Cirúrgica Polimórfica (Verify-Revert-Stop)**
-  - [ ] Fatia 1: Saneamento Quarto (Navbar com dropdowns de ADRs/Scaffolding, escopo de render e correção de links GitHub)
-  - [ ] Fatia 2: Reestruturação do relatório nas 6 seções canônicas CRISP-ML(Q), tabela comparativa com Baselines e fidelidade numérica
-  - [ ] Fatia 3: Sintaxe nativa de referências cruzadas `@fig-01` a `@fig-08` e silenciamento de warnings de bibliotecas
-  - [ ] Fatia 4: Validação integrada contínua e compilação limpa do site Quarto
-- [ ] **Gate 5: Verificação de Regressão, Sincronização Documental & Handoff**
-  - [ ] Execução da suíte completa de 20 testes e recompilação do Quarto (`quarto render`)
-  - [ ] Sincronização de docstrings, ADRs e relatórios
-  - [ ] Handoff para `release-and-ops-pipeline`
+- [x] **Gate 4: Execução da Refatoração Cirúrgica Polimórfica (Verify-Revert-Stop)**
+  - [x] Fatia 1: Saneamento Quarto (Navbar com dropdowns de ADRs/Scaffolding, escopo de render e correção de links GitHub)
+  - [x] Fatia 2: Reestruturação do relatório nas 6 seções canônicas CRISP-ML(Q), tabela comparativa com Baselines e fidelidade numérica
+  - [x] Fatia 3: Sintaxe nativa de referências cruzadas `@fig-01` a `@fig-08` e silenciamento de warnings de bibliotecas
+  - [x] Fatia 4: Validação integrada contínua e compilação limpa do site Quarto (exit code 0)
+- [x] **Gate 5: Verificação de Regressão, Sincronização Documental & Handoff**
+  - [x] Execução da suíte completa de 20 testes (100% verdes) e validação de linter `ruff` sem erros
+  - [x] Recompilação completa do Quarto (`quarto render`) para `docs_site/` com 12 documentos canônicos
+  - [x] Fechamento e parecer de impacto em `docs/audit-report.md` (9/9 dívidas técnicas resolvidas)
+  - [x] Handoff pronto para a `release-and-ops-pipeline` (Gate 1)
