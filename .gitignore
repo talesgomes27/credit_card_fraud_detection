@@ -24,9 +24,25 @@ Thumbs.db
 *.swp
 *.swo
 
-# Artefatos Temporários
+# Binários de Modelos e Serializações
+*.joblib
+*.pkl
+models/*.joblib
+models/*.pkl
+
+# Credenciais e Segredos
+.env
+.env.*
+*.pem
+*.key
+
+# Artefatos Temporários e Builds
 tmp/
 *.log
+dist/
+build/
+*.egg-info/
 
+# Quarto Cache Efêmero
 /.quarto/
 **/*.quarto_ipynb
